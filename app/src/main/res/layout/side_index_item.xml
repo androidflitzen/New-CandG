@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/side_list_item"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:gravity="center"
+    android:paddingBottom="3dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="14dp"
+    android:paddingTop="3dp"
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="14sp"
+    tools:ignore="MissingPrefix" />

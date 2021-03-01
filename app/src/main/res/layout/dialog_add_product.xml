@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="@android:color/white"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/colorPrimary"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="@dimen/_10dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_10dp"
+                    android:text="Add Product"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15dp" />
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/custome_outlinebox"
+                            boxStrokeColor="#485253"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Product Name"
+                            android:nextFocusDown="@id/edt_create_quo_select_cutomer"
+                            android:textColorHint="#485253"
+                            android:theme="@style/custome_outlinebox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_product_name"
+                                fontPath="@string/font_regular"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textCapCharacters"
+                                android:singleLine="true"
+                                android:textAppearance="?android:textAppearanceMedium"
+                                android:textColor="@android:color/black"
+                                android:textColorHint="@color/txt_color3"
+                                android:imeOptions="flagNoExtractUi"
+                                android:visibility="visible" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/custome_outlinebox"
+                            boxStrokeColor="#485253"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Select Product Category"
+                            android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                            android:textColorHint="#485253"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:theme="@style/custome_outlinebox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txt_product_categoty"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:cursorVisible="false"
+                                android:drawableRight="@drawable/ic_down_arrow"
+                                android:focusable="false"
+                                android:focusableInTouchMode="true"
+                                android:singleLine="true"
+                                android:textAppearance="?android:textAppearanceMedium"
+                                android:textColor="@android:color/black"
+                                android:textColorHint="@color/txt_color3"
+                                android:visibility="visible" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/custome_outlinebox"
+                            boxStrokeColor="#485253"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Base Price"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:nextFocusDown="@id/edt_create_quo_select_cutomer"
+                            android:textColorHint="#485253"
+                            android:theme="@style/custome_outlinebox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_base_price"
+                                fontPath="@string/font_regular"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:singleLine="true"
+                                android:textAppearance="?android:textAppearanceMedium"
+                                android:textColor="@android:color/black"
+                                android:textColorHint="@color/txt_color3"
+                                android:imeOptions="flagNoExtractUi"
+                                android:visibility="visible" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/custome_outlinebox"
+                            boxStrokeColor="#485253"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Select Product Unit"
+                            android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                            android:textColorHint="#485253"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:theme="@style/custome_outlinebox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txt_unit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:cursorVisible="false"
+                                android:drawableRight="@drawable/ic_down_arrow"
+                                android:focusable="false"
+                                android:focusableInTouchMode="true"
+                                android:singleLine="true"
+                                android:textAppearance="?android:textAppearanceMedium"
+                                android:textColor="@android:color/black"
+                                android:textColorHint="@color/txt_color3"
+                                android:visibility="visible" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:gravity="right"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/btn_cancel"
+                                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="@dimen/_10sdp"
+                                android:textColor="@color/black"
+                                android:text="Cancel" />
+
+                            <Button
+                                android:id="@+id/btn_add"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Add"
+                                android:textColor="@android:color/white"
+                                android:theme="@style/MyBtn_Accent"
+                                android:backgroundTint="@color/green"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.core.widget.NestedScrollView>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|top"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="3dp"
+            android:src="@drawable/ic_close_new"
+            android:tint="@color/white"/>
+
+    </FrameLayout>
+
+</FrameLayout>

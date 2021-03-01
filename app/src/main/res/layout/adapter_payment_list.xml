@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/view_payment_a_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="@dimen/_0dp"
+        app:cardElevation="@dimen/_0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="5">
+
+                <RelativeLayout
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4">
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardview_payment_a_sales_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_24dp"
+                        app:cardBackgroundColor="@color/green"
+                        app:cardCornerRadius="@dimen/_12dp"
+                        app:cardElevation="@dimen/_0dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingLeft="@dimen/_8dp"
+                            android:paddingRight="@dimen/_8dp">
+
+                            <ImageView
+                                android:id="@+id/img_payment_a_sales_type"
+                                android:layout_width="@dimen/_15dp"
+                                android:layout_height="@dimen/_15dp"
+                                android:src="@drawable/ic_pound_bag"
+                                android:tint="@android:color/white" />
+
+                            <TextView
+                                android:id="@+id/txt_payment_a_sales_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_3dp"
+                                android:text="Cash Sale"
+                                android:textColor="@android:color/white"
+                                android:textSize="@dimen/_10sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txt_payment_a_date"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="Date"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sp" />
+
+                <TextView
+                    android:id="@+id/txt_payment_a_type"
+                    fontPath="@string/font_bold"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Type"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/txt_payment_a_cname"
+                    fontPath="@string/font_bold"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:text="Customer Name"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/txt_payment_a_amount"
+                    fontPath="@string/font_bold"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:text="Amount"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/txt_payment_a_payment_type"
+                    fontPath="@string/font_bold"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Payment Type"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/txt_payment_a_refrence"
+                    fontPath="@string/font_bold"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="Reference"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/view" />
+
+</LinearLayout>

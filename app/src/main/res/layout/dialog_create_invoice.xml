@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="@color/white"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/colorPrimary"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="@dimen/_10dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_10dp"
+                    android:text="INVOICE"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15dp" />
+
+                <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+                    android:id="@+id/toggle_create_inv"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="22sp"
+                    custom:activeBgColor="@color/buttonGreen"
+                    custom:activeTextColor="@android:color/white"
+                    custom:inactiveBgColor="@android:color/white"
+                    custom:inactiveTextColor="@android:color/black"
+                    custom:separatorColor="@color/gray_very_light"
+                    custom:textToggleLeft="ACCOUNT SALE"
+                    custom:textToggleRight="CASH SALE"
+                    custom:toggleWidth="300dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/view" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="SELECT SALES PERSON"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:paddingLeft="@dimen/_16dp"
+                                    android:paddingTop="10dp"
+                                    android:paddingRight="16dp"
+                                    android:paddingBottom="10dp"
+                                    android:textColorHint="#485253"
+                                    android:layout_marginTop="@dimen/_10dp"
+                                    android:theme="@style/custome_outlinebox">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/txt_create_inv_select_sales_person"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:drawableRight="@drawable/ic_down_arrow"
+                                        android:focusable="false"
+                                        android:focusableInTouchMode="true"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/view_create_inv_account_sale"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:paddingLeft="16dp"
+                                android:paddingBottom="6dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/custome_outlinebox"
+                                        boxStrokeColor="#485253"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="SELECT CUSTOMER"
+                                        android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                        android:textAppearance="?android:textAppearanceSmall"
+                                        android:paddingTop="10dp"
+                                        android:paddingRight="16dp"
+                                        android:paddingBottom="10dp"
+                                        android:textColorHint="#485253"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:layout_marginRight="6dp"
+                                        android:inputType="textCapCharacters"
+                                        android:theme="@style/custome_outlinebox">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/txt_create_inv_select_cutomer"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:drawableRight="@drawable/ic_down_arrow"
+                                            android:focusable="false"
+                                            android:focusableInTouchMode="true"
+                                            android:singleLine="true"
+                                            android:textAppearance="?android:textAppearanceMedium"
+                                            android:textColor="@android:color/black"
+                                            android:textColorHint="@color/txt_color3"
+                                            android:visibility="visible" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/custome_outlinebox"
+                                        boxStrokeColor="#485253"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="ENTER CUSTOMER NAME"
+                                        android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                        android:textAppearance="?android:textAppearanceSmall"
+                                        android:paddingTop="10dp"
+                                        android:paddingRight="16dp"
+                                        android:paddingBottom="10dp"
+                                        android:textColorHint="#485253"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:layout_marginRight="6dp"
+                                        android:inputType="textCapCharacters"
+                                        android:visibility="gone"
+                                        android:theme="@style/custome_outlinebox">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/edt_create_inv_select_cutomer"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:drawableRight="@drawable/ic_down_arrow"
+                                            android:singleLine="true"
+                                            android:textAppearance="?android:textAppearanceMedium"
+                                            android:textColor="@android:color/black"
+                                            android:textColorHint="@color/txt_color3"
+                                            android:visibility="visible" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_not_eligible"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/txt_error_msg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:text="This customer has crossed CREDIT LIMIT assigned. Hence, this order can only be saved as a QUOTATION"
+                                android:textAppearance="?android:textAppearanceMedium"
+                                android:textColor="@color/colorPrimary" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_weight="1"
+                                    android:text="CREDIT LIMIT "
+                                    android:textAppearance="?android:textAppearanceSmall" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_weight="1"
+                                    android:text="CREDIT DAYS"
+                                    android:textAppearance="?android:textAppearanceSmall" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_weight="1"
+                                    android:text="COSING BALANCE"
+                                    android:textAppearance="?android:textAppearanceSmall" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_credit_limit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_weight="1"
+                                    android:text="CREDIT LIMIT "
+                                    android:textAppearance="?android:textAppearanceMedium" />
+
+                                <TextView
+                                    android:id="@+id/txt_credit_days"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_weight="1"
+                                    android:text="CREDIT DAYS"
+                                    android:textAppearance="?android:textAppearanceMedium" />
+
+                                <TextView
+                                    android:id="@+id/txt_closing_balance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_weight="1"
+                                    android:text="COSING BALANCE"
+                                    android:textAppearance="?android:textAppearanceMedium" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/view_create_inv_cash_sale"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="PAYMENT METHOD"
+                                android:textColor="@color/txt_color2"
+                                android:textSize="12sp" />
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <RadioGroup
+                                    android:id="@+id/radio_grp_create_inv_payment_method"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_cash"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:scaleX="1.3"
+                                        android:scaleY="1.3"
+                                        android:text="CASH"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="12sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_card"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_20dp"
+                                        android:scaleX="1.3"
+                                        android:scaleY="1.3"
+                                        android:text="CARD"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="12sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_debit"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_20dp"
+                                        android:scaleX="1.3"
+                                        android:scaleY="1.3"
+                                        android:text="DIRECT DEBIT"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="12sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_online"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_20dp"
+                                        android:scaleX="1.3"
+                                        android:scaleY="1.3"
+                                        android:text="ONLINE"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="12sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_cheque"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_20dp"
+                                        android:scaleX="1.3"
+                                        android:scaleY="1.3"
+                                        android:text="CHEQUE"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="12sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_other"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_20dp"
+                                        android:scaleX="1.3"
+                                        android:scaleY="1.3"
+                                        android:text="OTHER"
+                                        android:paddingRight="@dimen/_12sdp"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="12sp" />
+                                </RadioGroup>
+                            </HorizontalScrollView>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center|left"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="PAID AMOUNT" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:text="@string/pound"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold" />
+
+                                <EditText
+                                    android:id="@+id/edt_create_inv_paid_amount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:background="@drawable/border_bottom"
+                                    android:inputType="numberDecimal"
+                                    android:minWidth="150dp"
+                                    android:padding="10dp"
+                                    android:textAppearance="?android:textAppearanceMedium"
+                                    android:textColor="@android:color/black" />
+
+                                <LinearLayout
+                                    android:id="@+id/view_create_inv_return_amount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="16dp"
+                                        android:text="DIFFERENCE"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@color/txt_color2" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="@string/pound"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@color/txt_color1"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/txt_create_inv_return_amount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@color/txt_color1"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="PO# (OPTIONAL)"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:paddingLeft="@dimen/_16dp"
+                                    android:paddingTop="10dp"
+                                    android:paddingRight="16dp"
+                                    android:paddingBottom="5dp"
+                                    android:inputType="textCapCharacters"
+                                    android:visibility="visible"
+                                    android:theme="@style/custome_outlinebox">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_po"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="ADDITIONAL NOTE (OPTIONAL)"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:paddingLeft="@dimen/_16dp"
+                                    android:paddingTop="10dp"
+                                    android:paddingRight="16dp"
+                                    android:paddingBottom="5dp"
+                                    android:inputType="textCapCharacters"
+                                    android:visibility="visible"
+                                    android:theme="@style/custome_outlinebox">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_note"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- <EditText
+                             android:id="@+id/edt_create_inv_po"
+                             fontPath="@string/font_regular"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:layout_marginLeft="16dp"
+                             android:layout_marginRight="16dp"
+                             android:layout_weight="1"
+                             android:background="@drawable/border_bottom"
+                             android:hint="PO# (Optional)"
+                             android:inputType="textCapCharacters"
+                             android:paddingBottom="5dp"
+                             android:paddingTop="10dp"
+                             android:textAppearance="?android:textAppearanceMedium"
+                             android:textColor="@android:color/black"
+                             android:textColorHint="@color/txt_color4"
+                             tools:ignore="MissingPrefix" />
+
+                         <EditText
+                             android:id="@+id/edt_create_inv_note"
+                             fontPath="@string/font_regular"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:layout_marginLeft="16dp"
+                             android:layout_marginRight="16dp"
+                             android:layout_marginTop="10dp"
+                             android:layout_weight="1"
+                             android:background="@drawable/border_bottom"
+                             android:hint="Additional Note (Optional)"
+                             android:inputType="textCapCharacters"
+                             android:paddingBottom="5dp"
+                             android:paddingTop="10dp"
+                             android:textAppearance="?android:textAppearanceMedium"
+                             android:textColor="@color/txt_color1"
+                             android:textColorHint="@color/txt_color4"
+                             tools:ignore="MissingPrefix" />-->
+
+
+                        <RadioGroup
+                            android:id="@+id/radio_grp_create_inv_delivery_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rdb_create_inv_collection"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:scaleX="1.3"
+                                android:inputType="textCapCharacters"
+                                android:scaleY="1.3"
+                                android:text="COLLECTION"
+                                android:textSize="12sp" />
+
+                            <RadioButton
+                                android:id="@+id/rdb_create_inv_delivery"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="30dp"
+                                android:scaleX="1.3"
+                                android:scaleY="1.3"
+                                android:inputType="textCapCharacters"
+                                android:text="DELIVERY"
+                                android:textSize="12sp" />
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:id="@+id/view_create_inv_delivery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/custome_outlinebox"
+                                        boxStrokeColor="#485253"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="ADDRESS"
+                                        android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                        android:textAppearance="?android:textAppearanceSmall"
+                                        android:paddingLeft="@dimen/_16dp"
+                                        android:paddingTop="10dp"
+                                        android:paddingRight="16dp"
+                                        android:paddingBottom="5dp"
+                                        android:inputType="textCapCharacters"
+                                        android:visibility="visible"
+                                        android:theme="@style/custome_outlinebox">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/edt_create_inv_address"
+                                            fontPath="@string/font_regular"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:singleLine="true"
+                                            android:textAppearance="?android:textAppearanceMedium"
+                                            android:textColor="@android:color/black"
+                                            android:textColorHint="@color/txt_color3"
+                                            android:visibility="visible" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/custome_outlinebox"
+                                        boxStrokeColor="#485253"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="POST CODE"
+                                        android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                        android:textAppearance="?android:textAppearanceSmall"
+                                        android:paddingLeft="@dimen/_16dp"
+                                        android:paddingTop="10dp"
+                                        android:paddingRight="16dp"
+                                        android:paddingBottom="5dp"
+                                        android:inputType="textCapCharacters"
+                                        android:visibility="visible"
+                                        android:theme="@style/custome_outlinebox">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/edt_create_inv_pin_code"
+                                            fontPath="@string/font_regular"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:singleLine="true"
+                                            android:textAppearance="?android:textAppearanceMedium"
+                                            android:textColor="@android:color/black"
+                                            android:textColorHint="@color/txt_color3"
+                                            android:visibility="visible" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="PHONE"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:paddingLeft="@dimen/_16dp"
+                                    android:paddingTop="10dp"
+                                    android:paddingRight="16dp"
+                                    android:paddingBottom="5dp"
+                                    android:inputType="textCapCharacters"
+                                    android:visibility="visible"
+                                    android:theme="@style/custome_outlinebox">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_phone"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_save"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="#d4d4d4">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_save"
+                                    android:drawablePadding="10dp"
+                                    android:gravity="center"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="SAVE"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/black" />
+
+                            </RelativeLayout>
+
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_save_and_print"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/buttonGreen">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_print_white"
+                                    android:drawablePadding="10dp"
+                                    android:gravity="center"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="PRINT"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/white" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_save_and_delivery_note"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="#d4d4d4"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_print_black"
+                                    android:drawablePadding="10dp"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:lines="1"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="DELIVERY NOTE"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/black" />
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_both"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="#d4d4d4">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_print_black"
+                                    android:drawablePadding="10dp"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:lines="1"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="BOTH"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/black" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_quotation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/bluegrey_300"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawablePadding="10dp"
+                                    android:gravity="center"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="CREATE QUOTATION"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/white" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|top"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="3dp"
+            android:src="@drawable/ic_close_new"
+            android:tint="@color/white"/>
+
+    </FrameLayout>
+
+</FrameLayout>
+

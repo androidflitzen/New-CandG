@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/payment_cash"
+        android:title="Cash"/>
+
+    <item android:id="@+id/payment_creditcard"
+        android:title="Credit Card / Debit Card"/>
+
+    <item android:id="@+id/payment_online"
+        android:title="Online Transfer"/>
+
+    <item android:id="@+id/payment_cheque"
+        android:title="Cheque"/>
+
+    <item android:id="@+id/payment_other"
+        android:title="Other"/>
+</menu>

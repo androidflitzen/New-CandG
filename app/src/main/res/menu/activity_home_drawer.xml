@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_sale"
+            android:icon="@drawable/ic_nav_sales"
+            android:title="Sale" />
+
+        <item
+            android:id="@+id/nav_invoice"
+            android:icon="@drawable/ic_nav_invoice"
+            android:title="Invoices" />
+
+        <item
+            android:id="@+id/nav_quatation"
+            android:icon="@drawable/ic_nav_quatation"
+            android:title="Quotations" />
+
+        <item
+            android:id="@+id/nav_cusromers"
+            android:icon="@drawable/ic_nav_cusomers"
+            android:title="Customers" />
+
+        <item
+            android:id="@+id/nav_cr_notes"
+            android:icon="@drawable/ic_nav_crnote"
+            android:title="Credit Notes" />
+
+        <item
+            android:id="@+id/nav_payment"
+            android:icon="@drawable/ic_transaction"
+            android:title="Transactions" />
+
+    </group>
+
+</menu>

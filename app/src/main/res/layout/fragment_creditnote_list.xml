@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabview_creditnote"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        app:tabMode="fixed"
+        app:tabIndicatorHeight="0dp"
+        app:tabIndicatorColor="@android:color/holo_red_dark"
+        app:tabSelectedTextColor="@android:color/holo_red_dark"
+        app:tabBackground="@drawable/tab_selector"
+        android:background="@color/white"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager_creadit_note"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabview_creditnote" />
+
+</RelativeLayout>

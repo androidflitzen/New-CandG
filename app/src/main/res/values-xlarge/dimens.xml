@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sale_product_height">100dp</dimen>
+    <dimen name="item_product_height">120dp</dimen>
+    <dimen name="order_prepair_total_paid">30sp</dimen>
+    <dimen name="order_prepair_textview">22sp</dimen>
+    <dimen name="search_bar_size">50dp</dimen>
+    <dimen name="recyclerview_top_padding">62dp</dimen>
+</resources>

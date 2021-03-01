@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">C&amp;G</string>
+
+    <!--<string name="font_regular">opensanscondensed_light.ttf</string>-->
+    <string name="font_regular" translatable="false">opensanscondensed_bold.ttf</string>
+    <string name="font_bold" translatable="false">opensanscondensed_bold.ttf</string>
+    <string name="log_in">LOG IN</string>
+    <string name="enter_user_id">Enter User Id</string>
+    <string name="enter_password">Enter Password</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="exit">Touch again to EXIT</string>
+    <string name="logout">LOGOUT</string>
+    <string name="logout_conformation">Are you sure want to logout ?</string>
+    <string name="cancel">Cancel</string>
+    <string name="transactions">Transactions</string>
+    <string name="credit_notes">Credit Notes</string>
+    <string name="customers">Customers</string>
+    <string name="quotations">Quotations</string>
+    <string name="invoices">Invoices</string>
+    <string name="sale">Sale</string>
+    <string name="home">Home</string>
+    <string name="today">Today</string>
+    <string name="this_week">THIS WEEK</string>
+    <string name="this_month">THIS MONTH</string>
+    <string name="all_invoices">ALL INVOICES</string>
+    <string name="all_quotations">ALL QUOTATIONS</string>
+    <string name="all_credit_notes">ALL CREDIT NOTES</string>
+    <string name="pound" translatable="false">£</string>
+    <string name="profile_detail">PROFILE DETAIL</string>
+    <string name="ledger">LEDGER</string>
+    <string name="monthly_statement">MONTHLY STATEMENTS</string>
+
+    <string name="check_internet_connection">Please check your internet connection.</string>
+    <string name="something_wrong">Something went wrong.</string>
+    <string name="all_product_data">All Data</string>
+    <string name="api_key">cg@123</string>
+    <string name="c_g_recommends_that_you_update_to_the_latest_version_you_can_keep_using_this_app_while_downloading_the_update">C&amp;G recommends that you update to the latest version. You can keep using this app while downloading the update.</string>
+
+
+</resources>
