@@ -70,26 +70,32 @@ public class AllProductDataService extends Service {
                                     item.setcId(response.body().getResult().get(i).getCategoryId());
                                     item.setcName(response.body().getResult().get(i).getName());
                                     ArrayList<SaleSubCat_Items> arrayListSubCat = new ArrayList<>();
+                                    if(response.body().getResult().get(i).getSubcategory()!=null){
                                         for (int j=0;j<response.body().getResult().get(i).getSubcategory().size();j++){
                                             SaleSubCat_Items itemSub = new SaleSubCat_Items();
                                             itemSub.setcId(response.body().getResult().get(i).getSubcategory().get(j).getCategoryId());
                                             itemSub.setcName(response.body().getResult().get(i).getSubcategory().get(j).getName());
                                             ArrayList<SaleProducts_Items> arrayListProducts = new ArrayList<>();
-                                            for(int k=0;k<response.body().getResult().get(i).getSubcategory().get(j).getProduct().size();k++){
-                                                AllProductDataModel.Product product=response.body().getResult().get(i).getSubcategory().get(j).getProduct().get(k);
-                                                SaleProducts_Items itemProduct = new SaleProducts_Items();
-                                                itemProduct.setpId(product.getProductId());
-                                                itemProduct.setpName(product.getName().toUpperCase());
-                                                itemProduct.setpPrice(product.getPrice());
-                                                itemProduct.setPzero_vat(product.getZeroVat());
-                                                itemProduct.setCatName(response.body().getResult().get(i).getName());
-                                                itemProduct.setSubcatName(response.body().getResult().get(i).getSubcategory().get(j).getName());
-                                                arrayListProducts.add(itemProduct);
-                                                CandG.arrayListProducts.add(itemProduct);
+                                            if(response.body().getResult().get(i).getSubcategory().get(j).getProduct()!=null){
+                                                for(int k=0;k<response.body().getResult().get(i).getSubcategory().get(j).getProduct().size();k++){
+                                                    AllProductDataModel.Product product=response.body().getResult().get(i).getSubcategory().get(j).getProduct().get(k);
+                                                    SaleProducts_Items itemProduct = new SaleProducts_Items();
+                                                    itemProduct.setpId(product.getProductId());
+                                                    itemProduct.setpName(product.getName().toUpperCase());
+                                                    itemProduct.setpPrice(product.getPrice());
+                                                    itemProduct.setPzero_vat(product.getZeroVat());
+                                                    itemProduct.setCatName(response.body().getResult().get(i).getName());
+                                                    itemProduct.setSubcatName(response.body().getResult().get(i).getSubcategory().get(j).getName());
+                                                    arrayListProducts.add(itemProduct);
+                                                    CandG.arrayListProducts.add(itemProduct);
+                                                }
                                             }
+
                                             itemSub.setArrayListProducts(arrayListProducts);
                                             arrayListSubCat.add(itemSub);
                                         }
+                                    }
+
                                     item.setArrayListSubCat(arrayListSubCat);
                                     CandG.arrayListAllData.add(item);
                                 }
@@ -135,7 +141,7 @@ public class AllProductDataService extends Service {
                 userID = intent.getStringExtra("user_id");
             }
         }
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
 
         HandlerThread thread = new HandlerThread("ServiceStartArguments");
         thread.start();
@@ -164,6 +170,6 @@ public class AllProductDataService extends Service {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 }

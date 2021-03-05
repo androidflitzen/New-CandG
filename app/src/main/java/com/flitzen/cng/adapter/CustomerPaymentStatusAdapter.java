@@ -51,11 +51,11 @@ public class CustomerPaymentStatusAdapter extends RecyclerView.Adapter<CustomerP
             super(itemView);
 
             mainView = itemView.findViewById(R.id.view_invoicelist_a_main);
-            txtPrice = (TextView) itemView.findViewById(R.id.txt_payment_amount);
-            txtype = (TextView) itemView.findViewById(R.id.txt_payment_type);
-            txtDate = (TextView) itemView.findViewById(R.id.txt_payment_date);
-            txtNote = (TextView) itemView.findViewById(R.id.txt_payment_note);
-            txtMode = (TextView) itemView.findViewById(R.id.txt_payment_mode);
+            txtPrice =  itemView.findViewById(R.id.txt_payment_amount);
+            txtype =  itemView.findViewById(R.id.txt_payment_type);
+            txtDate =  itemView.findViewById(R.id.txt_payment_date);
+            txtNote =  itemView.findViewById(R.id.txt_payment_note);
+            txtMode =  itemView.findViewById(R.id.txt_payment_mode);
         }
     }
 }

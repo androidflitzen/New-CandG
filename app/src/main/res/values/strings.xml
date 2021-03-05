@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">C&amp;G</string>
+    <string name="app_name">C and G</string>
 
     <!--<string name="font_regular">opensanscondensed_light.ttf</string>-->
     <string name="font_regular" translatable="false">opensanscondensed_bold.ttf</string>
@@ -36,6 +36,12 @@
     <string name="something_wrong">Something went wrong.</string>
     <string name="all_product_data">All Data</string>
     <string name="api_key">cg@123</string>
+
+    <string name="remove_today_quotation">remove_today_quotation</string>
+    <string name="remove_week_quotation">remove_week_quotation</string>
+    <string name="remove_month_quotation">remove_month_quotation</string>
+    <string name="remove_year_quotation">remove_year_quotation</string>
+
     <string name="c_g_recommends_that_you_update_to_the_latest_version_you_can_keep_using_this_app_while_downloading_the_update">C&amp;G recommends that you update to the latest version. You can keep using this app while downloading the update.</string>
 
 

@@ -3,7 +3,9 @@ package com.flitzen.cng.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductListRequestModel {
+import java.io.Serializable;
+
+public class ProductListRequestModel implements Serializable {
 
     @SerializedName("product_id")
     @Expose
@@ -20,15 +22,6 @@ public class ProductListRequestModel {
     @SerializedName("product_final_price")
     @Expose
     private String product_final_price;
-
-
-    public ProductListRequestModel(String product_id, String product_price, String product_qty, String product_discount_percentage, String product_final_price) {
-        this.product_id = product_id;
-        this.product_price = product_price;
-        this.product_qty = product_qty;
-        this.product_discount_percentage = product_discount_percentage;
-        this.product_final_price = product_final_price;
-    }
 
     public String getProduct_id() {
         return product_id;

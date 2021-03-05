@@ -54,7 +54,7 @@ public class Spn_Adapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = inflater.inflate(R.layout.adapter_spn, null);
 
-            viewHolder.txtName = (TextView) convertView.findViewById(R.id.txt_spn_a);
+            viewHolder.txtName = convertView.findViewById(R.id.txt_spn_a);
 
             convertView.setTag(viewHolder);
         } else {

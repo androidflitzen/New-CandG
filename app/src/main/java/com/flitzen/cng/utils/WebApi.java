@@ -3,18 +3,24 @@ package com.flitzen.cng.utils;
 import com.flitzen.cng.model.AddQuotationModel;
 import com.flitzen.cng.model.AllProductDataModel;
 import com.flitzen.cng.model.CategoryModel;
+import com.flitzen.cng.model.CommonModel;
+import com.flitzen.cng.model.CrediNotesListModel;
 import com.flitzen.cng.model.CustomerModel;
 import com.flitzen.cng.model.LoginResponseModel;
 import com.flitzen.cng.model.ProductListRequestModel;
+import com.flitzen.cng.model.ProductListRequestModelTest;
 import com.flitzen.cng.model.ProductModel;
+import com.flitzen.cng.model.QuotationDetailsModel;
 import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.model.SalesPersonModel;
 import com.flitzen.cng.model.SubCategoryModel;
 import com.flitzen.cng.model.TodayInvoiceListingModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -24,11 +30,12 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface WebApi {
 
     @GET("users/login?")
-    Call<LoginResponseModel> login(@Query("api_key") String api_key,@Query("email") String email, @Query("password") String password);
+    Call<LoginResponseModel> login(@Query("api_key") String api_key, @Query("email") String email, @Query("password") String password);
 
     //All data list
     @GET("products/all_category?")
@@ -42,21 +49,17 @@ public interface WebApi {
     @GET("users/sales_person?")
     Call<SalesPersonModel> salesPersonApi(@Query("api_key") String api_key);
 
-    /*//Add Quotation
-    @FormUrlEncoded
-    @POST("quotation/add")
-    Call<AddQuotationModel> addQuotationApi(@Field("api_key") String api_key, @Field("user_id") String user_id, @Field("customer_id") String customer_id, @Field("customer_name") String customer_name ,
-                                            @Field("sales_person_id") String sales_person_id, @Field("total_amount") String total_amount , @Field("vat_amount") String vat_amount
-                                            , @Field("final_total") String final_total, @Field("sales_type") String sales_type,@FieldMap Map<String, String> quotation_data);*/
-
-
     //Add Quotation
-    @FormUrlEncoded
-    @POST("quotation/add")
-    Call<AddQuotationModel> addQuotationApi(@Field("api_key") String api_key, @Field("user_id") String user_id, @Field("customer_id") String customer_id, @Field("customer_name") String customer_name ,
-                                            @Field("sales_person_id") String sales_person_id, @Field("total_amount") String total_amount , @Field("vat_amount") String vat_amount
-                                            , @Field("final_total") String final_total, @Field("sales_type") String sales_type,@Part("quotation_data[]") List<ProductListRequestModel> quotation_data);
+    @GET("quotation/add")
+    Call<AddQuotationModel> addQuotationApi(@QueryMap Map<String, String> params);
 
+    //Add Invoice
+    @GET("invoice/add")
+    Call<AddQuotationModel> addInvoiceApi(@QueryMap Map<String, String> params);
+
+    //Add credit Note
+    @GET("credit_note/add")
+    Call<AddQuotationModel> addCreditNotesApi(@QueryMap Map<String, String> params);
 
     //Today Quotation List
     @GET("quotation/today?")
@@ -64,17 +67,58 @@ public interface WebApi {
 
     //Week Quotation List
     @GET("quotation/week?")
-    Call<QuotationListingModel> weekQuotationListApi(@Query("api_key") String api_key,@Query("pno") String pno);
+    Call<QuotationListingModel> weekQuotationListApi(@Query("api_key") String api_key, @Query("pno") String pno);
 
     //Month Quotation List
     @GET("quotation/month?")
-    Call<QuotationListingModel> monthQuotationListApi(@Query("api_key") String api_key,@Query("pno") String pno);
+    Call<QuotationListingModel> monthQuotationListApi(@Query("api_key") String api_key, @Query("pno") String pno);
 
     //Year Quotation List
     @GET("quotation/all?")
-    Call<QuotationListingModel> yearQuotationListApi(@Query("api_key") String api_key,@Query("pno") String pno);
+    Call<QuotationListingModel> yearQuotationListApi(@Query("api_key") String api_key, @Query("pno") String pno);
 
-   /* //category list
+    //Today invoice List
+    @GET("invoice/today?")
+    Call<TodayInvoiceListingModel> todayInvoiceList(@Query("api_key") String api_key);
+
+    //Week invoice List
+    @GET("invoice/week?")
+    Call<TodayInvoiceListingModel> weekInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno);
+
+    //Month invoice List
+    @GET("invoice/month?")
+    Call<TodayInvoiceListingModel> monthInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno);
+
+    //Year invoice List
+    @GET("invoice/all?")
+    Call<TodayInvoiceListingModel> yearInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno);
+
+    //Today credit note List
+    @GET("credit_note/today?")
+    Call<CrediNotesListModel> todayCreditNoteList(@Query("api_key") String api_key);
+
+    //Week credit note List
+    @GET("credit_note/week?")
+    Call<CrediNotesListModel> weekCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno);
+
+    //Month credit note List
+    @GET("credit_note/month?")
+    Call<CrediNotesListModel> monthCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno);
+
+    //Year credit note List
+    @GET("credit_note/all?")
+    Call<CrediNotesListModel> yearCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno);
+
+    //Delete Quotation
+    @GET("quotation/delete_quotation?")
+    Call<CommonModel> deleteQuotation(@Query("api_key") String api_key, @Query("quotation_id") String quotation_id);
+
+    //Get Quotation Details
+    @GET("quotation/quotation_by_id?")
+    Call<QuotationDetailsModel> quotationDetails(@Query("api_key") String api_key, @Query("quotation_id") String quotation_id);
+
+
+     /* //category list
     @GET("products/category?")
     Call<CategoryModel> categoryApi(@Query("api_key") String api_key);
 
@@ -85,20 +129,5 @@ public interface WebApi {
     //product list
     @GET("products/data?")
     Call<ProductModel> productApi(@Query("api_key") String api_key,@Query("category_id") String category_id, @Query("sub_category_id") String sub_category_id);*/
-
-    @GET("invoice/today?")
-    Call<TodayInvoiceListingModel> todayInvoiceList(@Query("api_key") String api_key);
-
-    @GET("invoice/week?")
-    Call<TodayInvoiceListingModel> weekInvoiceList(@Query("api_key") String api_key,@Query("pno") String pno);
-
-    @GET("invoice/month?")
-    Call<TodayInvoiceListingModel> monthInvoiceList(@Query("api_key") String api_key,@Query("pno") String pno);
-
-    @GET("invoice/all?")
-    Call<TodayInvoiceListingModel> yearInvoiceList(@Query("api_key") String api_key,@Query("pno") String pno);
-
-
-
 
 }

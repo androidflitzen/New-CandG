@@ -21,6 +21,7 @@
             android:inputType="textCapCharacters"
             android:background="@android:color/transparent"
             android:hint="Search Customer Categoty"
+            android:imeOptions="flagNoExtractUi"
             android:padding="16dp" />
 
     </androidx.cardview.widget.CardView>

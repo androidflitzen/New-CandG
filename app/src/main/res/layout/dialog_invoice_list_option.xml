@@ -15,7 +15,7 @@
         <ImageView
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_50sdp"
-            android:src="@drawable/new_logo"/>
+            android:src="@drawable/ic_new_logo"/>
 
         <TextView
             android:id="@+id/view_inv_dialog_view_pdf1"

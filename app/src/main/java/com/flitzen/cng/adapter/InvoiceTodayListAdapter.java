@@ -54,7 +54,7 @@ public class InvoiceTodayListAdapter extends RecyclerView.Adapter<InvoiceTodayLi
         holder.txtPrice.setText(context.getResources().getString(R.string.pound) + " " + numberFotmate.format(Double.valueOf(arrayList.get(position).getFinalTotal())));
         holder.txtSubTotal.setText(context.getResources().getString(R.string.pound) + " " + numberFotmate.format(Double.valueOf(arrayList.get(position).getTotalAmount())));
         holder.txtVatAmount.setText(context.getResources().getString(R.string.pound) + " " + numberFotmate.format(Double.valueOf(arrayList.get(position).getVatAmount())));
-        holder.txtNo.setText(arrayList.get(position).getInvoiceId());
+        holder.txtNo.setText("CG-"+arrayList.get(position).getInvoiceId());
         holder.txtCustomer.setText(arrayList.get(position).getInvoiceTo());
         if (Helper.getCurrentDate("dd MMMM, yyyy").toUpperCase()
                 .equals(arrayList.get(position).getInvoiceDate().toUpperCase())) {
@@ -99,17 +99,17 @@ public class InvoiceTodayListAdapter extends RecyclerView.Adapter<InvoiceTodayLi
             super(itemView);
 
             mainView = itemView.findViewById(R.id.view_invoicelist_a_main);
-            txtPrice = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_amount);
-            txtNo = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_no);
+            txtPrice =  itemView.findViewById(R.id.txt_invoicelist_a_amount);
+            txtNo =  itemView.findViewById(R.id.txt_invoicelist_a_no);
             txtStatus = itemView.findViewById(R.id.txt_invoicelist_a_status);
-            txtCustomer = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_c_name);
-            txtDate = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_date);
-            txtTime = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_time);
-            txtSubTotal = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_c_sub_total);
-            txtVatAmount = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_c_vat_amount);
-            txtPaidAmount = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_paid);
-            txtDueAmount = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_due);
-            txtPONo = (TextView) itemView.findViewById(R.id.txt_invoicelist_a_po_no);
+            txtCustomer =  itemView.findViewById(R.id.txt_invoicelist_a_c_name);
+            txtDate =  itemView.findViewById(R.id.txt_invoicelist_a_date);
+            txtTime =  itemView.findViewById(R.id.txt_invoicelist_a_time);
+            txtSubTotal =  itemView.findViewById(R.id.txt_invoicelist_a_c_sub_total);
+            txtVatAmount =  itemView.findViewById(R.id.txt_invoicelist_a_c_vat_amount);
+            txtPaidAmount =  itemView.findViewById(R.id.txt_invoicelist_a_paid);
+            txtDueAmount =  itemView.findViewById(R.id.txt_invoicelist_a_due);
+            txtPONo =  itemView.findViewById(R.id.txt_invoicelist_a_po_no);
         }
     }
 

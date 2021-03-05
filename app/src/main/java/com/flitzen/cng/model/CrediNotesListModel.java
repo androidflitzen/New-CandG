@@ -6,9 +6,12 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CrediNotesListModel {
-    @SerializedName("result")
+    @SerializedName("data")
     @Expose
-    private List<Result> result = null;
+    private List<Result> data = null;
+    @SerializedName("total")
+    @Expose
+    private String total;
     @SerializedName("status")
     @Expose
     private Integer status;
@@ -16,12 +19,20 @@ public class CrediNotesListModel {
     @Expose
     private String message;
 
-    public List<Result> getResult() {
-        return result;
+    public List<Result> getData() {
+        return data;
     }
 
-    public void setResult(List<Result> result) {
-        this.result = result;
+    public void setData(List<Result> data) {
+        this.data = data;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 
     public Integer getStatus() {
@@ -42,132 +53,80 @@ public class CrediNotesListModel {
 
     public class Result {
 
-        @SerializedName("credit_note_id")
+        @SerializedName("creadit_note_id")
         @Expose
-        private String creditNoteId;
-        @SerializedName("credit_unique_id")
+        private String creaditNoteId;
+        @SerializedName("credit_note_to")
         @Expose
-        private String creditUniqueId;
-        @SerializedName("credit_to")
+        private String creditNoteTo;
+        @SerializedName("sales_person_name")
         @Expose
-        private String creditTo;
-        @SerializedName("customer_id")
+        private String salesPersonName;
+        @SerializedName("creadit_note_date")
         @Expose
-        private String customerId;
-        @SerializedName("sales_person")
+        private String creaditNoteDate;
+        @SerializedName("creadit_note_time")
         @Expose
-        private String salesPerson;
-        @SerializedName("sales_id")
-        @Expose
-        private String salesId;
-        @SerializedName("credit_note_date")
-        @Expose
-        private String creditNoteDate;
-        @SerializedName("credit_note_time")
-        @Expose
-        private String creditNoteTime;
-        @SerializedName("pdf_url")
-        @Expose
-        private String pdfUrl;
-        @SerializedName("sub_total")
-        @Expose
-        private String subTotal;
-        @SerializedName("vat_amount")
-        @Expose
-        private String vatAmount;
+        private String creaditNoteTime;
         @SerializedName("total_amount")
         @Expose
         private String totalAmount;
-        @SerializedName("po_number")
+        @SerializedName("vat_amount")
         @Expose
-        private String poNumber;
+        private String vatAmount;
+        @SerializedName("final_total")
+        @Expose
+        private String finalTotal;
+        @SerializedName("purchase_no")
+        @Expose
+        private String purchase_no;
 
-        public String getCreditNoteId() {
-            return creditNoteId;
+        public String getPurchase_no() {
+            return purchase_no;
         }
 
-        public void setCreditNoteId(String creditNoteId) {
-            this.creditNoteId = creditNoteId;
+        public void setPurchase_no(String purchase_no) {
+            this.purchase_no = purchase_no;
         }
 
-        public String getCreditUniqueId() {
-            return creditUniqueId;
+        public String getCreaditNoteId() {
+            return creaditNoteId;
         }
 
-        public void setCreditUniqueId(String creditUniqueId) {
-            this.creditUniqueId = creditUniqueId;
+        public void setCreaditNoteId(String creaditNoteId) {
+            this.creaditNoteId = creaditNoteId;
         }
 
-        public String getCreditTo() {
-            return creditTo;
+        public String getCreditNoteTo() {
+            return creditNoteTo;
         }
 
-        public void setCreditTo(String creditTo) {
-            this.creditTo = creditTo;
+        public void setCreditNoteTo(String creditNoteTo) {
+            this.creditNoteTo = creditNoteTo;
         }
 
-        public String getCustomerId() {
-            return customerId;
+        public String getSalesPersonName() {
+            return salesPersonName;
         }
 
-        public void setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public void setSalesPersonName(String salesPersonName) {
+            this.salesPersonName = salesPersonName;
         }
 
-        public String getSalesPerson() {
-            return salesPerson;
+        public String getCreaditNoteDate() {
+            return creaditNoteDate;
         }
 
-        public void setSalesPerson(String salesPerson) {
-            this.salesPerson = salesPerson;
+        public void setCreaditNoteDate(String creaditNoteDate) {
+            this.creaditNoteDate = creaditNoteDate;
         }
 
-        public String getSalesId() {
-            return salesId;
+        public String getCreaditNoteTime() {
+            return creaditNoteTime;
         }
 
-        public void setSalesId(String salesId) {
-            this.salesId = salesId;
-        }
-
-        public String getCreditNoteDate() {
-            return creditNoteDate;
-        }
-
-        public void setCreditNoteDate(String creditNoteDate) {
-            this.creditNoteDate = creditNoteDate;
-        }
-
-        public String getCreditNoteTime() {
-            return creditNoteTime;
-        }
-
-        public void setCreditNoteTime(String creditNoteTime) {
-            this.creditNoteTime = creditNoteTime;
-        }
-
-        public String getPdfUrl() {
-            return pdfUrl;
-        }
-
-        public void setPdfUrl(String pdfUrl) {
-            this.pdfUrl = pdfUrl;
-        }
-
-        public String getSubTotal() {
-            return subTotal;
-        }
-
-        public void setSubTotal(String subTotal) {
-            this.subTotal = subTotal;
-        }
-
-        public String getVatAmount() {
-            return vatAmount;
-        }
-
-        public void setVatAmount(String vatAmount) {
-            this.vatAmount = vatAmount;
+        public void setCreaditNoteTime(String creaditNoteTime) {
+            this.creaditNoteTime = creaditNoteTime;
         }
 
         public String getTotalAmount() {
@@ -178,12 +137,20 @@ public class CrediNotesListModel {
             this.totalAmount = totalAmount;
         }
 
-        public String getPoNumber() {
-            return poNumber;
+        public String getVatAmount() {
+            return vatAmount;
         }
 
-        public void setPoNumber(String poNumber) {
-            this.poNumber = poNumber;
+        public void setVatAmount(String vatAmount) {
+            this.vatAmount = vatAmount;
+        }
+
+        public String getFinalTotal() {
+            return finalTotal;
+        }
+
+        public void setFinalTotal(String finalTotal) {
+            this.finalTotal = finalTotal;
         }
 
     }

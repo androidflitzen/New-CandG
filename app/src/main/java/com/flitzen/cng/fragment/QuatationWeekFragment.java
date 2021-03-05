@@ -1,6 +1,9 @@
 package com.flitzen.cng.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -72,6 +76,7 @@ public class QuatationWeekFragment extends Fragment {
     int page = 1;
     int total_sale = 0;
     private boolean itShouldLoadMore = true;
+    private BroadcastReceiver mMyBroadcastReceiver;
 
     public QuatationWeekFragment(int quotationListType) {
         this.quotationListType=quotationListType;
@@ -111,7 +116,7 @@ public class QuatationWeekFragment extends Fragment {
     private void performSomeOperations() {
 
         recyclerview_quotation_list.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        mAdapter = new QuotationListAdapter(getActivity(), arrayList);
+        mAdapter = new QuotationListAdapter(getActivity(), arrayList,1);
         recyclerview_quotation_list.setAdapter(mAdapter);
 
         recyclerview_quotation_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -275,5 +280,27 @@ public class QuatationWeekFragment extends Fragment {
                 });
             }
         }).start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.mMyBroadcastReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equalsIgnoreCase(getResources().getString(R.string.remove_week_quotation))) {
+                    if (intent != null) {
+                        int position = intent.getIntExtra("position",0);
+                        arrayList.remove(position);
+                        arrayListTemp.remove(position);
+                    }
+                }
+            }
+        };
+        try {
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(this.mMyBroadcastReceiver, new IntentFilter(getResources().getString(R.string.remove_week_quotation)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

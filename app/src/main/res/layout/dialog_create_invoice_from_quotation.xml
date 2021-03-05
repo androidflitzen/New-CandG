@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="#f2f2f2"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/colorPrimary"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="@dimen/_10dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_10dp"
+                    android:text="INVOICE"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15dp"
+                    android:textStyle="bold" />
+
+                <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+                    android:id="@+id/toggle_create_inv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="22sp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    custom:activeBgColor="@color/buttonGreen"
+                    custom:activeTextColor="@android:color/white"
+                    custom:inactiveBgColor="@android:color/white"
+                    custom:inactiveTextColor="@android:color/black"
+                    custom:separatorColor="@color/gray_very_light"
+                    custom:textToggleLeft="ACCOUNT SALE"
+                    custom:textToggleRight="CASH SALE"
+                    custom:toggleWidth="300dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/view" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioGroup
+                            android:id="@+id/radio_grp_create_inv_sell_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <RadioButton
+                                android:id="@+id/rdb_create_inv_cash_sale"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cash Sell" />
+
+                            <RadioButton
+                                android:id="@+id/rdb_create_inv_account_sell"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="Account Sell" />
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="8dp"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_10dp"
+                                    android:hint="SELECT SALES PERSON"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingBottom="10dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColorHint="#485253"
+                                    android:theme="@style/custome_outlinebox">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/txt_create_inv_select_sales_person"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:drawableRight="@drawable/ic_down_arrow"
+                                        android:focusable="false"
+                                        android:focusableInTouchMode="true"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/view_create_inv_cashsale"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/edt_create_inv_select_cutomer_main"
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="6dp"
+                                    android:layout_marginTop="@dimen/_10dp"
+                                    android:hint="CUSTOMER"
+                                    android:inputType="textCapCharacters"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingBottom="10dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColorHint="#485253"
+                                    android:theme="@style/custome_outlinebox"
+                                    android:visibility="gone">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_cutomer"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:imeOptions="flagNoExtractUi"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/view_create_inv_account_sale"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/txt_create_inv_select_cutomer_Main"
+                                        style="@style/custome_outlinebox"
+                                        boxStrokeColor="#485253"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:layout_marginRight="6dp"
+                                        android:hint="SELECT CUSTOMER"
+                                        android:inputType="textCapCharacters"
+                                        android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                        android:paddingBottom="10dp"
+                                        android:textAppearance="?android:textAppearanceSmall"
+                                        android:textColorHint="#485253"
+                                        android:theme="@style/custome_outlinebox">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/txt_create_inv_select_cutomer"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:drawableRight="@drawable/ic_down_arrow"
+                                            android:focusable="false"
+                                            android:focusableInTouchMode="true"
+                                            android:singleLine="true"
+                                            android:textAppearance="?android:textAppearanceMedium"
+                                            android:textColor="@android:color/black"
+                                            android:textColorHint="@color/txt_color3"
+                                            android:visibility="visible" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/view_create_inv_cash_sale"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Payment Method"
+                                android:textAppearance="?android:textAppearanceSmall"
+                                android:textColor="@color/blue" />
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <RadioGroup
+                                    android:id="@+id/radio_grp_create_inv_payment_method"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_cash"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Cash"
+                                        android:textColor="@android:color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_card"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Card"
+                                        android:textColor="@android:color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_debit"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Direct Debit"
+                                        android:textColor="@android:color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_online"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Online"
+                                        android:textColor="@android:color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_cheque"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Cheque"
+                                        android:textColor="@android:color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/rdb_create_inv_other"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Other"
+                                        android:textColor="@android:color/black" />
+                                </RadioGroup>
+                            </HorizontalScrollView>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center|left"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:hint="PAID AMOUNT £"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColorHint="#485253"
+                                    android:theme="@style/custome_outlinebox">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_paid_amount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:imeOptions="flagNoExtractUi"
+                                        android:inputType="numberDecimal"
+                                        android:minWidth="160dp"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/view_create_inv_return_amount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="16dp"
+                                        android:text="Changed"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@color/txt_color2" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="@string/pound"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@color/txt_color1"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/txt_create_inv_return_amount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@color/txt_color1"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="PO# (OPTIONAL)"
+                                    android:inputType="textCapCharacters"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:theme="@style/custome_outlinebox"
+                                    android:visibility="visible">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_po"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:imeOptions="flagNoExtractUi"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="ADDITIONAL NOTE (OPTIONAL)"
+                                    android:inputType="textCapCharacters"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:theme="@style/custome_outlinebox"
+                                    android:visibility="visible">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_note"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:imeOptions="flagNoExtractUi"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <RadioGroup
+                            android:id="@+id/radio_grp_create_inv_delivery_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rdb_create_inv_collection"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Collection" />
+
+                            <RadioButton
+                                android:id="@+id/rdb_create_inv_delivery"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="Delivery" />
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:id="@+id/view_create_inv_delivery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="8dp"
+                                    android:layout_weight="1"
+                                    android:hint="ADDRESS"
+                                    android:inputType="textCapCharacters"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingBottom="5dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:theme="@style/custome_outlinebox"
+                                    android:visibility="visible">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_address"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:imeOptions="flagNoExtractUi"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/custome_outlinebox"
+                                    boxStrokeColor="#485253"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_weight="1"
+                                    android:hint="PHONE"
+                                    android:inputType="textCapCharacters"
+                                    android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                    android:paddingBottom="5dp"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:theme="@style/custome_outlinebox"
+                                    android:visibility="visible">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_create_inv_phone"
+                                        fontPath="@string/font_regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:cursorVisible="false"
+                                        android:imeOptions="flagNoExtractUi"
+                                        android:singleLine="true"
+                                        android:textAppearance="?android:textAppearanceMedium"
+                                        android:textColor="@android:color/black"
+                                        android:textColorHint="@color/txt_color3"
+                                        android:visibility="visible" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/custome_outlinebox"
+                                boxStrokeColor="#485253"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="POST CODE"
+                                android:inputType="textCapCharacters"
+                                android:nextFocusDown="@id/txt_create_quo_select_cutomer"
+                                android:paddingBottom="5dp"
+                                android:layout_marginTop="@dimen/_10dp"
+                                android:textAppearance="?android:textAppearanceSmall"
+                                android:theme="@style/custome_outlinebox"
+                                android:visibility="visible">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edt_create_inv_pin_code"
+                                    fontPath="@string/font_regular"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:cursorVisible="false"
+                                    android:imeOptions="flagNoExtractUi"
+                                    android:singleLine="true"
+                                    android:textAppearance="?android:textAppearanceMedium"
+                                    android:textColor="@android:color/black"
+                                    android:textColorHint="@color/txt_color3"
+                                    android:visibility="visible" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_save"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="#d4d4d4">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_save"
+                                    android:drawablePadding="10dp"
+                                    android:gravity="center"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="Save"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/black" />
+
+                            </RelativeLayout>
+
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_save_and_print"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/buttonGreen">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_print_white"
+                                    android:drawablePadding="10dp"
+                                    android:gravity="center"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="Print"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/white" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_save_and_delivery_note"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="#d4d4d4"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_print_black"
+                                    android:drawablePadding="10dp"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:lines="1"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="Delivery Note"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/black" />
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/btn_create_inv_both"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="#d4d4d4">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:drawableLeft="@drawable/ic_print_black"
+                                    android:drawablePadding="10dp"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:lines="1"
+                                    android:paddingTop="16dp"
+                                    android:paddingBottom="16dp"
+                                    android:text="Both"
+                                    android:textAllCaps="true"
+                                    android:textAppearance="?android:textAppearanceSmall"
+                                    android:textColor="@android:color/black" />
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|top"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="3dp"
+            android:src="@drawable/ic_close_new"
+            android:tint="@color/white" />
+
+    </FrameLayout>
+
+</FrameLayout>
+
+

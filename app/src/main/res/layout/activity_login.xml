@@ -6,11 +6,16 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_bg" />
+        android:src="@drawable/img_bg" />-->
+
+    <com.flitzen.cng.utils.MyVideoView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/bgVideoView"/>
 
     <View
         android:layout_width="match_parent"
@@ -32,16 +37,13 @@
             android:backgroundTint="@color/white"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="64dp">
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:src="@drawable/img_candg_icon_white"
-                android:tint="@color/red_on_swipe" />
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/_20dp"
+                android:src="@drawable/ic_circle_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,7 +64,7 @@
                 android:paddingRight="24dp"
                 android:text="LOG IN"
                 android:textColor="@color/red_on_swipe"
-                android:textSize="@dimen/_20sdp"
+                android:textSize="@dimen/_25dp"
                 tools:ignore="MissingPrefix" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -84,6 +86,7 @@
                     android:imeOptions="flagNoExtractUi"
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:textStyle="normal"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_10sdp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -107,6 +110,7 @@
                     android:drawableRight="@drawable/ic_visibility_off"
                     android:drawableTint="@color/black"
                     android:hint="Enter Password"
+                    android:textStyle="normal"
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="textPassword"
                     android:maxLines="1"
@@ -120,9 +124,9 @@
                 android:id="@+id/view_login_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginLeft="29dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginRight="29dp"
                 android:layout_marginBottom="54dp"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
@@ -157,7 +161,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_7sdp"
+                android:layout_height="@dimen/_5sdp"
                 android:layout_gravity="bottom"
                 android:background="@color/red_on_swipe"
                 android:gravity="bottom">
@@ -167,4 +171,5 @@
 
         </LinearLayout>
     </ScrollView>
+
 </RelativeLayout>

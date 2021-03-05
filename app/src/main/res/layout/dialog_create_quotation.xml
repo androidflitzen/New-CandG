@@ -164,6 +164,7 @@
                                     android:textAppearance="?android:textAppearanceMedium"
                                     android:textColor="@android:color/black"
                                     android:textColorHint="@color/txt_color3"
+                                    android:imeOptions="flagNoExtractUi"
                                     android:visibility="visible" />
 
                             </com.google.android.material.textfield.TextInputLayout>

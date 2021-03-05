@@ -1,6 +1,9 @@
 package com.flitzen.cng.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -69,9 +73,10 @@ public class QuatationFragment extends Fragment {
     ArrayList<QuotationListingModel.Result> arrayListTemp = new ArrayList<>();
     public QuotationListAdapter mAdapter;
     int quotationListType;
+    private BroadcastReceiver mMyBroadcastReceiver;
 
     public QuatationFragment(int quotationListType) {
-        this.quotationListType=quotationListType;
+        this.quotationListType = quotationListType;
     }
 
     @Nullable
@@ -79,9 +84,9 @@ public class QuatationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewQuotation = inflater.inflate(R.layout.fragment_quatation, null);
         ButterKnife.bind(this, viewQuotation);
-        if(Utils.isOnline(getActivity())){
+        if (Utils.isOnline(getActivity())) {
             getQuotation();
-        }else {
+        } else {
             new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
                     .setBackgroundColor(R.color.msg_fail)
                     .show();
@@ -93,7 +98,7 @@ public class QuatationFragment extends Fragment {
     private void performSomeOperations() {
 
         recyclerview_quotation_list.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        mAdapter = new QuotationListAdapter(getActivity(), arrayList);
+        mAdapter = new QuotationListAdapter(getContext(), arrayList, 0);
         recyclerview_quotation_list.setAdapter(mAdapter);
 
         img_close.setOnClickListener(new View.OnClickListener() {
@@ -135,8 +140,8 @@ public class QuatationFragment extends Fragment {
                     img_search.setVisibility(View.GONE);
 
                     for (int i = 0; i < arrayListTemp.size(); i++) {
-                        if(arrayListTemp.get(i).getQuotationTo()!=null && arrayListTemp.get(i).getQuotationId()!=null && arrayListTemp.get(i).getTotalAmount()!=null
-                                && arrayListTemp.get(i).getSalesPersonName()!=null){
+                        if (arrayListTemp.get(i).getQuotationTo() != null && arrayListTemp.get(i).getQuotationId() != null && arrayListTemp.get(i).getTotalAmount() != null
+                                && arrayListTemp.get(i).getSalesPersonName() != null) {
                             if (arrayListTemp.get(i).getQuotationTo().toLowerCase().contains(word)) {
                                 arrayList.add(arrayListTemp.get(i));
                             } else if (arrayListTemp.get(i).getQuotationId().toLowerCase().contains(word)) {
@@ -159,7 +164,7 @@ public class QuatationFragment extends Fragment {
         });
     }
 
-    public void getQuotation(){
+    public void getQuotation() {
         new Thread(new Runnable() {
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
@@ -211,5 +216,27 @@ public class QuatationFragment extends Fragment {
                 });
             }
         }).start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.mMyBroadcastReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equalsIgnoreCase(getResources().getString(R.string.remove_today_quotation))) {
+                    if (intent != null) {
+                        int position = intent.getIntExtra("position",0);
+                        arrayList.remove(position);
+                        arrayListTemp.remove(position);
+                    }
+                }
+            }
+        };
+        try {
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(this.mMyBroadcastReceiver, new IntentFilter(getResources().getString(R.string.remove_today_quotation)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

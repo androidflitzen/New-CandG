@@ -249,6 +249,7 @@
             android:layout_margin="@dimen/_16dp"
             android:backgroundTint="@color/colorPrimary"
             android:src="@drawable/ic_plus_sign_white"
+            app:borderWidth="0dp"
             app:tint="@color/white"
             />
     </RelativeLayout>
@@ -392,6 +393,7 @@
                             android:textSize="@dimen/_16sp"
                             android:textStyle="bold"
                             tools:ignore="MissingPrefix" />
+
                     </LinearLayout>
 
                     <LinearLayout

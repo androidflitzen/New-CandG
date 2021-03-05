@@ -33,6 +33,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -80,6 +81,7 @@ import com.flitzen.cng.model.SubCategoryModel;
 import com.flitzen.cng.service.AllProductDataService;
 import com.flitzen.cng.utils.CToast;
 import com.flitzen.cng.utils.Helper;
+import com.flitzen.cng.utils.PostPrams;
 import com.flitzen.cng.utils.SharePref;
 import com.flitzen.cng.utils.Utils;
 import com.flitzen.cng.utils.WebApi;
@@ -87,8 +89,10 @@ import com.flitzen.cng.utils.WrapContentLinearLayoutManager;
 import com.flitzen.cng.utils.WrapContentStaggedLayoutManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -193,9 +197,12 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
     View btnBoth;
     View btnSaveDelivery;
     View btn_create_quotation;
-    String saleType="0";
+    String saleType = "1";
     DecimalFormat formatterQty = new DecimalFormat(Helper.AMOUNT_FORMATE);
-    ArrayList<ProductListRequestModel> productListRequestModel=new ArrayList<>();
+    private String TAG = "SaleNewFragment";
+    boolean is_Eligible = true;
+    String sale_type = "";
+    String customer_name = "";
 
     @Nullable
     @Override
@@ -244,6 +251,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         recyclerviewOnSaleProducts.setAdapter(mAdapterOnSaleProducts);
 
         setUpItemTouchHelper();
+        setUpAnimationDecoratorHelper();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -377,6 +385,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         btnInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.playClickSound(getActivity());
                 if (arrayListCustomer.size() == 0) {
                     getCustomer(1, 2);
                 } else {
@@ -626,11 +635,11 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
                 if (position == 0) {
                     viewAccountSale.setVisibility(View.VISIBLE);
                     viewCashSale.setVisibility(View.GONE);
-                    saleType=String.valueOf(position);
+                    saleType = "1";
                 } else {
                     viewCashSale.setVisibility(View.VISIBLE);
                     viewAccountSale.setVisibility(View.GONE);
-                    saleType=String.valueOf(position);
+                    saleType = "2";
                 }
             }
         });
@@ -683,6 +692,9 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
 
         alertDialog.show();
     }
+
+    String paymentType = "", deliveryType = "";
+    double paidAMount = 0;
 
     public void selectCustomer(final TextView txt, final boolean isInvoice) {
         LayoutInflater localView = LayoutInflater.from(getActivity());
@@ -766,11 +778,11 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
     }
 
     public void createInvoiceDialog() {
-        /*paymentType = "";
+        paymentType = "";
         deliveryType = "";
 
-        sale_type = "";
-        is_Eligible = true;*/
+        sale_type = "1";
+        is_Eligible = true;
 
         LayoutInflater localView = LayoutInflater.from(getActivity());
         View promptsView = localView.inflate(R.layout.dialog_create_invoice, null);
@@ -801,7 +813,9 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         final View viewCashSale = promptsView.findViewById(R.id.view_create_inv_cash_sale);
         final ToggleSwitch toggleSwitch = promptsView.findViewById(R.id.toggle_create_inv);
         final TextInputEditText txtSelectCustomer = promptsView.findViewById(R.id.txt_create_inv_select_cutomer);
+        final TextInputLayout txtSelectCustomerMain = promptsView.findViewById(R.id.txt_create_inv_select_cutomer_Main);
         final TextInputEditText edtCustomerName = promptsView.findViewById(R.id.edt_create_inv_select_cutomer);
+        final TextInputLayout edtCustomerNameMain = promptsView.findViewById(R.id.edt_create_inv_select_cutomer_main);
 
         final TextInputEditText edtPo = promptsView.findViewById(R.id.edt_create_inv_po);
         final TextInputEditText edtAddress = promptsView.findViewById(R.id.edt_create_inv_address);
@@ -831,6 +845,486 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         txt_credit_days = promptsView.findViewById(R.id.txt_credit_days);
         txt_closing_balance = promptsView.findViewById(R.id.txt_closing_balance);
         txtSelectSalesPerson.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        txtSelectSalesPerson.setTag(sharedPreferences.getString(SharePref.USERID, ""));
+        txtSelectSalesPerson.setText(sharedPreferences.getString(SharePref.NAME, "").toUpperCase());
+        txtSelectSalesPerson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.playClickSound(getActivity());
+                if (arrayListSalesPerson.size() == 0) getSalesPersons(1, txtSelectSalesPerson);
+                else selectSalesPerson(txtSelectSalesPerson);
+            }
+        });
+
+        paidAMount = Double.parseDouble(txtGrandTotal.getText().toString().trim().substring(1, txtGrandTotal.getText().toString().trim().length()).replace(",", ""));
+        edtPaidAmount.setText(txtGrandTotal.getText().toString().trim().substring(1, txtGrandTotal.getText().toString().trim().length()).replace(",", ""));
+
+        rdbCollection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b) {
+                    btnSaveDelivery.setVisibility(View.GONE);
+                    deliveryType = "1";
+                }
+            }
+        });
+        rdbDelivery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b) {
+                    if (is_Eligible) {
+                        btnSaveDelivery.setVisibility(View.VISIBLE);
+                        deliveryType = "2";
+                    }
+                }
+            }
+        });
+        rdbCash.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b)
+                    paymentType = "0";
+                //0= Cash, 1 = Card, 2 = Debit 3= Online, 4 = cheque, 5 =other
+            }
+        });
+
+        rdbCard.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b)
+                    paymentType = "1";
+            }
+        });
+        rdbDebit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b)
+                    paymentType = "2";
+            }
+        });
+        rdbOnline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b)
+                    paymentType = "3";
+            }
+        });
+        rdbCheque.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b)
+                    paymentType = "4";
+            }
+        });
+        rdbOther.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Utils.playClickSound(getActivity());
+                if (b)
+                    paymentType = "5";
+            }
+        });
+
+        edtPaidAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().length() > 0) {
+                    double enteredAmount = Double.parseDouble(edtPaidAmount.getText().toString().trim());
+                    double returnAmount = enteredAmount - paidAMount;
+                    txtReturnAmount.setText(formatter.format(returnAmount));
+                    if (returnAmount == 0) {
+                        viewReturnAmount.setVisibility(View.GONE);
+                    } else {
+                        viewReturnAmount.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    viewReturnAmount.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        toggleSwitch.setOnToggleSwitchChangeListener(new BaseToggleSwitch.OnToggleSwitchChangeListener() {
+            @Override
+            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
+                Utils.playClickSound(getActivity());
+                if (position == 0) {
+                    viewAccountSale.setVisibility(View.VISIBLE);
+                    txtSelectCustomer.setVisibility(View.VISIBLE);
+                    txtSelectCustomerMain.setVisibility(View.VISIBLE);
+                    viewCashSale.setVisibility(View.GONE);
+                    edtCustomerName.setVisibility(View.GONE);
+                    edtCustomerNameMain.setVisibility(View.GONE);
+                    sale_type = "1";
+
+                    if (!is_Eligible) {
+                        ll_not_eligible.setVisibility(View.VISIBLE);
+
+                        btnSave.setVisibility(View.GONE);
+                        btnSavePrint.setVisibility(View.GONE);
+                        btnSaveDelivery.setVisibility(View.GONE);
+                        btnBoth.setVisibility(View.GONE);
+
+                        btn_create_quotation.setVisibility(View.VISIBLE);
+
+                    } else {
+
+                        ll_not_eligible.setVisibility(View.GONE);
+
+                        btnSave.setVisibility(View.VISIBLE);
+                        btnSavePrint.setVisibility(View.VISIBLE);
+                        btnSaveDelivery.setVisibility(View.GONE);
+                        btnBoth.setVisibility(View.VISIBLE);
+
+                        btn_create_quotation.setVisibility(View.GONE);
+                    }
+                } else {
+                    edtCustomerName.setVisibility(View.VISIBLE);
+                    edtCustomerNameMain.setVisibility(View.VISIBLE);
+                    viewCashSale.setVisibility(View.VISIBLE);
+                    //viewAccountSale.setVisibility(View.GONE);
+                    txtSelectCustomer.setVisibility(View.GONE);
+                    txtSelectCustomerMain.setVisibility(View.GONE);
+                    sale_type = "2";
+
+                    ll_not_eligible.setVisibility(View.GONE);
+
+                    btnSave.setVisibility(View.VISIBLE);
+                    btnSavePrint.setVisibility(View.VISIBLE);
+                    btnSaveDelivery.setVisibility(View.GONE);
+                    btnBoth.setVisibility(View.VISIBLE);
+
+                    btn_create_quotation.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
+        txtSelectCustomer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                selectCustomer(txtSelectCustomer, true);
+            }
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                if (toggleSwitch.getCheckedTogglePosition() == 0) {
+                    if (txtSelectCustomer.getText().toString().trim().isEmpty()) {
+                        new CToast(getContext()).simpleToast("Select Customer", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+
+                        Map<String, String> params = new HashMap<>();
+                        customer_name = txtSelectCustomer.getText().toString();
+                        params.put("customer_id", txtSelectCustomer.getTag().toString());
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+
+                        alertDialog.dismiss();
+                        createInvoice(params, false, false, false);
+                    }
+
+                } else {
+                    if (paymentType == null || paymentType.isEmpty() || paymentType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Payment Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (edtPaidAmount.getText().toString().trim().isEmpty()) {
+                        edtPaidAmount.setError("Enter Paid Amount");
+                        edtPaidAmount.requestFocus();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        //if (edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+                        Map<String, String> params = new HashMap<>();
+                        customer_name = edtCustomerName.getText().toString().trim();
+                        params.put("customer_name", edtCustomerName.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("due", txtReturnAmount.getText().toString().trim().replace(",", ""));
+                        params.put("payment_mode", paymentType);
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("paid", edtPaidAmount.getText().toString().trim());
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+
+                        alertDialog.dismiss();
+                        createInvoice(params, false, false, false);
+                    }
+                }
+            }
+        });
+
+        btnSavePrint.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                if (toggleSwitch.getCheckedTogglePosition() == 0) {
+                    if (txtSelectCustomer.getText().toString().trim().isEmpty()) {
+                        new CToast(getContext()).simpleToast("Select Customer", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+
+                        Map<String, String> params = new HashMap<>();
+                        customer_name = txtSelectCustomer.getText().toString();
+                        params.put("customer_id", txtSelectCustomer.getTag().toString());
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+                        alertDialog.dismiss();
+                        createInvoice(params, true, false, false);
+                    }
+
+                } else {
+                    if (paymentType == null || paymentType.isEmpty() || paymentType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Payment Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (edtPaidAmount.getText().toString().trim().isEmpty()) {
+                        edtPaidAmount.setError("Enter Paid Amount");
+                        edtPaidAmount.requestFocus();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+
+                        Map<String, String> params = new HashMap<>();
+                        customer_name = edtCustomerName.getText().toString().trim();
+                        params.put("customer_name", edtCustomerName.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("due", txtReturnAmount.getText().toString().trim().replace(",", ""));
+                        params.put("payment_mode", paymentType);
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("paid", edtPaidAmount.getText().toString().trim());
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+                        alertDialog.dismiss();
+                        createInvoice(params, true, false, false);
+                    }
+                }
+            }
+        });
+
+
+        btnSaveDelivery.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                if (toggleSwitch.getCheckedTogglePosition() == 0) {
+                    if (txtSelectCustomer.getText().toString().trim().isEmpty()) {
+                        new CToast(getContext()).simpleToast("Select Customer", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+
+                        Map<String, String> params = new HashMap<>();
+                        params.put("customer_id", txtSelectCustomer.getTag().toString());
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+                        alertDialog.dismiss();
+                        createInvoice(params, false, true, false);
+
+                    }
+                } else {
+                    if (paymentType == null || paymentType.isEmpty() || paymentType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Payment Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (edtPaidAmount.getText().toString().trim().isEmpty()) {
+                        edtPaidAmount.setError("Enter Paid Amount");
+                        edtPaidAmount.requestFocus();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("customer_name", edtCustomerName.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("due", txtReturnAmount.getText().toString().trim().replace(",", ""));
+                        params.put("payment_mode", paymentType);
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("paid", edtPaidAmount.getText().toString().trim());
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+                        alertDialog.dismiss();
+                        createInvoice(params, false, true, false);
+                    }
+                }
+            }
+        });
+
+        btnBoth.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                if (toggleSwitch.getCheckedTogglePosition() == 0) {
+                    if (txtSelectCustomer.getText().toString().trim().isEmpty()) {
+                        new CToast(getContext()).simpleToast("Select Customer", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        //if (edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+
+                        Map<String, String> params = new HashMap<>();
+                        params.put("customer_id", txtSelectCustomer.getTag().toString());
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+
+                        alertDialog.dismiss();
+                        createInvoice(params, false, false, true);
+                    }
+                } else {
+                    if (paymentType == null || paymentType.isEmpty() || paymentType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Payment Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (edtPaidAmount.getText().toString().trim().isEmpty()) {
+                        edtPaidAmount.setError("Enter Paid Amount");
+                        edtPaidAmount.requestFocus();
+                        return;
+                    } else if (deliveryType == null || deliveryType.isEmpty() || deliveryType.equals("null")) {
+                        Toast.makeText(getActivity(), "Select Delivery Type", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (deliveryType.equals("2") && edtAddress.getText().toString().trim().isEmpty()) {
+                        edtAddress.setError("Enter Delivery Address");
+                        edtAddress.requestFocus();
+                        return;
+                    } else {
+
+                        Map<String, String> params = new HashMap<>();
+                        params.put("customer_name", edtCustomerName.getText().toString().trim());
+                        params.put("sales_type", sale_type);
+                        params.put("due", txtReturnAmount.getText().toString().trim().replace(",", ""));
+                        params.put("payment_mode", paymentType);
+                        params.put("purchase_no", edtPo.getText().toString().trim());
+                        params.put("delivery_type", deliveryType);
+                        params.put("delivery_address", edtAddress.getText().toString().trim());
+                        params.put("delivery_pincode", edtPINCode.getText().toString().trim());
+                        params.put("delivery_phone_number", edtPhone.getText().toString().trim());
+                        params.put("payment_amount", edtPaidAmount.getText().toString().trim());
+                        params.put("invoice_notes", edtNote.getText().toString().trim());
+                        params.put("sales_person_id", txtSelectSalesPerson.getTag().toString());
+
+                        alertDialog.dismiss();
+                        createInvoice(params, false, false, true);
+                    }
+                }
+            }
+        });
+
+        btn_create_quotation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                createQuatation(toggleSwitch.getCheckedTogglePosition(), txtSelectCustomer.getTag().toString(), edtCustomerName.getText().toString().trim(), false
+                        , txtSelectSalesPerson.getTag().toString(), edtPo.getText().toString());
+                alertDialog.dismiss();
+            }
+        });
     }
 
 
@@ -852,99 +1346,187 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    public void createInvoice(Map<String, String> params, final boolean isPrintReceipt,
+                              final boolean isDeliveryNote, final boolean isPrintBoth) {
+        SharedPreferences sharedPreferences = SharePref.getSharePref(getActivity());
+        showPRD();
+        params.put("api_key", getResources().getString(R.string.api_key));
+        params.put("user_id", sharedPreferences.getString(SharePref.USERID, ""));
+        params.put("total_amount", txtTotalPrice.getText().toString().trim().substring(1, txtTotalPrice.getText().toString().trim().length()).replace(",", ""));
+        params.put("final_total", txtGrandTotal.getText().toString().trim().substring(1, txtGrandTotal.getText().toString().trim().length()).replace(",", ""));
+        params.put("vat_amount", txtTaxAmount.getText().toString().trim().substring(1, txtTaxAmount.getText().toString().trim().length()).replace(",", ""));
+        params.put("discount_amount", txtDiscountAmount.getText().toString().trim().substring(1, txtDiscountAmount.getText().toString().trim().length()).replace(",", ""));
+        params.put("zero_vat_total", txt_excluded_vat_amount.getText().toString().trim().substring(1, txt_excluded_vat_amount.getText().toString().trim().length()));
+
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < arrayListOnSale.size(); i++) {
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("product_id", arrayListOnSale.get(i).getpId());
+                jsonObject.put("product_price", String.valueOf(arrayListOnSale.get(i).getpPrice()));
+                jsonObject.put("product_qty", formatterQty.format(arrayListOnSale.get(i).getpQty()));
+                jsonObject.put("product_discount_percentage", String.valueOf(arrayListOnSale.get(i).getDiscount()));
+                Double discount = (arrayListOnSale.get(i).getpQty() * arrayListOnSale.get(i).getpPrice()) / 100 * arrayListOnSale.get(i).getDiscount();
+                discount = Double.parseDouble(formatter.format(discount).replace(",", ""));
+                Double total = (arrayListOnSale.get(i).getpQty() * Double.valueOf(arrayListOnSale.get(i).getpPrice())) - discount;
+                jsonObject.put("product_final_price", formatter.format(total).replace(",", ""));
+                jsonArray.put(jsonObject);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        params.put("invoice_data", jsonArray.toString());
+
+        WebApi webApi = CandG.getClient().create(WebApi.class);
+        Log.d(TAG, "Add Invoice param " + params.toString());
+        Call<AddQuotationModel> call = webApi.addInvoiceApi(params);
+        Log.d(TAG, "Add Invoice API  " + call.request().toString());
+        call.enqueue(new Callback<AddQuotationModel>() {
+            @Override
+            public void onResponse(Call<AddQuotationModel> call, Response<AddQuotationModel> response) {
+                hidePRD();
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus() == 1) {
+                        mediaPlayer.start();
+                        new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_success)
+                                .show();
+
+                        arrayListOnSale.clear();
+                        mAdapterOnSaleProducts.notifyDataSetChanged();
+                        setTotal();
+
+                        //TODO PDF link generation api
+                        if (isPrintReceipt) {
+
+                        }
+                        //TODO PDF link generation api
+                        else if (isDeliveryNote) {
+
+                        }
+                        //TODO PDF link generation api
+                        else if (isPrintBoth) {
+
+                        }
+
+                    } else {
+                        new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                } else {
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddQuotationModel> call, Throwable t) {
+                hidePRD();
+                new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                        .setBackgroundColor(R.color.msg_fail)
+                        .show();
+
+            }
+        });
+    }
+
     public void createQuatation(final int type, final String customerId, final String customerName,
                                 final boolean isPrintReceipt, final String salesPerson, final String PO) {
         try {
+            showPRD();
             Map<String, String> params = new HashMap<>();
-            new Thread(new Runnable() {
-                public void run() {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            showPRD();
-                            productListRequestModel.clear();
-                            for (int i = 0; i < arrayListOnSale.size(); i++) {
+            params.put("api_key", getResources().getString(R.string.api_key));
+            params.put("user_id", sharedPreferences.getString(SharePref.USERID, ""));
+            params.put("customer_id", customerId);
+            params.put("customer_name", customerName);
+            params.put("sales_person_id", salesPerson);
+            params.put("total_amount", txtTotalPrice.getText().toString().trim().substring(1, txtTotalPrice.getText().toString().trim().length()).replace(",", ""));
+            params.put("vat_amount", txtTaxAmount.getText().toString().trim().substring(1, txtTaxAmount.getText().toString().trim().length()).replace(",", ""));
+            params.put("final_total", txtGrandTotal.getText().toString().trim().substring(1, txtGrandTotal.getText().toString().trim().length()).replace(",", ""));
+            params.put("sales_type", saleType);
+            params.put("purchase_no", PO);
+            params.put("discount_amount", txtDiscountAmount.getText().toString().trim().substring(1, txtDiscountAmount.getText().toString().trim().length()).replace(",", ""));
+            params.put("zero_vat_total", txt_excluded_vat_amount.getText().toString().trim().substring(1, txt_excluded_vat_amount.getText().toString().trim().length()));
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < arrayListOnSale.size(); i++) {
 
-                                Double discount = (arrayListOnSale.get(i).getpQty() * arrayListOnSale.get(i).getpPrice()) / 100 * arrayListOnSale.get(i).getDiscount();
-                                discount = Double.parseDouble(formatter.format(discount).replace(",", ""));
-                                Double total = (arrayListOnSale.get(i).getpQty() * Double.valueOf(arrayListOnSale.get(i).getpPrice())) - discount;
+                Double discount = (arrayListOnSale.get(i).getpQty() * arrayListOnSale.get(i).getpPrice()) / 100 * arrayListOnSale.get(i).getDiscount();
+                discount = Double.parseDouble(formatter.format(discount).replace(",", ""));
+                Double total = (arrayListOnSale.get(i).getpQty() * Double.valueOf(arrayListOnSale.get(i).getpPrice())) - discount;
 
-                                productListRequestModel.add(new ProductListRequestModel(arrayListOnSale.get(i).getpId(),String.valueOf(arrayListOnSale.get(i).getpPrice())
-                                        ,formatterQty.format(arrayListOnSale.get(i).getpQty()), String.valueOf(arrayListOnSale.get(i).getDiscount()),String.valueOf(total).replace(",", "")));
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("product_id", arrayListOnSale.get(i).getpId());
+                    jsonObject.put("product_price", String.valueOf(arrayListOnSale.get(i).getpPrice()));
+                    jsonObject.put("product_qty", formatterQty.format(arrayListOnSale.get(i).getpQty()));
+                    jsonObject.put("product_discount_percentage", String.valueOf(arrayListOnSale.get(i).getDiscount()));
+                    jsonObject.put("product_final_price", String.valueOf(total).replace(",", ""));
+                    jsonArray.put(jsonObject);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
-
-
-                              /*  params.put("product_id[" + i + "]", arrayListOnSale.get(i).getpId());
-                                params.put("product_price[" + i + "]", String.valueOf(arrayListOnSale.get(i).getpPrice()));
-                                params.put("product_qty[" + i + "]", formatterQty.format(arrayListOnSale.get(i).getpQty()));
-                                params.put("product_discount_percentage[" + i + "]", String.valueOf(arrayListOnSale.get(i).getDiscount()));
-                                Double discount = (arrayListOnSale.get(i).getpQty() * arrayListOnSale.get(i).getpPrice()) / 100 * arrayListOnSale.get(i).getDiscount();
-                                discount = Double.parseDouble(formatter.format(discount).replace(",", ""));
-                                Double total = (arrayListOnSale.get(i).getpQty() * Double.valueOf(arrayListOnSale.get(i).getpPrice())) - discount;
-                                params.put("product_final_price[" + i + "]", String.valueOf(total).replace(",", ""));*/
-
-                            }
-                        }
-                    });
-
-                    WebApi webApi = CandG.getClient().create(WebApi.class);
-                    Call<AddQuotationModel> call = webApi.addQuotationApi(getResources().getString(R.string.api_key), sharedPreferences.getString(SharePref.USERID, ""),customerId,customerName
-                            ,salesPerson,txtTotalPrice.getText().toString().trim().substring(1, txtTotalPrice.getText().toString().trim().length()).replace(",", "")
-                            ,txtTaxAmount.getText().toString().trim().substring(1, txtTaxAmount.getText().toString().trim().length()).replace(",", "")
-                            ,txtGrandTotal.getText().toString().trim().substring(1, txtGrandTotal.getText().toString().trim().length()).replace(",", ""), saleType,productListRequestModel);
-                    System.out.println("========call  "+call.request().toString());
-                    call.enqueue(new Callback<AddQuotationModel>() {
-                        @Override
-                        public void onResponse(Call<AddQuotationModel> call, Response<AddQuotationModel> response) {
-                            hidePRD();
-                            if (response.isSuccessful()) {
-                                if(response.body().getStatus()==1){
-
-                                    new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
-                                            .setBackgroundColor(R.color.msg_success)
-                                            .show();
-
-                                    quotationPlayer.start();
-                                    arrayListOnSale.clear();
-                                    mAdapterOnSaleProducts.notifyDataSetChanged();
-                                    setTotal();
-
-                                    //TODO PDF link generation api
-                                    if (isPrintReceipt) {
-
-                                    }
-
-                                    txtHomePath.setVisibility(View.VISIBLE);
-                                    txtSubCatPath.setVisibility(View.GONE);
-                                    txtProductPath.setVisibility(View.GONE);
-                                    recyclerviewAllProducts.setVisibility(View.GONE);
-                                    recyclerviewSubCategory.setVisibility(View.GONE);
-                                    recyclerviewCategory.setVisibility(View.VISIBLE);
-
-                                }else {
-                                    new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
-                                            .setBackgroundColor(R.color.msg_fail)
-                                            .show();
-                                }
-                            } else {
-                                new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
-                                        .setBackgroundColor(R.color.msg_fail)
-                                        .show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<AddQuotationModel> call, Throwable t) {
-                            hidePRD();
-                            new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
-                                    .setBackgroundColor(R.color.msg_fail)
+            params.put("quotation_data", jsonArray.toString());
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Log.d(TAG, "Add Quotation param " + params.toString());
+            Call<AddQuotationModel> call = webApi.addQuotationApi(params);
+            Log.d(TAG, "Add Quotation API  " + call.request().toString());
+            call.enqueue(new Callback<AddQuotationModel>() {
+                @Override
+                public void onResponse(Call<AddQuotationModel> call, Response<AddQuotationModel> response) {
+                    hidePRD();
+                    if (response.isSuccessful()) {
+                        if (response.body().getStatus() == 1) {
+                            new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_success)
                                     .show();
 
+                            quotationPlayer.start();
+                            arrayListOnSale.clear();
+                            mAdapterOnSaleProducts.notifyDataSetChanged();
+                            setTotal();
+
+                            //TODO PDF link generation api
+                            if (isPrintReceipt) {
+
+                            }
+
+                            txtHomePath.setVisibility(View.VISIBLE);
+                            txtSubCatPath.setVisibility(View.GONE);
+                            txtProductPath.setVisibility(View.GONE);
+                            recyclerviewAllProducts.setVisibility(View.GONE);
+                            recyclerviewSubCategory.setVisibility(View.GONE);
+                            recyclerviewCategory.setVisibility(View.VISIBLE);
+
+                        } else {
+                            new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
                         }
-                    });
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
-            }).start();
+
+                @Override
+                public void onFailure(Call<AddQuotationModel> call, Throwable t) {
+                    hidePRD();
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+
+                }
+            });
         } catch (Exception e) {
+            hidePRD();
             new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
                     .setBackgroundColor(R.color.msg_fail)
                     .show();
@@ -953,6 +1535,102 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
 
     public void createCreditNote(final int type, final String customerId, final String customerName,
                                  final boolean isPrintReceipt, final String salesPerson, final String PO) {
+
+        try {
+            showPRD();
+            Map<String, String> params = new HashMap<>();
+            params.put("api_key", getResources().getString(R.string.api_key));
+            params.put("user_id", sharedPreferences.getString(SharePref.USERID, ""));
+            params.put("customer_id", customerId);
+            params.put("customer_name", customerName);
+            params.put("sales_person_id", salesPerson);
+            params.put("total_amount", txtTotalPrice.getText().toString().trim().substring(1, txtTotalPrice.getText().toString().trim().length()).replace(",", ""));
+            params.put("vat_amount", txtTaxAmount.getText().toString().trim().substring(1, txtTaxAmount.getText().toString().trim().length()).replace(",", ""));
+            params.put("final_total", txtGrandTotal.getText().toString().trim().substring(1, txtGrandTotal.getText().toString().trim().length()).replace(",", ""));
+            params.put("sales_type", saleType);
+            params.put("purchase_no", PO);
+            params.put("discount_amount", txtDiscountAmount.getText().toString().trim().substring(1, txtDiscountAmount.getText().toString().trim().length()).replace(",", ""));
+            params.put("zero_vat_total", txt_excluded_vat_amount.getText().toString().trim().substring(1, txt_excluded_vat_amount.getText().toString().trim().length()));
+
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < arrayListOnSale.size(); i++) {
+
+                Double discount = (arrayListOnSale.get(i).getpQty() * arrayListOnSale.get(i).getpPrice()) / 100 * arrayListOnSale.get(i).getDiscount();
+                discount = Double.parseDouble(formatter.format(discount).replace(",", ""));
+                Double total = (arrayListOnSale.get(i).getpQty() * Double.valueOf(arrayListOnSale.get(i).getpPrice())) - discount;
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("product_id", arrayListOnSale.get(i).getpId());
+                    jsonObject.put("product_price", String.valueOf(arrayListOnSale.get(i).getpPrice()));
+                    jsonObject.put("product_qty", formatterQty.format(arrayListOnSale.get(i).getpQty()));
+                    jsonObject.put("product_discount_percentage", String.valueOf(arrayListOnSale.get(i).getDiscount()));
+                    jsonObject.put("product_final_price", String.valueOf(total).replace(",", ""));
+                    jsonArray.put(jsonObject);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            params.put("credit_note_data", jsonArray.toString());
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Log.d(TAG, "Add CreditNote param " + params.toString());
+            Call<AddQuotationModel> call = webApi.addCreditNotesApi(params);
+            Log.d(TAG, "Add CreditNote API  " + call.request().toString());
+            call.enqueue(new Callback<AddQuotationModel>() {
+                @Override
+                public void onResponse(Call<AddQuotationModel> call, Response<AddQuotationModel> response) {
+                    hidePRD();
+                    if (response.isSuccessful()) {
+                        if (response.body().getStatus() == 1) {
+                            new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_success)
+                                    .show();
+                            creditNotePlayer.start();
+                            arrayListOnSale.clear();
+                            mAdapterOnSaleProducts.notifyDataSetChanged();
+                            setTotal();
+
+                            //TODO PDF link generation api
+                            if (isPrintReceipt) {
+
+                            }
+
+                            txtHomePath.setVisibility(View.VISIBLE);
+                            txtSubCatPath.setVisibility(View.GONE);
+                            txtProductPath.setVisibility(View.GONE);
+                            recyclerviewAllProducts.setVisibility(View.GONE);
+                            recyclerviewSubCategory.setVisibility(View.GONE);
+                            recyclerviewCategory.setVisibility(View.VISIBLE);
+
+                        } else {
+                            new CToast(getActivity()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
+                        }
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AddQuotationModel> call, Throwable t) {
+                    hidePRD();
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+
+                }
+            });
+        } catch (Exception e) {
+            hidePRD();
+            new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
+        }
     }
 
     @Override
@@ -1279,6 +1957,77 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             };
             ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
             mItemTouchHelper.attachToRecyclerView(recyclerviewOnSaleProducts);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setUpAnimationDecoratorHelper() {
+        try {
+            recyclerviewOnSaleProducts.addItemDecoration(new RecyclerView.ItemDecoration() {
+
+                Drawable background;
+                boolean initiated;
+
+                private void init() {
+                    background = new ColorDrawable(Color.WHITE);
+                    initiated = true;
+                }
+
+                @Override
+                public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+
+                    if (!initiated) {
+                        init();
+                    }
+
+                    if (parent.getItemAnimator().isRunning()) {
+
+                        View lastViewComingDown = null;
+                        View firstViewComingUp = null;
+
+                        int left = 0;
+                        int right = parent.getWidth();
+
+                        int top = 0;
+                        int bottom = 0;
+
+                        // find relevant translating views
+                        int childCount = parent.getLayoutManager().getChildCount();
+                        for (int i = 0; i < childCount; i++) {
+                            View child = parent.getLayoutManager().getChildAt(i);
+                            if (child.getTranslationY() < 0) {
+                                // view is coming down
+                                lastViewComingDown = child;
+                            } else if (child.getTranslationY() > 0) {
+                                // view is coming up
+                                if (firstViewComingUp == null) {
+                                    firstViewComingUp = child;
+                                }
+                            }
+                        }
+
+                        if (lastViewComingDown != null && firstViewComingUp != null) {
+                            // views are coming down AND going up to fill the void
+                            top = lastViewComingDown.getBottom() + (int) lastViewComingDown.getTranslationY();
+                            bottom = firstViewComingUp.getTop() + (int) firstViewComingUp.getTranslationY();
+                        } else if (lastViewComingDown != null) {
+                            // views are going down to fill the void
+                            top = lastViewComingDown.getBottom() + (int) lastViewComingDown.getTranslationY();
+                            bottom = lastViewComingDown.getBottom();
+                        } else if (firstViewComingUp != null) {
+                            // views are coming up to fill the void
+                            top = firstViewComingUp.getTop();
+                            bottom = firstViewComingUp.getTop() + (int) firstViewComingUp.getTranslationY();
+                        }
+
+                        background.setBounds(left, top, right, bottom);
+                        background.draw(c);
+
+                    }
+                    super.onDraw(c, parent, state);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

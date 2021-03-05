@@ -59,9 +59,9 @@ public class SaleSubCategory_Adapter extends RecyclerView.Adapter<SaleSubCategor
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mainView = (CardView) itemView.findViewById(R.id.view_salesubcat_main);
-            txtName = (TextView) itemView.findViewById(R.id.txt_salesubcat_a_name);
-            txtFirstChar = (TextView) itemView.findViewById(R.id.txt_salepro_first_char);
+            mainView =  itemView.findViewById(R.id.view_salesubcat_main);
+            txtName =  itemView.findViewById(R.id.txt_salesubcat_a_name);
+            txtFirstChar =  itemView.findViewById(R.id.txt_salepro_first_char);
         }
     }
 

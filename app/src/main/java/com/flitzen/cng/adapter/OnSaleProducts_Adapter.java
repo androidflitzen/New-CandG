@@ -83,10 +83,10 @@ public class OnSaleProducts_Adapter extends RecyclerView.Adapter<OnSaleProducts_
             super(itemView);
 
             mainView = itemView.findViewById(R.id.view_onsale_a_main);
-            txtRoots = (TextView) itemView.findViewById(R.id.txt_onsale_a_roots);
-            txtName = (TextView) itemView.findViewById(R.id.txt_onsale_a_name);
-            txtQty = (TextView) itemView.findViewById(R.id.txt_onsale_a_qty);
-            txtPrice = (TextView) itemView.findViewById(R.id.txt_onsale_a_price);
+            txtRoots =  itemView.findViewById(R.id.txt_onsale_a_roots);
+            txtName =  itemView.findViewById(R.id.txt_onsale_a_name);
+            txtQty =  itemView.findViewById(R.id.txt_onsale_a_qty);
+            txtPrice =  itemView.findViewById(R.id.txt_onsale_a_price);
         }
     }
 
@@ -104,19 +104,19 @@ public class OnSaleProducts_Adapter extends RecyclerView.Adapter<OnSaleProducts_
         alertDialogBuilder.setView(promptsView);
         final android.app.AlertDialog alertDialog = alertDialogBuilder.create();
 
-        TextView txtTitle = (TextView) promptsView.findViewById(R.id.txt_on_sale_product_title);
-        TextView txtSubCatName = (TextView) promptsView.findViewById(R.id.txt_on_sale_sub_cat_title);
-        final TextView txtEffectivePrice = (TextView) promptsView.findViewById(R.id.txt_on_sale_product_effectiveprice);
-        Button btnCancel = (Button) promptsView.findViewById(R.id.btn_on_sale_product_cancel);
-        Button btnChange = (Button) promptsView.findViewById(R.id.btn_on_sale_product_change);
+        TextView txtTitle =  promptsView.findViewById(R.id.txt_on_sale_product_title);
+        TextView txtSubCatName =  promptsView.findViewById(R.id.txt_on_sale_sub_cat_title);
+        final TextView txtEffectivePrice =  promptsView.findViewById(R.id.txt_on_sale_product_effectiveprice);
+        Button btnCancel =  promptsView.findViewById(R.id.btn_on_sale_product_cancel);
+        Button btnChange =  promptsView.findViewById(R.id.btn_on_sale_product_change);
         final TextInputEditText inputPrice =  promptsView.findViewById(R.id.input_on_sale_product_price);
         final TextInputEditText inputDiscount =  promptsView.findViewById(R.id.input_on_sale_product_disocount);
         final TextInputEditText inputQty =  promptsView.findViewById(R.id.input_on_sale_product_qty);
 
         txtTitle.setText(itemsList.get(position).getpName());
         txtSubCatName.setText(itemsList.get(position).getSubcatName());
-        final CardView viewMinus = (CardView) promptsView.findViewById(R.id.viewMinus);
-        final CardView viewPlus = (CardView) promptsView.findViewById(R.id.viewPlus);
+        final CardView viewMinus =  promptsView.findViewById(R.id.viewMinus);
+        final CardView viewPlus =  promptsView.findViewById(R.id.viewPlus);
         viewMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

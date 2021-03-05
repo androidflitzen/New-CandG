@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 public class CreditNote_ListFragment extends Fragment {
 
     View viewCreditNotes;
+    public static final String TODAY = "TODAY", WEEK = "THIS WEEK", MONTH = "THIS MONTH", ALL = "ALL INVOICE";
 
     @BindView(R.id.tabview_creditnote)
     TabLayout tabView;
@@ -41,10 +42,10 @@ public class CreditNote_ListFragment extends Fragment {
         viewPager.setOffscreenPageLimit(4);
 
         List<Fragment> mFragments = new ArrayList<>();
-        mFragments .add(new CreditNotesFragment());
-        mFragments .add(new CreditNotesFragment());
-        mFragments .add(new CreditNotesFragment());
-        mFragments .add(new CreditNotesFragment());
+        mFragments .add(new CreditNotesFragmentToday());
+        mFragments .add(new CreditNotesWeekFragment());
+        mFragments .add(new CreditNotesMonthFragment());
+        mFragments .add(new CreditNotesYearFragment());
         InvoicePagerAdapter mAdapter = new InvoicePagerAdapter(getActivity(), mFragments);
         viewPager.setAdapter(mAdapter);
 

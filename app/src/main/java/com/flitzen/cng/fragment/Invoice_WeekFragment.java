@@ -241,6 +241,7 @@ public class Invoice_WeekFragment extends Fragment {
                                 }
 
                                 textViewMsg.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
                                 viewInvoice.setVisibility(View.VISIBLE);
                                 for (int i = 0; i < response.body().getData().size(); i++) {
                                     arrayList.add(response.body().getData().get(i));
@@ -258,6 +259,7 @@ public class Invoice_WeekFragment extends Fragment {
 
                             } else {
                                 textViewMsg.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
                                 viewInvoice.setVisibility(View.GONE);
                             }
                         }else {

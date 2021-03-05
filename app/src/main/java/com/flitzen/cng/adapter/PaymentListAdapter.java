@@ -151,15 +151,15 @@ public class PaymentListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public ViewHolderRow(View v) {
             super(v);
-            cardviewSalesType = (CardView) itemView.findViewById(R.id.cardview_payment_a_sales_type);
-            imgSalesType = (ImageView) itemView.findViewById(R.id.img_payment_a_sales_type);
-            txtSalesType = (TextView) itemView.findViewById(R.id.txt_payment_a_sales_type);
-            txtCname = (TextView) itemView.findViewById(R.id.txt_payment_a_cname);
-            txtDate = (TextView) itemView.findViewById(R.id.txt_payment_a_date);
-            txtAmount = (TextView) itemView.findViewById(R.id.txt_payment_a_amount);
-            txtReference = (TextView) itemView.findViewById(R.id.txt_payment_a_refrence);
-            txtType = (TextView) itemView.findViewById(R.id.txt_payment_a_type);
-            txtPaymentType = (TextView) itemView.findViewById(R.id.txt_payment_a_payment_type);
+            cardviewSalesType =  itemView.findViewById(R.id.cardview_payment_a_sales_type);
+            imgSalesType =  itemView.findViewById(R.id.img_payment_a_sales_type);
+            txtSalesType =  itemView.findViewById(R.id.txt_payment_a_sales_type);
+            txtCname =  itemView.findViewById(R.id.txt_payment_a_cname);
+            txtDate =  itemView.findViewById(R.id.txt_payment_a_date);
+            txtAmount =  itemView.findViewById(R.id.txt_payment_a_amount);
+            txtReference =  itemView.findViewById(R.id.txt_payment_a_refrence);
+            txtType =  itemView.findViewById(R.id.txt_payment_a_type);
+            txtPaymentType =  itemView.findViewById(R.id.txt_payment_a_payment_type);
             mainView=itemView.findViewById(R.id.view_payment_a_main);
         }
 

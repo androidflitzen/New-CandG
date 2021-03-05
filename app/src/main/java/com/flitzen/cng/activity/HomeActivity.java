@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flitzen.cng.R;
+import com.flitzen.cng.fragment.ComingSoonFragment;
 import com.flitzen.cng.fragment.CreditNote_ListFragment;
 import com.flitzen.cng.fragment.CustomersFragment;
 import com.flitzen.cng.fragment.Invoice_ListFragment;
@@ -148,7 +149,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             backPressStatus = 1;
         } else if (id == R.id.nav_cusromers) {
             tvTitle.setText(getResources().getString(R.string.customers));
-            replaceFragment(new CustomersFragment());
+            //replaceFragment(new CustomersFragment());
+             replaceFragment(new ComingSoonFragment());
             backPressStatus = 1;
         } else if (id == R.id.nav_cr_notes) {
             //getSupportActionBar().setTitle(getResources().getString(R.string.credit_notes));
@@ -158,7 +160,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_payment) {
             //getSupportActionBar().setTitle(R.string.transactions);
             tvTitle.setText(getResources().getString(R.string.transactions));
-            replaceFragment(new PaymentFragment());
+            //replaceFragment(new PaymentFragment());
+            replaceFragment(new ComingSoonFragment());
             backPressStatus = 1;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

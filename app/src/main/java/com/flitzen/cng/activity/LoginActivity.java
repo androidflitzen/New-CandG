@@ -7,12 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -20,12 +18,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.flitzen.cng.CandG;
 import com.flitzen.cng.R;
 import com.flitzen.cng.model.LoginResponseModel;
 import com.flitzen.cng.service.AllProductDataService;
 import com.flitzen.cng.utils.CToast;
+import com.flitzen.cng.utils.MyVideoView;
 import com.flitzen.cng.utils.SharePref;
 import com.flitzen.cng.utils.Utils;
 import com.flitzen.cng.utils.WebApi;
@@ -33,7 +33,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
 import io.github.inflationx.viewpump.ViewPump;
@@ -53,6 +52,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ProgressBar prd;
     @BindView(R.id.txtLogin)
     TextView txtLogin;
+    @BindView(R.id.bgVideoView)
+    MyVideoView bgVideoView;
 
     private MediaPlayer mediaPlayer;
 
@@ -61,6 +62,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        new VideoPlay().execute();
 
         ViewPump.init(ViewPump.builder()
                 .addInterceptor(new CalligraphyInterceptor(
@@ -194,6 +197,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             new CToast(getApplicationContext()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
                     .setBackgroundColor(R.color.msg_fail)
                     .show();
+        }
+    }
+
+    private class VideoPlay extends AsyncTask<String, Integer, String> {
+        protected String doInBackground(String... urls) {
+            Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.c_g_video);
+            bgVideoView.setVideoURI(uri);
+            bgVideoView.start();
+            bgVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.setLooping(true);
+                }
+            });
+            return "";
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(String result) {
+
         }
     }
 

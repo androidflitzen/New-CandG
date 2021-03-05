@@ -23,14 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAdapter.ViewHolder>{
+public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAdapter.ViewHolder> {
 
     Context context;
     ArrayList<CrediNotesListModel.Result> arrayListTemp;
 
     public CreditNoteListAdapter(Context context, ArrayList<CrediNotesListModel.Result> arrayListTemp) {
-        this.context=context;
-        this.arrayListTemp=arrayListTemp;
+        this.context = context;
+        this.arrayListTemp = arrayListTemp;
     }
 
     @NonNull
@@ -42,6 +42,21 @@ public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        holder.txtCnNo.setText("CN-"+arrayListTemp.get(position).getCreaditNoteId());
+        holder.txtDate.setText(arrayListTemp.get(position).getCreaditNoteDate() + " " + arrayListTemp.get(position).getCreaditNoteTime());
+        holder.txtTime.setText(arrayListTemp.get(position).getCreaditNoteTime());
+        holder.txtTo.setText(arrayListTemp.get(position).getCreditNoteTo());
+        holder.txtSalesPer.setText(arrayListTemp.get(position).getSalesPersonName());
+        holder.txtAmount.setText(context.getResources().getString(R.string.pound) + " " + arrayListTemp.get(position).getFinalTotal());
+        holder.txtSubTotal.setText(context.getResources().getString(R.string.pound) + " " + arrayListTemp.get(position).getTotalAmount());
+        holder.txtVatAmount.setText(context.getResources().getString(R.string.pound) + " " + arrayListTemp.get(position).getVatAmount());
+        if (arrayListTemp.get(position).getPurchase_no() != null && !arrayListTemp.get(position).getPurchase_no().equals("")) {
+            holder.txt_creditnote_a_po_no.setText(arrayListTemp.get(position).getPurchase_no());
+        } else {
+            holder.txt_creditnote_a_po_no.setText("-");
+        }
+
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +68,7 @@ public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAd
 
     @Override
     public int getItemCount() {
-        return 10;
+        return arrayListTemp.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -65,15 +80,15 @@ public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAd
             super(itemView);
 
             mainView = itemView.findViewById(R.id.view_cnlist_a_main);
-            txtCnNo = (TextView) itemView.findViewById(R.id.txt_cnlist_a_no);
-            txtDate = (TextView) itemView.findViewById(R.id.txt_cnlist_a_date);
-            txt_creditnote_a_po_no = (TextView) itemView.findViewById(R.id.txt_creditnote_a_po_no);
-            txtTime = (TextView) itemView.findViewById(R.id.txt_cnlist_a_time);
-            txtTo = (TextView) itemView.findViewById(R.id.txt_cnlist_a_to);
-            txtSalesPer = (TextView) itemView.findViewById(R.id.txt_cnlist_a_sales_person);
-            txtAmount = (TextView) itemView.findViewById(R.id.txt_cnlist_a_amount);
-            txtSubTotal = (TextView) itemView.findViewById(R.id.txt_cnlist_a_sub_total);
-            txtVatAmount = (TextView) itemView.findViewById(R.id.txt_cnlist_a_vat_amount);
+            txtCnNo =  itemView.findViewById(R.id.txt_cnlist_a_no);
+            txtDate =  itemView.findViewById(R.id.txt_cnlist_a_date);
+            txt_creditnote_a_po_no =  itemView.findViewById(R.id.txt_creditnote_a_po_no);
+            txtTime =  itemView.findViewById(R.id.txt_cnlist_a_time);
+            txtTo =  itemView.findViewById(R.id.txt_cnlist_a_to);
+            txtSalesPer =  itemView.findViewById(R.id.txt_cnlist_a_sales_person);
+            txtAmount =  itemView.findViewById(R.id.txt_cnlist_a_amount);
+            txtSubTotal =  itemView.findViewById(R.id.txt_cnlist_a_sub_total);
+            txtVatAmount =  itemView.findViewById(R.id.txt_cnlist_a_vat_amount);
 
         }
     }
