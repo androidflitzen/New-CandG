@@ -63,4 +63,6 @@
     <color name="dialog_edt_back_color"></color>
     <color name="transperent">#00ffffff</color>
     <color name="dialog_tab_color">#B8B8B8</color>
+    <color name="drawer_line">#BABABA</color>
+    <color name="light_green">#73AA6D</color>
 </resources>

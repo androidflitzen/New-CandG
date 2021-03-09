@@ -12,6 +12,7 @@
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="exit">Touch again to EXIT</string>
     <string name="logout">LOGOUT</string>
+    <string name="logout_small">Logout</string>
     <string name="logout_conformation">Are you sure want to logout ?</string>
     <string name="cancel">Cancel</string>
     <string name="transactions">Transactions</string>
@@ -19,7 +20,6 @@
     <string name="customers">Customers</string>
     <string name="quotations">Quotations</string>
     <string name="invoices">Invoices</string>
-    <string name="sale">Sale</string>
     <string name="home">Home</string>
     <string name="today">Today</string>
     <string name="this_week">THIS WEEK</string>
@@ -43,6 +43,29 @@
     <string name="remove_year_quotation">remove_year_quotation</string>
 
     <string name="c_g_recommends_that_you_update_to_the_latest_version_you_can_keep_using_this_app_while_downloading_the_update">C&amp;G recommends that you update to the latest version. You can keep using this app while downloading the update.</string>
+    <string name="sale">Sale</string>
+    <string name="select_month">Select Month</string>
+    <string name="select_year">Select Year</string>
 
+    <string-array name="month_name">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <string-array name="year">
+        <item>2021</item>
+        <item>2020</item>
+        <item>2019</item>
+    </string-array>
 
 </resources>

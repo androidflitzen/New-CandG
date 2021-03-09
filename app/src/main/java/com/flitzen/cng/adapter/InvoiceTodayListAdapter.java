@@ -129,4 +129,8 @@ public class InvoiceTodayListAdapter extends RecyclerView.Adapter<InvoiceTodayLi
         alertDialog.show();
     }
 
+    public void updateList(ArrayList<TodayInvoiceListingModel.Result> arrayList){
+        this.arrayList=arrayList;
+        notifyDataSetChanged();
+    }
 }

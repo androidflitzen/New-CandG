@@ -43,9 +43,9 @@ public class Invoice_ListFragment extends Fragment {
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments .add(new Invoice_TodayFragment());
-        mFragments .add(new Invoice_WeekFragment());
-        mFragments .add(new Invoice_MonthFragment());
-        mFragments .add(new Invoice_AllFragment());
+        mFragments .add(new Invoice_WeekFragmentTest());
+        mFragments .add(new Invoice_MonthFragmentTest());
+        mFragments .add(new Invoice_AllFragmentTest());
         InvoicePagerAdapter mAdapter = new InvoicePagerAdapter(getActivity(), mFragments);
         viewPager.setAdapter(mAdapter);
 

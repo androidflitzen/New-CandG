@@ -1,6 +1,5 @@
  package com.flitzen.cng.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,18 +17,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flitzen.cng.R;
 import com.flitzen.cng.fragment.ComingSoonFragment;
 import com.flitzen.cng.fragment.CreditNote_ListFragment;
-import com.flitzen.cng.fragment.CustomersFragment;
 import com.flitzen.cng.fragment.Invoice_ListFragment;
-import com.flitzen.cng.fragment.PaymentFragment;
 import com.flitzen.cng.fragment.Quotation_ListFragment;
 import com.flitzen.cng.fragment.SaleNewFragment;
 import com.flitzen.cng.utils.CToast;
@@ -41,7 +38,7 @@ import com.google.android.material.navigation.NavigationView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -53,6 +50,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     TextView tvTitle;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+    @BindView(R.id.linSale)
+    LinearLayout linSale;
+    @BindView(R.id.linInvoice)
+    LinearLayout linInvoice;
+    @BindView(R.id.linQuotation)
+    LinearLayout linQuotation;
+    @BindView(R.id.linCustomer)
+    LinearLayout linCustomer;
+    @BindView(R.id.linCreditNotes)
+    LinearLayout linCreditNotes;
+    @BindView(R.id.txt_nav_header_name)
+    TextView txt_nav_header_name;
+    @BindView(R.id.txtLogout)
+    TextView txtLogout;
+
 
     public static int backPressStatus = 0;
     boolean doubleBackToExitPressedOnce = false;
@@ -88,11 +100,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        setHederView();
 
-        img_logout.setOnClickListener(this);
+        linSale.setOnClickListener(this);
+        linInvoice.setOnClickListener(this);
+        linQuotation.setOnClickListener(this);
+        linCustomer.setOnClickListener(this);
+        linCreditNotes.setOnClickListener(this);
+        txtLogout.setOnClickListener(this);
+
+        txt_nav_header_name.setText(sharedPreferences.getString(SharePref.NAME, "User"));
 
         if (!Utils.isConfigChange) {
             Utils.isConfigChange = false;
@@ -119,54 +135,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if(type!=null){
                     if (type.equals("Invoice")) {
                         replaceFragment(new Invoice_ListFragment());
-                        navigationView.getMenu().getItem(1).setChecked(true);
+                       // navigationView.getMenu().getItem(1).setChecked(true);
                         backPressStatus = 1;
                     } else {
                         replaceFragment(new SaleNewFragment());
-                        navigationView.getMenu().getItem(0).setChecked(true);
+                       // navigationView.getMenu().getItem(0).setChecked(true);
                     }
                 }
             }
         }
 
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        Utils.playClickSound(getApplicationContext());
-        if (id == R.id.nav_sale) {
-            tvTitle.setText(getResources().getString(R.string.sale));
-            replaceFragment(new SaleNewFragment());
-            backPressStatus = 0;
-        } else if (id == R.id.nav_invoice) {
-            tvTitle.setText(getResources().getString(R.string.invoices));
-            replaceFragment(new Invoice_ListFragment());
-            backPressStatus = 1;
-        } else if (id == R.id.nav_quatation) {
-            tvTitle.setText(getResources().getString(R.string.quotations));
-            replaceFragment(new Quotation_ListFragment());
-            backPressStatus = 1;
-        } else if (id == R.id.nav_cusromers) {
-            tvTitle.setText(getResources().getString(R.string.customers));
-            //replaceFragment(new CustomersFragment());
-             replaceFragment(new ComingSoonFragment());
-            backPressStatus = 1;
-        } else if (id == R.id.nav_cr_notes) {
-            //getSupportActionBar().setTitle(getResources().getString(R.string.credit_notes));
-            tvTitle.setText(getResources().getString(R.string.credit_notes));
-            replaceFragment(new CreditNote_ListFragment());
-            backPressStatus = 1;
-        } else if (id == R.id.nav_payment) {
-            //getSupportActionBar().setTitle(R.string.transactions);
-            tvTitle.setText(getResources().getString(R.string.transactions));
-            //replaceFragment(new PaymentFragment());
-            replaceFragment(new ComingSoonFragment());
-            backPressStatus = 1;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -175,14 +153,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.framelayout_home, fragment)
                 .setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_in)
                 .commit();
-    }
-
-    public void setHederView() {
-        View view = navigationView.getHeaderView(0);
-        TextView txtName = (TextView) view.findViewById(R.id.txt_nav_header_name);
-        TextView txtEmail = (TextView) view.findViewById(R.id.txt_nav_header_email);
-        txtName.setText(sharedPreferences.getString(SharePref.NAME, "User"));
-        txtEmail.setText(sharedPreferences.getString(SharePref.EMAIL, "-"));
     }
 
     @Override
@@ -195,7 +165,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if (backPressStatus == 1) {
                 replaceFragment(new SaleNewFragment());
                 backPressStatus = 0;
-                navigationView.getMenu().getItem(0).setChecked(true);
+               // navigationView.getMenu().getItem(0).setChecked(true);
             } else {
                 if (doubleBackToExitPressedOnce) {
                     finish();
@@ -232,6 +202,50 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.linSale:
+                tvTitle.setText(getResources().getString(R.string.sale));
+                replaceFragment(new SaleNewFragment());
+                backPressStatus = 0;
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.linInvoice:
+                tvTitle.setText(getResources().getString(R.string.invoices));
+                replaceFragment(new Invoice_ListFragment());
+                backPressStatus = 1;
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.linQuotation:
+                tvTitle.setText(getResources().getString(R.string.quotations));
+                replaceFragment(new Quotation_ListFragment());
+                backPressStatus = 1;
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.linCustomer:
+                tvTitle.setText(getResources().getString(R.string.customers));
+                //replaceFragment(new CustomersFragment());
+                replaceFragment(new ComingSoonFragment());
+                backPressStatus = 1;
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.linCreditNotes:
+                tvTitle.setText(getResources().getString(R.string.credit_notes));
+                replaceFragment(new CreditNote_ListFragment());
+                backPressStatus = 1;
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.txtLogout:
+                logOut();
+                break;
+        }
+    }
+
+    private void logOut() {
         new AlertDialog.Builder(HomeActivity.this)
                 .setTitle("C&G")
                 .setMessage(R.string.logout_conformation)

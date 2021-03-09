@@ -2,6 +2,7 @@ package com.flitzen.cng.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -68,6 +69,7 @@ import com.flitzen.cng.adapter.SaleProducts_Adapter;
 import com.flitzen.cng.adapter.SaleSubCat_Items;
 import com.flitzen.cng.adapter.SaleSubCategory_Adapter;
 import com.flitzen.cng.adapter.Spn_Adapter;
+import com.flitzen.cng.model.AddNewProductModel;
 import com.flitzen.cng.model.AddQuotationModel;
 import com.flitzen.cng.model.AllProductDataModel;
 import com.flitzen.cng.model.CategoryModel;
@@ -75,9 +77,11 @@ import com.flitzen.cng.model.CustomerModel;
 import com.flitzen.cng.model.LoginResponseModel;
 import com.flitzen.cng.model.ProductListRequestModel;
 import com.flitzen.cng.model.ProductModel;
+import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.model.SalesPersonModel;
 import com.flitzen.cng.model.SubCategoryModel;
 
+import com.flitzen.cng.model.UnitModel;
 import com.flitzen.cng.service.AllProductDataService;
 import com.flitzen.cng.utils.CToast;
 import com.flitzen.cng.utils.Helper;
@@ -183,6 +187,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
     ArrayList<SaleProducts_Items> arrayListAllProducts = new ArrayList<>();
     ArrayList<CustomerModel.Result> arrayListCustomer = new ArrayList<>();
     ArrayList<SalesPersonModel.Result> arrayListSalesPerson = new ArrayList<>();
+    ArrayList<UnitModel.Data> arrayListProductUnit = new ArrayList<>();
     private ProgressDialog prd;
 
     TextView txt_error_msg;
@@ -1766,6 +1771,8 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
 
         alertDialog.setCanceledOnTouchOutside(false);
 
+        txt_categoty.setVisibility(View.GONE);
+        getProductUnit(txt_unit);
         Button btn_cancel = (Button) promptsView.findViewById(R.id.btn_cancel);
         Button btn_add = (Button) promptsView.findViewById(R.id.btn_add);
 
@@ -1777,7 +1784,207 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        txt_unit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                openUnitDialog(txt_unit);
+            }
+        });
+
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(getActivity());
+                if (edt_product_name.getText().toString().trim().isEmpty()) {
+                    edt_product_name.setError("Enter product name");
+                    edt_product_name.requestFocus();
+                    return;
+                } else if (edt_base_price.getText().toString().equals("")) {
+                    edt_base_price.setError("Enter base price");
+                    edt_base_price.requestFocus();
+                    return;
+                } else if (txt_unit.getText().toString().equals("Select Product Unit")) {
+                    new CToast(getContext()).simpleToast("Please select a product unit.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                    return;
+                } else {
+                    if (Utils.isOnline(getActivity())) {
+                        addNewProduct(edt_product_name.getText().toString(), edt_base_price.getText().toString(), txt_unit.getTag().toString(),alertDialog);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+            }
+        });
+
         alertDialog.show();
+    }
+
+    private void addNewProduct(String productName, String price, String unitId, AlertDialog alertDialog) {
+        try {
+            showPRD();
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Call<AddNewProductModel> call = webApi.addNewProduct(getResources().getString(R.string.api_key), sharedPreferences.getString(SharePref.USERID, ""), productName, price, unitId);
+            call.enqueue(new Callback<AddNewProductModel>() {
+                @Override
+                public void onResponse(Call<AddNewProductModel> call, Response<AddNewProductModel> response) {
+                    if (response.isSuccessful()) {
+                        new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_success)
+                                .show();
+                        String selectedProduct = response.body().getProduct_id();
+                        SaleProducts_Items item = new SaleProducts_Items();
+                        item.setpId(selectedProduct);
+                        item.setSelected(true);
+                        item.setpPrice(price);
+                        item.setpName(productName);
+                        arrayListAllProducts.add(item);
+
+                        OnSaleProducts_Items mItem = new OnSaleProducts_Items();
+                        mItem.setpId(item.getpId());
+                        mItem.setpName(item.getpName());
+                        mItem.setpQty(1);
+                        mItem.setZero_vat("0");
+                        mItem.setpPrice(Double.parseDouble(item.getpPrice()));
+                        arrayListOnSale.add(mItem);
+                        mAdapterOnSaleProducts.notifyDataSetChanged();
+                        if (arrayListOnSale.size() > 0) {
+                            relNoItems.setVisibility(View.GONE);
+                            recyclerviewOnSaleProducts.setVisibility(View.VISIBLE);
+                        }
+                        setTotal();
+                        hidePRD();
+                        alertDialog.dismiss();
+
+                    } else {
+                        new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AddNewProductModel> call, Throwable t) {
+                    new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
+            });
+        } catch (Exception e) {
+            new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
+        }
+    }
+
+    public void openUnitDialog(final TextView txt) {
+        LayoutInflater localView = LayoutInflater.from(getActivity());
+        View promptsView = localView.inflate(R.layout.dialog_spinner, null);
+
+        final android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setView(promptsView);
+        final android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+        final EditText edtSearchUnit = (EditText) promptsView.findViewById(R.id.edt_spn_search);
+        final ListView list_Unit = (ListView) promptsView.findViewById(R.id.list_spn);
+
+        edtSearchUnit.setHint("Search Product Unit");
+
+        final ArrayList<String> arrayListTemp = new ArrayList<>();
+        final ArrayList<String> arrayListTempID = new ArrayList<>();
+        for (int i = 0; i < arrayListProductUnit.size(); i++) {
+            arrayListTemp.add(arrayListProductUnit.get(i).getUnitName());
+            arrayListTempID.add(arrayListProductUnit.get(i).getUnitId());
+        }
+        list_Unit.setAdapter(new Spn_Adapter(getActivity(), arrayListTemp));
+
+        edtSearchUnit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int position, int i1, int i2) {
+
+                if (edtSearchUnit.getText().toString().trim().length() > 0) {
+                    arrayListTemp.clear();
+                    arrayListTempID.clear();
+                    for (int j = 0; j < arrayListProductUnit.size(); j++) {
+                        String word = edtSearchUnit.getText().toString().toLowerCase();
+                        if (arrayListProductUnit.get(j).getUnitName().toLowerCase().contains(word)) {
+                            arrayListTemp.add(arrayListProductUnit.get(j).getUnitName());
+                            arrayListTempID.add(arrayListProductUnit.get(j).getUnitId());
+                        }
+                    }
+                    list_Unit.setAdapter(new Spn_Adapter(getActivity(), arrayListTemp));
+                } else {
+                    arrayListTemp.clear();
+                    arrayListTempID.clear();
+                    for (int i = 0; i < arrayListProductUnit.size(); i++) {
+                        arrayListTemp.add(arrayListProductUnit.get(i).getUnitName());
+                        arrayListTempID.add(arrayListProductUnit.get(i).getUnitId());
+                    }
+                    list_Unit.setAdapter(new Spn_Adapter(getActivity(), arrayListTemp));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        list_Unit.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Utils.playClickSound(getActivity());
+                txt.setText(arrayListTemp.get(position));
+                txt.setTag(arrayListTempID.get(position));
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void getProductUnit(final TextView txt_unit) {
+        try {
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Call<UnitModel> call = webApi.getUnitList(getResources().getString(R.string.api_key));
+            call.enqueue(new Callback<UnitModel>() {
+                @Override
+                public void onResponse(Call<UnitModel> call, Response<UnitModel> response) {
+                    if (response.isSuccessful()) {
+                        arrayListProductUnit.clear();
+                        for (int i = 0; i < response.body().getData().size(); i++) {
+                            arrayListProductUnit.add(response.body().getData().get(i));
+                        }
+                        if (arrayListProductUnit.size() > 0) {
+                            txt_unit.setText(arrayListProductUnit.get(0).getUnitName());
+                            txt_unit.setTag(arrayListProductUnit.get(0).getUnitId());
+                        }
+                    } else {
+                        new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UnitModel> call, Throwable t) {
+                    new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
+            });
+        } catch (Exception e) {
+            new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
+        }
     }
 
     void stopAnim() {

@@ -52,6 +52,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/_12dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_switch" />
 
                 <TextView
@@ -63,6 +64,27 @@
                     android:textSize="@dimen/_18sp"
                     android:layout_marginLeft="@dimen/_10dp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Quotation"
+                    android:gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    android:background="@drawable/cell_shape"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:layout_centerVertical="true"
+                    android:paddingTop="@dimen/_10dp"
+                    android:visibility="gone"
+                    android:textColor="@color/white"
+                    android:paddingBottom="@dimen/_10dp">
+
+                </TextView>
 
             </RelativeLayout>
 

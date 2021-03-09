@@ -12,6 +12,8 @@ public class SharePref {
     public static String ORGID = "ORGID";
     public static String EMAIL = "EMAIL";
     public static String PASSWORD = "PASSWORD";
+    public static String QT_MONTH = "QT_MONTH";
+    public static String QT_YEAR = "QT_YEAR";
 
     public static SharedPreferences getSharePref(Context context) {
         return context.getSharedPreferences(SharePrefName, Context.MODE_PRIVATE);

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
         holder.txtPrice.setText(gbp + formatter.format(Double.valueOf(arrayList.get(position).getFinalTotal())));
         holder.txtSubTotal.setText(gbp + formatter.format(Double.valueOf(arrayList.get(position).getTotalAmount())));
         holder.txtVatAmount.setText(gbp + formatter.format(Double.valueOf(arrayList.get(position).getVatAmount())));
+        //holder.txtNo.setText("QT-1234");
         holder.txtNo.setText("QT-" + arrayList.get(position).getQuotationId());
         holder.txtCustomer.setText(arrayList.get(position).getQuotationTo());
         holder.txtDate.setText(arrayList.get(position).getQuotationDate());
@@ -96,21 +98,22 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtPrice, txtNo, txtStatus, txtCustomer, txtDate, txtTime, txtSubTotal, txtVatAmount;
+        TextView txtPrice, txtNo, txtCustomer, txtDate, txtTime, txtSubTotal, txtVatAmount;
         CardView mainView;
+        LinearLayout txtStatus;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             mainView = itemView.findViewById(R.id.view_invoicelist_a_main);
-            txtPrice =  itemView.findViewById(R.id.txt_invoicelist_a_amount);
-            txtSubTotal =  itemView.findViewById(R.id.txt_invoicelist_a_sub_total);
-            txtVatAmount =  itemView.findViewById(R.id.txt_invoicelist_a_vat_amount);
-            txtNo =  itemView.findViewById(R.id.txt_invoicelist_a_no);
-            txtStatus =  itemView.findViewById(R.id.txt_invoicelist_a_status);
-            txtCustomer =  itemView.findViewById(R.id.txt_invoicelist_a_c_name);
-            txtDate =  itemView.findViewById(R.id.txt_invoicelist_a_date);
-            txtTime =  itemView.findViewById(R.id.txt_invoicelist_a_time);
+            txtPrice = itemView.findViewById(R.id.txt_invoicelist_a_amount);
+            txtSubTotal = itemView.findViewById(R.id.txt_invoicelist_a_sub_total);
+            txtVatAmount = itemView.findViewById(R.id.txt_invoicelist_a_vat_amount);
+            txtNo = itemView.findViewById(R.id.txt_invoicelist_a_no);
+            txtStatus = itemView.findViewById(R.id.txt_invoicelist_a_status);
+            txtCustomer = itemView.findViewById(R.id.txt_invoicelist_a_c_name);
+            txtDate = itemView.findViewById(R.id.txt_invoicelist_a_date);
+            txtTime = itemView.findViewById(R.id.txt_invoicelist_a_time);
 
         }
     }
@@ -213,6 +216,7 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
 
                         arrayList.remove(position);
                         notifyItemRemoved(position);
+                        notifyItemRangeChanged(position,arrayList.size());
 
                         if (type == 0) {
                             gcm_rec = new Intent(context.getResources().getString(R.string.remove_today_quotation));
@@ -223,7 +227,6 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
                         } else if (type == 3) {
                             gcm_rec = new Intent(context.getResources().getString(R.string.remove_year_quotation));
                         }
-                        gcm_rec.putExtra("position",position);
                         LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
 
                     } else {
@@ -267,5 +270,10 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
         if (prd != null && prd.isShowing()) {
             prd.dismiss();
         }
+    }
+
+    public void updateList(ArrayList<QuotationListingModel.Result> arrayList) {
+        this.arrayList = arrayList;
+        notifyDataSetChanged();
     }
 }

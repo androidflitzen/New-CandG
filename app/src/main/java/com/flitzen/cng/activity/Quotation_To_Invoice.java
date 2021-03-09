@@ -1541,7 +1541,7 @@ public class Quotation_To_Invoice extends AppCompatActivity {
             params.put("quotation_data", jsonArray.toString());
             WebApi webApi = CandG.getClient().create(WebApi.class);
             Log.d(TAG, "Add Quotation param " + params.toString());
-            Call<AddQuotationModel> call = webApi.addQuotationApi(params);
+            Call<AddQuotationModel> call = webApi.editQuotationApi(params);
             Log.d(TAG, "Add Quotation API  " + call.request().toString());
             call.enqueue(new Callback<AddQuotationModel>() {
                 @Override

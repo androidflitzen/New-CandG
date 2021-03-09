@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.flitzen.cng.R;
 import com.flitzen.cng.model.CrediNotesListModel;
+import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.utils.Utils;
 
 import org.json.JSONException;
@@ -105,6 +106,11 @@ public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAd
         View viewSendMail = promptsView.findViewById(R.id.view_inv_dialog_send_mail);
 
         alertDialog.show();
+    }
+
+    public void updateList(ArrayList<CrediNotesListModel.Result> arrayList) {
+        this.arrayListTemp = arrayList;
+        notifyDataSetChanged();
     }
 
 }

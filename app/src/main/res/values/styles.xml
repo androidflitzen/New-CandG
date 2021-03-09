@@ -92,4 +92,11 @@
         <item name="civ_border_width">1dp</item>
     </style>
 
+    <style name="spinner_style" parent="Widget.AppCompat.Spinner">
+        <item name="android:dropDownVerticalOffset">10dip</item>
+        <item name="overlapAnchor">false</item>
+        <!--Other customizations-->
+    </style>
+
+
 </resources>

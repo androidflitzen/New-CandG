@@ -43,9 +43,9 @@ public class CreditNote_ListFragment extends Fragment {
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments .add(new CreditNotesFragmentToday());
-        mFragments .add(new CreditNotesWeekFragment());
-        mFragments .add(new CreditNotesMonthFragment());
-        mFragments .add(new CreditNotesYearFragment());
+        mFragments .add(new CreditNotesWeekFragmentTest());
+        mFragments .add(new CreditNotesMonthFragmentTest());
+        mFragments .add(new CreditNotesYearFragmentTest());
         InvoicePagerAdapter mAdapter = new InvoicePagerAdapter(getActivity(), mFragments);
         viewPager.setAdapter(mAdapter);
 

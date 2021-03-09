@@ -1,5 +1,6 @@
 package com.flitzen.cng.utils;
 
+import com.flitzen.cng.model.AddNewProductModel;
 import com.flitzen.cng.model.AddQuotationModel;
 import com.flitzen.cng.model.AllProductDataModel;
 import com.flitzen.cng.model.CategoryModel;
@@ -7,6 +8,7 @@ import com.flitzen.cng.model.CommonModel;
 import com.flitzen.cng.model.CrediNotesListModel;
 import com.flitzen.cng.model.CustomerModel;
 import com.flitzen.cng.model.LoginResponseModel;
+import com.flitzen.cng.model.MonthListModel;
 import com.flitzen.cng.model.ProductListRequestModel;
 import com.flitzen.cng.model.ProductListRequestModelTest;
 import com.flitzen.cng.model.ProductModel;
@@ -15,6 +17,7 @@ import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.model.SalesPersonModel;
 import com.flitzen.cng.model.SubCategoryModel;
 import com.flitzen.cng.model.TodayInvoiceListingModel;
+import com.flitzen.cng.model.UnitModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,10 @@ public interface WebApi {
     //Add Quotation
     @GET("quotation/add")
     Call<AddQuotationModel> addQuotationApi(@QueryMap Map<String, String> params);
+
+    //Edit Quotation
+    @GET("credit_note/edit")
+    Call<AddQuotationModel> editQuotationApi(@QueryMap Map<String, String> params);
 
     //Add Invoice
     @GET("invoice/add")
@@ -117,6 +124,54 @@ public interface WebApi {
     @GET("quotation/quotation_by_id?")
     Call<QuotationDetailsModel> quotationDetails(@Query("api_key") String api_key, @Query("quotation_id") String quotation_id);
 
+    //Search Month Quotation List
+    @GET("quotation/month?")
+    Call<QuotationListingModel> monthQuotationListApi(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Week Quotation List
+    @GET("quotation/week?")
+    Call<QuotationListingModel> weekQuotationListApi(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Week Quotation List
+    @GET("quotation/all?")
+    Call<QuotationListingModel> yearQuotationListApi(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Year invoice List
+    @GET("invoice/all?")
+    Call<TodayInvoiceListingModel> yearInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Month invoice List
+    @GET("invoice/month?")
+    Call<TodayInvoiceListingModel> monthInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Week invoice List
+    @GET("invoice/week?")
+    Call<TodayInvoiceListingModel> weekInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Month Credit Note List
+    @GET("credit_note/month?")
+    Call<CrediNotesListModel> monthCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Month Credit Note List
+    @GET("credit_note/week?")
+    Call<CrediNotesListModel> weekCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //Search Year Credit Note List
+    @GET("credit_note/all?")
+    Call<CrediNotesListModel> yearCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("search_text") String search_text);
+
+    //get unites
+    @GET("products/proudct_unit?")
+    Call<UnitModel> getUnitList(@Query("api_key") String api_key);
+
+    //Add new product
+    @GET("products/add?")
+    Call<AddNewProductModel> addNewProduct(@Query("api_key") String api_key, @Query("user_id") String user_id, @Query("product_name") String product_name, @Query("product_price") String product_price
+            , @Query("product_unit_id") String product_unit_id);
+
+    //Quotation month list
+    @GET("quotation/abc?")
+    Call<MonthListModel> getMonthList(@Query("api_key") String api_key);
 
      /* //category list
     @GET("products/category?")

@@ -1,10 +1,8 @@
 package com.flitzen.cng.fragment;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,16 +24,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.flitzen.cng.CandG;
 import com.flitzen.cng.R;
-import com.flitzen.cng.adapter.QuotationListAdapter;
-import com.flitzen.cng.model.QuotationListingModel;
+import com.flitzen.cng.adapter.InvoiceTodayListAdapter;
+import com.flitzen.cng.model.TodayInvoiceListingModel;
 import com.flitzen.cng.utils.CToast;
+import com.flitzen.cng.utils.SharePref;
 import com.flitzen.cng.utils.Utils;
 import com.flitzen.cng.utils.WebApi;
 
@@ -46,88 +44,70 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class QuatationYearFragmentTest extends Fragment {
+public class Invoice_WeekFragmentTest extends Fragment {
 
-    View viewQuotation;
+    View viewInvoiceWeek;
 
-    @BindView(R.id.view_quotation_content)
-    LinearLayout viewContent;
+    @BindView(R.id.view_invoice_content)
+    LinearLayout viewInvoice;
     @BindView(R.id.edt_search)
     EditText edtSearch;
     @BindView(R.id.img_search)
     ImageView img_search;
-    @BindView(R.id.img_clear_search)
+    @BindView(R.id.img_close)
     ImageView img_close;
     @BindView(R.id.txt_orders_count)
     TextView txtTotalOrder;
     @BindView(R.id.swipe_view_invoice_list)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.recyclerview_quatation_list)
-    RecyclerView recyclerview_quotation_list;
+    @BindView(R.id.recyclerview_invoice_list)
+    RecyclerView recyclerview_invoice_list;
     @BindView(R.id.layout_empty)
     RelativeLayout layout_empty;
-    @BindView(R.id.view_quotation_empty)
-    TextView viewEmpty;
+    @BindView(R.id.textViewMsg)
+    TextView textViewMsg;
     @BindView(R.id.progress_wheel)
     ProgressBar progressWheel;
 
-    ArrayList<QuotationListingModel.Result> arrayList = new ArrayList<>();
-    ArrayList<QuotationListingModel.Result> arrayListSearch = new ArrayList<>();
-    ArrayList<QuotationListingModel.Result> arrayListTemp = new ArrayList<>();
-    ArrayList<Object> commonArrayList = new ArrayList<>();
-    public QuotationListAdapter mAdapter;
-    int quotationListType;
+    ArrayList<TodayInvoiceListingModel.Result> arrayList = new ArrayList<>();
+    ArrayList<TodayInvoiceListingModel.Result> arrayListSearch = new ArrayList<>();
+    ArrayList<TodayInvoiceListingModel.Result> itemArrayTemp = new ArrayList<>();
+    InvoiceTodayListAdapter mAdapter;
+    LinearLayoutManager mLayoutManager;
+    private SharedPreferences sharedPreferences;
     int page = 1;
     int pageForSearch = 1;
+    private boolean itShouldLoadMore = true;
     int total_sale = 0;
     int total_sale_search = 0;
-    private boolean itShouldLoadMore = true;
-    private BroadcastReceiver mMyBroadcastReceiver;
     int whichAPICall = 0;
-
-    public QuatationYearFragmentTest(int quotationListType) {
-        this.quotationListType=quotationListType;
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewQuotation = inflater.inflate(R.layout.fragment_quatation, null);
-        ButterKnife.bind(this, viewQuotation);
+        viewInvoiceWeek = inflater.inflate(R.layout.fragment_invoice_today, container, false);
+        ButterKnife.bind(this, viewInvoiceWeek);
+        sharedPreferences = SharePref.getSharePref(getActivity());
+        performSomeOperations();
+        return viewInvoiceWeek;
+    }
+
+    private void performSomeOperations() {
+
+        mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerview_invoice_list.setLayoutManager(mLayoutManager);
+        mAdapter = new InvoiceTodayListAdapter(getActivity(), arrayList);
+        recyclerview_invoice_list.setAdapter(mAdapter);
+
         if(Utils.isOnline(getActivity())){
-            getQuotation(0);
+            getInvoiceFirst(0);
         }else {
             new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
                     .setBackgroundColor(R.color.msg_fail)
                     .show();
         }
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if(Utils.isOnline(getActivity())){
-                    page = 1;
-                    pageForSearch=1;
-                    getQuotation(0);
-                }else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
-                }
-            }
-        });
-
-        performSomeOperations();
-        return viewQuotation;
-    }
-
-    private void performSomeOperations() {
-
-        recyclerview_quotation_list.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        mAdapter = new QuotationListAdapter(getActivity(), arrayList,3);
-        recyclerview_quotation_list.setAdapter(mAdapter);
-
-        recyclerview_quotation_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerview_invoice_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -136,7 +116,7 @@ public class QuatationYearFragmentTest extends Fragment {
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         if (whichAPICall == 0) {
                             if (itShouldLoadMore) {
-                                getQuotation(1);
+                                getInvoiceFirst(1);
                             }
                         } else {
                             if (itShouldLoadMore) {
@@ -161,17 +141,17 @@ public class QuatationYearFragmentTest extends Fragment {
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                 arrayList.clear();
-                arrayList.addAll(arrayListTemp);
+                arrayList.addAll(itemArrayTemp);
 
                 if (arrayList.size() > 0) {
-                    viewContent.setVisibility(View.VISIBLE);
-                    recyclerview_quotation_list.setVisibility(View.VISIBLE);
+                    viewInvoice.setVisibility(View.VISIBLE);
+                    recyclerview_invoice_list.setVisibility(View.VISIBLE);
                     layout_empty.setVisibility(View.GONE);
-                    viewEmpty.setVisibility(View.GONE);
+                    textViewMsg.setVisibility(View.GONE);
                 } else {
-                    viewContent.setVisibility(View.GONE);
+                    viewInvoice.setVisibility(View.GONE);
                     layout_empty.setVisibility(View.VISIBLE);
-                    viewEmpty.setVisibility(View.VISIBLE);
+                    textViewMsg.setVisibility(View.VISIBLE);
                 }
 
                 txtTotalOrder.setText("Total Quotations : " + total_sale);
@@ -184,7 +164,7 @@ public class QuatationYearFragmentTest extends Fragment {
             }
         });
 
-        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+          edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -215,17 +195,17 @@ public class QuatationYearFragmentTest extends Fragment {
                     arrayList.clear();
                     img_close.setVisibility(View.GONE);
                     img_search.setVisibility(View.VISIBLE);
-                    arrayList.addAll(arrayListTemp);
+                    arrayList.addAll(itemArrayTemp);
 
                     if (arrayList.size() > 0) {
-                        viewContent.setVisibility(View.VISIBLE);
-                        recyclerview_quotation_list.setVisibility(View.VISIBLE);
+                        viewInvoice.setVisibility(View.VISIBLE);
+                        recyclerview_invoice_list.setVisibility(View.VISIBLE);
                         layout_empty.setVisibility(View.GONE);
-                        viewEmpty.setVisibility(View.GONE);
+                        textViewMsg.setVisibility(View.GONE);
                     } else {
-                        viewContent.setVisibility(View.GONE);
+                        viewInvoice.setVisibility(View.GONE);
                         layout_empty.setVisibility(View.VISIBLE);
-                        viewEmpty.setVisibility(View.VISIBLE);
+                        textViewMsg.setVisibility(View.VISIBLE);
                     }
 
                     txtTotalOrder.setText("Total Quotations : " + total_sale);
@@ -243,6 +223,22 @@ public class QuatationYearFragmentTest extends Fragment {
             public void afterTextChanged(Editable editable) {
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(Utils.isOnline(getActivity())){
+                    page = 1;
+                    pageForSearch=1;
+                    getInvoiceFirst(0);
+                }else {
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
+            }
+        });
+
     }
 
     public void performSearch() {
@@ -273,17 +269,17 @@ public class QuatationYearFragmentTest extends Fragment {
         protected Void doInBackground(Void... voids) {
             whichAPICall = 1;
             WebApi webApi = CandG.getClient().create(WebApi.class);
-            Call<QuotationListingModel> call = webApi.yearQuotationListApi(getResources().getString(R.string.api_key), String.valueOf(pageForSearch), searchWord);
-            call.enqueue(new Callback<QuotationListingModel>() {
+            Call<TodayInvoiceListingModel> call = webApi.weekInvoiceList(getResources().getString(R.string.api_key), String.valueOf(pageForSearch), searchWord);
+            call.enqueue(new Callback<TodayInvoiceListingModel>() {
                 @Override
-                public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
+                public void onResponse(Call<TodayInvoiceListingModel> call, retrofit2.Response<TodayInvoiceListingModel> response) {
                     swipeRefreshLayout.setRefreshing(false);
                     try {
                         if (response.body().getStatus() == 1) {
 
-                            viewContent.setVisibility(View.VISIBLE);
-                            recyclerview_quotation_list.setVisibility(View.VISIBLE);
-                            viewEmpty.setVisibility(View.GONE);
+                            viewInvoice.setVisibility(View.VISIBLE);
+                            recyclerview_invoice_list.setVisibility(View.VISIBLE);
+                            textViewMsg.setVisibility(View.GONE);
                             layout_empty.setVisibility(View.GONE);
 
                             if (checkPagination == 0) {
@@ -307,9 +303,9 @@ public class QuatationYearFragmentTest extends Fragment {
                             mAdapter.updateList(arrayListSearch);
 
                         } else {
-                            viewContent.setVisibility(View.VISIBLE);
-                            recyclerview_quotation_list.setVisibility(View.GONE);
-                            viewEmpty.setVisibility(View.VISIBLE);
+                            viewInvoice.setVisibility(View.VISIBLE);
+                            recyclerview_invoice_list.setVisibility(View.GONE);
+                            textViewMsg.setVisibility(View.VISIBLE);
                             layout_empty.setVisibility(View.VISIBLE);
                         }
 
@@ -321,7 +317,7 @@ public class QuatationYearFragmentTest extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<QuotationListingModel> call, Throwable t) {
+                public void onFailure(Call<TodayInvoiceListingModel> call, Throwable t) {
                     if (checkPagination == 1) {
                         progressWheel.setVisibility(View.GONE);
                     }
@@ -341,7 +337,7 @@ public class QuatationYearFragmentTest extends Fragment {
         }
     }
 
-    public void getQuotation(int checkPagination){
+    public void getInvoiceFirst(int checkPagination){
         whichAPICall = 0;
         if(checkPagination==1){
             itShouldLoadMore = false;
@@ -350,95 +346,88 @@ public class QuatationYearFragmentTest extends Fragment {
             swipeRefreshLayout.setRefreshing(true);
         }
 
-        WebApi webApi = CandG.getClient().create(WebApi.class);
-        Call<QuotationListingModel> call = webApi.yearQuotationListApi(getResources().getString(R.string.api_key),String.valueOf(page));
-        call.enqueue(new Callback<QuotationListingModel>() {
-            @Override
-            public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
-                try {
+        swipeRefreshLayout.setRefreshing(true);
+        if (!edtSearch.equals("")) {
+            edtSearch.setText("");
+        }
 
+        try {
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Call<TodayInvoiceListingModel> call = webApi.weekInvoiceList(getResources().getString(R.string.api_key),String.valueOf(page));
+            call.enqueue(new Callback<TodayInvoiceListingModel>() {
+                @Override
+                public void onResponse(Call<TodayInvoiceListingModel> call, retrofit2.Response<TodayInvoiceListingModel> response) {
+                    try {
+                        if(response.isSuccessful()){
+
+                            if(checkPagination==1){
+                                progressWheel.setVisibility(View.GONE);
+                                itShouldLoadMore = true;
+                            }
+
+                            if (response.body().getStatus() == 1) {
+
+                                if(checkPagination==0){
+                                    android.content.res.Resources res = getResources();
+                                    String pound = res.getString(R.string.pound);
+                                    txtTotalOrder.setText("Total Invoices : " + response.body().getTotal());
+                                    total_sale = Integer.parseInt(response.body().getTotal());
+
+                                    arrayList.clear();
+                                    itemArrayTemp.clear();
+
+                                }
+
+                                textViewMsg.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
+                                viewInvoice.setVisibility(View.VISIBLE);
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+                                    arrayList.add(response.body().getData().get(i));
+                                    itemArrayTemp.add(response.body().getData().get(i));
+                                }
+
+                                if (arrayList.size() < total_sale) {
+                                    page++;
+                                    itShouldLoadMore = true;
+                                } else {
+                                    itShouldLoadMore = false;
+                                }
+
+                                mAdapter.notifyDataSetChanged();
+
+                            } else {
+                                textViewMsg.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
+                                viewInvoice.setVisibility(View.GONE);
+                            }
+                        }else {
+                            new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                @Override
+                public void onFailure(Call<TodayInvoiceListingModel> call, Throwable t) {
                     if(checkPagination==1){
                         progressWheel.setVisibility(View.GONE);
-                        itShouldLoadMore = true;
                     }
-
-                    if (response.body().getStatus() == 1) {
-
-                        viewContent.setVisibility(View.VISIBLE);
-                        viewEmpty.setVisibility(View.GONE);
-                        layout_empty.setVisibility(View.GONE);
-
-                        if(checkPagination==0){
-                            txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
-                            total_sale = Integer.parseInt(response.body().getTotal());
-
-                            arrayList.clear();
-                            arrayListTemp.clear();
-                        }
-
-                        for (int i = 0; i < response.body().getData().size(); i++) {
-                            arrayList.add(response.body().getData().get(i));
-                            arrayListTemp.add(response.body().getData().get(i));
-                        }
-
-                        if (arrayList.size() < total_sale) {
-                            page++;
-                            itShouldLoadMore = true;
-                        } else {
-                            itShouldLoadMore = false;
-                        }
-                        mAdapter.updateList(arrayList);
-
-                    } else {
-                        viewContent.setVisibility(View.GONE);
-                        viewEmpty.setVisibility(View.VISIBLE);
-                        layout_empty.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    itShouldLoadMore = true;
+                    swipeRefreshLayout.setRefreshing(false);
+                    new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
                 }
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Call<QuotationListingModel> call, Throwable t) {
-                if(checkPagination==1){
-                    progressWheel.setVisibility(View.GONE);
-                }
-                itShouldLoadMore = true;
-                swipeRefreshLayout.setRefreshing(false);
-                new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
-                        .setBackgroundColor(R.color.msg_fail)
-                        .show();
-            }
-        });
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        this.mMyBroadcastReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action.equalsIgnoreCase(getResources().getString(R.string.remove_year_quotation))) {
-                    if (intent != null) {
-                        if (whichAPICall == 0) {
-                            total_sale = total_sale - 1;
-                            txtTotalOrder.setText("Total Quotations : " + total_sale);
-                        } else if (whichAPICall == 1) {
-                            total_sale_search = total_sale_search - 1;
-                            txtTotalOrder.setText("Total Quotations : " + total_sale_search);
-                        }
-                    }
-                }
-            }
-        };
-        try {
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(this.mMyBroadcastReceiver, new IntentFilter(getResources().getString(R.string.remove_year_quotation)));
-        } catch (Exception e) {
-            e.printStackTrace();
+            });
+        }catch (Exception e){
+            swipeRefreshLayout.setRefreshing(false);
+            new CToast(getActivity()).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
         }
     }
 }

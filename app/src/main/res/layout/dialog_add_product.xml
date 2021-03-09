@@ -83,6 +83,7 @@
                             android:nextFocusDown="@id/txt_create_quo_select_cutomer"
                             android:textColorHint="#485253"
                             android:layout_marginTop="@dimen/_10dp"
+                            android:visibility="gone"
                             android:theme="@style/custome_outlinebox">
 
                             <com.google.android.material.textfield.TextInputEditText

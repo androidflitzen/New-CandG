@@ -41,4 +41,5 @@
     <dimen name="_24sp">24sp</dimen>
     <dimen name="_8dp">8dp</dimen>
     <dimen name="_10sp">10sp</dimen>
+    <dimen name="_35dp">35dp</dimen>
 </resources>

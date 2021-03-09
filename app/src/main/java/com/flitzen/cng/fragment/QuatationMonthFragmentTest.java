@@ -1,10 +1,11 @@
 package com.flitzen.cng.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,57 +15,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.flitzen.cng.CandG;
 import com.flitzen.cng.R;
-import com.flitzen.cng.activity.HomeActivity;
-import com.flitzen.cng.adapter.InvoicePagerAdapter;
-import com.flitzen.cng.adapter.MonthListAdapter;
 import com.flitzen.cng.adapter.QuotationListAdapter;
-import com.flitzen.cng.adapter.YearListAdapter;
-import com.flitzen.cng.model.MonthListModel;
 import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.utils.CToast;
-import com.flitzen.cng.utils.SharePref;
 import com.flitzen.cng.utils.Utils;
 import com.flitzen.cng.utils.WebApi;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
-public class Quotation_ListFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class QuatationMonthFragmentTest extends Fragment {
 
     View viewQuotation;
 
@@ -88,49 +70,29 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     TextView viewEmpty;
     @BindView(R.id.progress_wheel)
     ProgressBar progressWheel;
-    @BindView(R.id.relSelectMonth)
-    RelativeLayout relSelectMonth;
-    @BindView(R.id.cardSpinnerMonth)
-    CardView cardSpinnerMonth;
-    @BindView(R.id.txtSpinnerMonth)
-    Spinner txtSpinnerMonth;
-    @BindView(R.id.cardSpinnerYear)
-    CardView cardSpinnerYear;
-    @BindView(R.id.txtSpinnerYear)
-    Spinner txtSpinnerYear;
-    @BindView(R.id.txtMonthName)
-    TextView txtMonthName;
-    @BindView(R.id.txtYear)
-    TextView txtYear;
 
     ArrayList<QuotationListingModel.Result> arrayList = new ArrayList<>();
     ArrayList<QuotationListingModel.Result> arrayListSearch = new ArrayList<>();
     ArrayList<QuotationListingModel.Result> arrayListTemp = new ArrayList<>();
-    //  ArrayList<MonthListModel.Data> arrayListMonth = new ArrayList<>();
-    List<String> arrayListMonth = new ArrayList<>();
-    List<String> arrayListYear = new ArrayList<>();
     public QuotationListAdapter mAdapter;
-    public ArrayAdapter<String> monthAdapter;
-    public ArrayAdapter<String> yearAdapter;
     int quotationListType;
     int page = 1;
     int pageForSearch = 1;
     int total_sale = 0;
     int total_sale_search = 0;
     private boolean itShouldLoadMore = true;
+    private BroadcastReceiver mMyBroadcastReceiver;
     int whichAPICall = 0;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    public QuatationMonthFragmentTest(int quotationListType) {
+        this.quotationListType = quotationListType;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewQuotation = inflater.inflate(R.layout.fragment_quotation_list, container, false);
+        viewQuotation = inflater.inflate(R.layout.fragment_quatation, null);
         ButterKnife.bind(this, viewQuotation);
-
-        sharedPreferences = SharePref.getSharePref(getActivity());
-        editor = sharedPreferences.edit();
         if (Utils.isOnline(getActivity())) {
             getQuotation(0);
         } else {
@@ -139,13 +101,12 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                     .show();
         }
 
-        relSelectMonth.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (Utils.isOnline(getActivity())) {
                     page = 1;
-                    pageForSearch = 1;
+                    pageForSearch=1;
                     getQuotation(0);
                 } else {
                     new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
@@ -156,11 +117,9 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
         });
 
         performSomeOperations();
-
         return viewQuotation;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void performSomeOperations() {
 
         recyclerview_quotation_list.setLayoutManager(new GridLayoutManager(getActivity(), 1));
@@ -214,7 +173,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                     viewEmpty.setVisibility(View.VISIBLE);
                 }
 
-                txtTotalOrder.setText(total_sale);
+                txtTotalOrder.setText("Total Quotations : " + total_sale);
                 //mAdapter.notifyDataSetChanged();
                 mAdapter.updateList(arrayList);
                 whichAPICall = 0;
@@ -268,7 +227,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                         viewEmpty.setVisibility(View.VISIBLE);
                     }
 
-                    txtTotalOrder.setText(total_sale);
+                    txtTotalOrder.setText("Total Quotations : " + total_sale);
                     whichAPICall = 0;
                     pageForSearch = 1;
                     mAdapter.updateList(arrayList);
@@ -283,22 +242,6 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
             public void afterTextChanged(Editable editable) {
             }
         });
-
-        arrayListMonth = Arrays.asList(getResources().getStringArray(R.array.month_name));
-        int monthIndex = LocalDate.now().getMonth().ordinal();//indexed from 0
-        Collections.rotate(arrayListMonth, -monthIndex);
-        Collections.reverse(arrayListMonth);
-        // monthAdapter = new MonthListAdapter(getActivity(), R.layout.month_selection_layout, arrayListMonth);
-        monthAdapter = new MonthListAdapter(getActivity(), arrayListMonth);
-        txtSpinnerMonth.setOnItemSelectedListener(this);
-        txtSpinnerMonth.setAdapter(monthAdapter);
-
-        arrayListYear = Arrays.asList(getResources().getStringArray(R.array.year));
-        // monthAdapter = new MonthListAdapter(getActivity(), R.layout.month_selection_layout, arrayListMonth);
-        yearAdapter = new YearListAdapter(getActivity(), arrayListYear);
-        txtSpinnerYear.setOnItemSelectedListener(this);
-        txtSpinnerYear.setAdapter(yearAdapter);
-
     }
 
     public void performSearch() {
@@ -313,39 +256,6 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
             swipeRefreshLayout.setRefreshing(true);
             new searchData(charSequence, 0).execute();
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.relSelectMonth:
-
-                break;
-        }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (parent.getId()){
-            case R.id.txtSpinnerMonth:
-                txtMonthName.setText(arrayListMonth.get(position));
-                editor.putString(SharePref.QT_MONTH, String.valueOf(position));
-                editor.commit();
-                monthAdapter.notifyDataSetChanged();
-                break;
-
-            case R.id.txtSpinnerYear:
-                txtYear.setText(arrayListYear.get(position));
-                editor.putString(SharePref.QT_YEAR, String.valueOf(position));
-                editor.commit();
-                yearAdapter.notifyDataSetChanged();
-                break;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     class searchData extends AsyncTask<Void, Void, Void> {
@@ -376,7 +286,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                             layout_empty.setVisibility(View.GONE);
 
                             if (checkPagination == 0) {
-                                txtTotalOrder.setText(response.body().getTotal());
+                                txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
                                 total_sale_search = Integer.parseInt(response.body().getTotal());
 
                                 arrayListSearch.clear();
@@ -458,7 +368,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                         layout_empty.setVisibility(View.GONE);
 
                         if (checkPagination == 0) {
-                            txtTotalOrder.setText(response.body().getTotal());
+                            txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
                             total_sale = Integer.parseInt(response.body().getTotal());
 
                             arrayList.clear();
@@ -507,14 +417,29 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
         });
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
-        TextView tvTitle = ((HomeActivity) getActivity()).findViewById(R.id.tvTitle);
-        TextView txtAll = ((HomeActivity) getActivity()).findViewById(R.id.txtAll);
-        tvTitle.setText(getResources().getString(R.string.quotations));
-        txtAll.setVisibility(View.VISIBLE);
-        txtAll.setText(getResources().getString(R.string.all_quotations));
+        this.mMyBroadcastReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equalsIgnoreCase(getResources().getString(R.string.remove_month_quotation))) {
+                    if (intent != null) {
+                        if (whichAPICall == 0) {
+                            total_sale = total_sale - 1;
+                            txtTotalOrder.setText("Total Quotations : " + total_sale);
+                        } else if (whichAPICall == 1) {
+                            total_sale_search = total_sale_search - 1;
+                            txtTotalOrder.setText("Total Quotations : " + total_sale_search);
+                        }
+                    }
+                }
+            }
+        };
+        try {
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(this.mMyBroadcastReceiver, new IntentFilter(getResources().getString(R.string.remove_month_quotation)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
