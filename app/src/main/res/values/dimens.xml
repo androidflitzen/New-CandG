@@ -42,4 +42,15 @@
     <dimen name="_8dp">8dp</dimen>
     <dimen name="_10sp">10sp</dimen>
     <dimen name="_35dp">35dp</dimen>
+    <dimen name="_45dp">45dp</dimen>
+
+
+    <dimen name="textSize_sidebar">10sp</dimen>
+    <dimen name="large_textSize_sidebar">32sp</dimen>
+    <dimen name="textSize_sidebar_choose">12sp</dimen>
+    <dimen name="textSize_sidebar_padding">20sp</dimen>
+    <dimen name="radius_sidebar">20dp</dimen>
+    <dimen name="ball_radius_sidebar">24dp</dimen>
+    <dimen name="_200dp">200dp</dimen>
+
 </resources>

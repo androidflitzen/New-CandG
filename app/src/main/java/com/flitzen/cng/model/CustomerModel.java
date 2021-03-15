@@ -48,6 +48,9 @@ public class CustomerModel {
         @SerializedName("name")
         @Expose
         private String name;
+        @SerializedName("phone_no")
+        @Expose
+        private String phone_no;
 
         public String getCustomerId() {
             return customerId;
@@ -65,6 +68,13 @@ public class CustomerModel {
             this.name = name;
         }
 
+        public String getPhone_no() {
+            return phone_no;
+        }
+
+        public void setPhone_no(String phone_no) {
+            this.phone_no = phone_no;
+        }
     }
 
 }

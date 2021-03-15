@@ -65,4 +65,8 @@
     <color name="dialog_tab_color">#B8B8B8</color>
     <color name="drawer_line">#BABABA</color>
     <color name="light_green">#73AA6D</color>
+
+    <color name="save_btn_color">#3EADF6</color>
+    <color name="toggle_color">#424242</color>
+
 </resources>

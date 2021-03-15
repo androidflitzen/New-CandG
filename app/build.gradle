@@ -63,4 +63,6 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'us.belka:androidtoggleswitch:1.2.2'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+    implementation 'cc.solart:turbo-recyclerview-helper:1.0.3-beta'
 }

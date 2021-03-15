@@ -80,6 +80,7 @@
                     android:paddingRight="@dimen/_20dp"
                     android:layout_centerVertical="true"
                     android:paddingTop="@dimen/_10dp"
+                    android:foreground="?attr/selectableItemBackground"
                     android:visibility="gone"
                     android:textColor="@color/white"
                     android:paddingBottom="@dimen/_10dp">

@@ -26,9 +26,12 @@ import android.widget.Toast;
 import com.flitzen.cng.R;
 import com.flitzen.cng.fragment.ComingSoonFragment;
 import com.flitzen.cng.fragment.CreditNote_ListFragment;
+import com.flitzen.cng.fragment.CustomersFragment;
 import com.flitzen.cng.fragment.Invoice_ListFragment;
 import com.flitzen.cng.fragment.Quotation_ListFragment;
 import com.flitzen.cng.fragment.SaleNewFragment;
+import com.flitzen.cng.test_customer_list.MainActivityCustomer;
+import com.flitzen.cng.test_customer_list.MainActivityCustomerA_Z;
 import com.flitzen.cng.utils.CToast;
 import com.flitzen.cng.utils.NetworkConnectionCheck;
 import com.flitzen.cng.utils.SharePref;
@@ -226,8 +229,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.linCustomer:
                 tvTitle.setText(getResources().getString(R.string.customers));
-                //replaceFragment(new CustomersFragment());
-                replaceFragment(new ComingSoonFragment());
+               // replaceFragment(new MainActivityCustomerA_Z());
+                replaceFragment(new CustomersFragment());
+               // replaceFragment(new ComingSoonFragment());
                 backPressStatus = 1;
                 drawer.closeDrawer(GravityCompat.START);
                 break;

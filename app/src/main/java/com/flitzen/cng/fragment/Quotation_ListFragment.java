@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.flitzen.cng.adapter.YearListAdapter;
 import com.flitzen.cng.model.MonthListModel;
 import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.utils.CToast;
+import com.flitzen.cng.utils.NDSpinner;
 import com.flitzen.cng.utils.SharePref;
 import com.flitzen.cng.utils.Utils;
 import com.flitzen.cng.utils.WebApi;
@@ -55,6 +57,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -93,11 +96,11 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     @BindView(R.id.cardSpinnerMonth)
     CardView cardSpinnerMonth;
     @BindView(R.id.txtSpinnerMonth)
-    Spinner txtSpinnerMonth;
+    NDSpinner txtSpinnerMonth;
     @BindView(R.id.cardSpinnerYear)
     CardView cardSpinnerYear;
     @BindView(R.id.txtSpinnerYear)
-    Spinner txtSpinnerYear;
+    NDSpinner txtSpinnerYear;
     @BindView(R.id.txtMonthName)
     TextView txtMonthName;
     @BindView(R.id.txtYear)
@@ -108,6 +111,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     ArrayList<QuotationListingModel.Result> arrayListTemp = new ArrayList<>();
     //  ArrayList<MonthListModel.Data> arrayListMonth = new ArrayList<>();
     List<String> arrayListMonth = new ArrayList<>();
+    List<String> arrayListMonthNumber = new ArrayList<>();
     List<String> arrayListYear = new ArrayList<>();
     public QuotationListAdapter mAdapter;
     public ArrayAdapter<String> monthAdapter;
@@ -121,6 +125,10 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     int whichAPICall = 0;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private String year, month;
+    private String TAG = "Quotation_ListFragment";
+    private TextView txtAll;
+    private int clickState = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -131,13 +139,9 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
 
         sharedPreferences = SharePref.getSharePref(getActivity());
         editor = sharedPreferences.edit();
-        if (Utils.isOnline(getActivity())) {
-            getQuotation(0);
-        } else {
-            new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                    .setBackgroundColor(R.color.msg_fail)
-                    .show();
-        }
+
+        manageMonthAndYear();
+        performSomeOperations();
 
         relSelectMonth.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -154,8 +158,6 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                 }
             }
         });
-
-        performSomeOperations();
 
         return viewQuotation;
     }
@@ -214,7 +216,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                     viewEmpty.setVisibility(View.VISIBLE);
                 }
 
-                txtTotalOrder.setText(total_sale);
+                txtTotalOrder.setText(String.valueOf(total_sale));
                 //mAdapter.notifyDataSetChanged();
                 mAdapter.updateList(arrayList);
                 whichAPICall = 0;
@@ -268,7 +270,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                         viewEmpty.setVisibility(View.VISIBLE);
                     }
 
-                    txtTotalOrder.setText(total_sale);
+                    txtTotalOrder.setText(String.valueOf(total_sale));
                     whichAPICall = 0;
                     pageForSearch = 1;
                     mAdapter.updateList(arrayList);
@@ -283,21 +285,42 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
             public void afterTextChanged(Editable editable) {
             }
         });
+    }
 
+    private void manageMonthAndYear() {
         arrayListMonth = Arrays.asList(getResources().getStringArray(R.array.month_name));
-        int monthIndex = LocalDate.now().getMonth().ordinal();//indexed from 0
-        Collections.rotate(arrayListMonth, -monthIndex);
+        arrayListMonthNumber = Arrays.asList(getResources().getStringArray(R.array.month_position));
+        // int monthIndex = LocalDate.now().getMonth().ordinal();//indexed from 0
+        Calendar c = Calendar.getInstance();
+        int next_month = c.get(Calendar.MONTH) + 1;
+        Collections.rotate(arrayListMonth, -next_month);
+        Collections.rotate(arrayListMonthNumber, -next_month);
         Collections.reverse(arrayListMonth);
+        Collections.reverse(arrayListMonthNumber);
         // monthAdapter = new MonthListAdapter(getActivity(), R.layout.month_selection_layout, arrayListMonth);
         monthAdapter = new MonthListAdapter(getActivity(), arrayListMonth);
         txtSpinnerMonth.setOnItemSelectedListener(this);
         txtSpinnerMonth.setAdapter(monthAdapter);
+        month = String.valueOf(next_month);
 
         arrayListYear = Arrays.asList(getResources().getStringArray(R.array.year));
         // monthAdapter = new MonthListAdapter(getActivity(), R.layout.month_selection_layout, arrayListMonth);
         yearAdapter = new YearListAdapter(getActivity(), arrayListYear);
         txtSpinnerYear.setOnItemSelectedListener(this);
         txtSpinnerYear.setAdapter(yearAdapter);
+        year = arrayListYear.get(0);
+
+        editor.putString(SharePref.QT_MONTH, String.valueOf(0));
+        editor.putString(SharePref.QT_YEAR, String.valueOf(0));
+        editor.commit();
+
+        if (Utils.isOnline(getActivity())) {
+            getQuotation(0);
+        } else {
+            new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
+        }
 
     }
 
@@ -318,34 +341,59 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.relSelectMonth:
-
+            case R.id.txtAll:
+                clickState = 1;
+                if (Utils.isOnline(getActivity())) {
+                    getQuotation(0);
+                } else {
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
                 break;
         }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (parent.getId()){
+        switch (parent.getId()) {
             case R.id.txtSpinnerMonth:
+                clickState = 0;
                 txtMonthName.setText(arrayListMonth.get(position));
                 editor.putString(SharePref.QT_MONTH, String.valueOf(position));
                 editor.commit();
                 monthAdapter.notifyDataSetChanged();
+                month = arrayListMonthNumber.get(position);
+                if (Utils.isOnline(getActivity())) {
+                    getQuotation(0);
+                } else {
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
                 break;
 
             case R.id.txtSpinnerYear:
+                clickState = 0;
                 txtYear.setText(arrayListYear.get(position));
                 editor.putString(SharePref.QT_YEAR, String.valueOf(position));
                 editor.commit();
                 yearAdapter.notifyDataSetChanged();
+                year = arrayListYear.get(position);
+                if (Utils.isOnline(getActivity())) {
+                    getQuotation(0);
+                } else {
+                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
                 break;
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        System.out.println("==========onNothingSelected");
     }
 
     class searchData extends AsyncTask<Void, Void, Void> {
@@ -362,7 +410,13 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
         protected Void doInBackground(Void... voids) {
             whichAPICall = 1;
             WebApi webApi = CandG.getClient().create(WebApi.class);
-            Call<QuotationListingModel> call = webApi.monthQuotationListApi(getResources().getString(R.string.api_key), String.valueOf(pageForSearch), searchWord);
+            Call<QuotationListingModel> call = null;
+            if (clickState == 0) {
+                call = webApi.searchMonthYearQuotationListApi(getResources().getString(R.string.api_key), String.valueOf(pageForSearch), month, year, searchWord);
+                System.out.println("===========call  " + call.request().url());
+            } else {
+                call = webApi.monthQuotationListApi(getResources().getString(R.string.api_key), String.valueOf(pageForSearch), searchWord);
+            }
             call.enqueue(new Callback<QuotationListingModel>() {
                 @Override
                 public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
@@ -396,8 +450,10 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                             mAdapter.updateList(arrayListSearch);
 
                         } else {
-                            viewContent.setVisibility(View.VISIBLE);
-                            recyclerview_quotation_list.setVisibility(View.GONE);
+                            pageForSearch = 1;
+                            arrayListSearch.clear();
+                            viewContent.setVisibility(View.GONE);
+                           // recyclerview_quotation_list.setVisibility(View.GONE);
                             viewEmpty.setVisibility(View.VISIBLE);
                             layout_empty.setVisibility(View.VISIBLE);
                         }
@@ -439,8 +495,17 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
             swipeRefreshLayout.setRefreshing(true);
         }
 
+        Log.e(TAG, "Month " + month);
+        Log.e(TAG, "Year " + year);
+
         WebApi webApi = CandG.getClient().create(WebApi.class);
-        Call<QuotationListingModel> call = webApi.monthQuotationListApi(getResources().getString(R.string.api_key), String.valueOf(page));
+        Call<QuotationListingModel> call = null;
+        if (clickState == 0) {
+            call = webApi.monthYearQuotationListApi(getResources().getString(R.string.api_key), month, year, String.valueOf(page));
+        } else if (clickState == 1) {
+            call = webApi.yearQuotationListApi(getResources().getString(R.string.api_key), String.valueOf(page));
+        }
+
         call.enqueue(new Callback<QuotationListingModel>() {
             @Override
             public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
@@ -480,6 +545,9 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                         // mAdapter.notifyDataSetChanged();
 
                     } else {
+                        page = 1;
+                        arrayList.clear();
+                        arrayListTemp.clear();
                         viewContent.setVisibility(View.GONE);
                         viewEmpty.setVisibility(View.VISIBLE);
                         layout_empty.setVisibility(View.VISIBLE);
@@ -512,9 +580,10 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     public void onResume() {
         super.onResume();
         TextView tvTitle = ((HomeActivity) getActivity()).findViewById(R.id.tvTitle);
-        TextView txtAll = ((HomeActivity) getActivity()).findViewById(R.id.txtAll);
+        txtAll = ((HomeActivity) getActivity()).findViewById(R.id.txtAll);
         tvTitle.setText(getResources().getString(R.string.quotations));
         txtAll.setVisibility(View.VISIBLE);
         txtAll.setText(getResources().getString(R.string.all_quotations));
+        txtAll.setOnClickListener(this);
     }
 }

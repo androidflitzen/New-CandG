@@ -57,12 +57,16 @@ public interface WebApi {
     Call<AddQuotationModel> addQuotationApi(@QueryMap Map<String, String> params);
 
     //Edit Quotation
-    @GET("credit_note/edit")
+    @GET("quotation/edit")
     Call<AddQuotationModel> editQuotationApi(@QueryMap Map<String, String> params);
 
     //Add Invoice
     @GET("invoice/add")
     Call<AddQuotationModel> addInvoiceApi(@QueryMap Map<String, String> params);
+
+    //Convert Quotation to Invoice
+    @GET("quotation/invoice_convert")
+    Call<AddQuotationModel> convertQuotationToInvoiceApi(@QueryMap Map<String, String> params);
 
     //Add credit Note
     @GET("credit_note/add")
@@ -173,16 +177,29 @@ public interface WebApi {
     @GET("quotation/abc?")
     Call<MonthListModel> getMonthList(@Query("api_key") String api_key);
 
-     /* //category list
-    @GET("products/category?")
-    Call<CategoryModel> categoryApi(@Query("api_key") String api_key);
+    //Month Year wise Quotation List
+    @GET("quotation/month_year_wise?")
+    Call<QuotationListingModel> monthYearQuotationListApi(@Query("api_key") String api_key,@Query("month") String month,@Query("year") String year,@Query("pno") String pno);
 
-    //subcategory list
-    @GET("products/sub_category?")
-    Call<SubCategoryModel> subCategoryApi(@Query("api_key") String api_key, @Query("category_id") String category_id);
+    //Search month Year wise Quotation List
+    @GET("quotation/month_year_wise?")
+    Call<QuotationListingModel> searchMonthYearQuotationListApi(@Query("api_key") String api_key,@Query("pno") String pno,@Query("month") String month,@Query("year") String year, @Query("search_text") String search_text);
 
-    //product list
-    @GET("products/data?")
-    Call<ProductModel> productApi(@Query("api_key") String api_key,@Query("category_id") String category_id, @Query("sub_category_id") String sub_category_id);*/
+    //Month Year wise Quotation List
+    @GET("invoice/month_year_wise?")
+    Call<TodayInvoiceListingModel> monthYearInvoiceListApi(@Query("api_key") String api_key,@Query("month") String month,@Query("year") String year,@Query("pno") String pno);
+
+    //Search month Year wise Invoice List
+    @GET("quotation/month_year_wise?")
+    Call<TodayInvoiceListingModel> searchMonthYearInvoiceListApi(@Query("api_key") String api_key,@Query("pno") String pno,@Query("month") String month,@Query("year") String year, @Query("search_text") String search_text);
+
+    //Month Year wise Credit Notes List
+    @GET("credit_note/month_year_wise?")
+    Call<CrediNotesListModel> monthYearCreditListApi(@Query("api_key") String api_key,@Query("month") String month,@Query("year") String year,@Query("pno") String pno);
+
+    //Search month Year wise Credit Notes List
+    @GET("credit_note/month_year_wise?")
+    Call<CrediNotesListModel> searchCreditInvoiceListApi(@Query("api_key") String api_key,@Query("pno") String pno,@Query("month") String month,@Query("year") String year, @Query("search_text") String search_text);
+
 
 }

@@ -45,7 +45,7 @@ public class CreditNoteListAdapter extends RecyclerView.Adapter<CreditNoteListAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         holder.txtCnNo.setText("CN-"+arrayListTemp.get(position).getCreaditNoteId());
-        holder.txtDate.setText(arrayListTemp.get(position).getCreaditNoteDate() + " " + arrayListTemp.get(position).getCreaditNoteTime());
+        holder.txtDate.setText(arrayListTemp.get(position).getCreaditNoteDate());
         holder.txtTime.setText(arrayListTemp.get(position).getCreaditNoteTime());
         holder.txtTo.setText(arrayListTemp.get(position).getCreditNoteTo());
         holder.txtSalesPer.setText(arrayListTemp.get(position).getSalesPersonName());

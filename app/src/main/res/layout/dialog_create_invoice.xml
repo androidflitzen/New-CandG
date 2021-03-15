@@ -7,12 +7,12 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
 
@@ -42,7 +42,7 @@
 
                 <belka.us.androidtoggleswitch.widgets.ToggleSwitch
                     android:id="@+id/toggle_create_inv"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_5sdp"
@@ -54,7 +54,7 @@
                     custom:separatorColor="@color/gray_very_light"
                     custom:textToggleLeft="ACCOUNT SALE"
                     custom:textToggleRight="CASH SALE"
-                    custom:toggleWidth="300dp" />
+                    custom:toggleWidth="@dimen/_220sdp" />
 
                 <View
                     android:layout_width="match_parent"

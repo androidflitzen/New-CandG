@@ -25,7 +25,9 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,6 +184,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
     private ArrayList<OnSaleProducts_Items> arrayListOnSale = new ArrayList<>();
     private BroadcastReceiver mMyBroadcastReceiver;
     private SharedPreferences sharedPreferences;
+    private TextView txtAll;
     ArrayList<SaleSubCat_Items> arrayListSubCategory = new ArrayList<>();
     ArrayList<SaleProducts_Items> arrayListAllProductsTemp = new ArrayList<>();
     ArrayList<SaleProducts_Items> arrayListAllProducts = new ArrayList<>();
@@ -470,6 +473,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         final EditText edtSearchUnit = (EditText) promptsView.findViewById(R.id.edt_spn_search);
         final ListView list_Unit = (ListView) promptsView.findViewById(R.id.list_spn);
 
+        edtSearchUnit.setVisibility(View.GONE);
         edtSearchUnit.setHint("Search Sales Person");
 
         final ArrayList<String> arrayListTemp = new ArrayList<>();
@@ -797,7 +801,22 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         final android.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
+        /*alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        alertDialog.getWindow().setLayout(((Utils.getWidth(getActivity()) / 100) * 90), LinearLayout.LayoutParams.MATCH_PARENT);*/
+
         alertDialog.show();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+        int dialogWindowWidth = (int) (displayWidth * 0.9f);
+        int dialogWindowHeight = (int) (displayHeight * 0.9f);
+        layoutParams.width = dialogWindowWidth;
+        layoutParams.height = dialogWindowHeight;
+        alertDialog.getWindow().setAttributes(layoutParams);
 
         btnSave = promptsView.findViewById(R.id.btn_create_inv_save);
         btnSavePrint = promptsView.findViewById(R.id.btn_create_inv_save_and_print);
@@ -1446,7 +1465,10 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             Map<String, String> params = new HashMap<>();
             params.put("api_key", getResources().getString(R.string.api_key));
             params.put("user_id", sharedPreferences.getString(SharePref.USERID, ""));
-            params.put("customer_id", customerId);
+            if(saleType.equalsIgnoreCase("1")){
+                params.put("customer_id", customerId);
+            }
+
             params.put("customer_name", customerName);
             params.put("sales_person_id", salesPerson);
             params.put("total_amount", txtTotalPrice.getText().toString().trim().substring(1, txtTotalPrice.getText().toString().trim().length()).replace(",", ""));
@@ -1647,6 +1669,8 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         arrayListAllProductsTemp.clear();
         arrayListAllProducts.addAll(CandG.arrayListProducts);
         arrayListAllProductsTemp.addAll(CandG.arrayListProducts);
+        txtAll = ((HomeActivity) getActivity()).findViewById(R.id.txtAll);
+        txtAll.setVisibility(View.GONE);
         this.mMyBroadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 if (intent != null && context != null) {
@@ -1892,6 +1916,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         final EditText edtSearchUnit = (EditText) promptsView.findViewById(R.id.edt_spn_search);
         final ListView list_Unit = (ListView) promptsView.findViewById(R.id.list_spn);
 
+        edtSearchUnit.setVisibility(View.GONE);
         edtSearchUnit.setHint("Search Product Unit");
 
         final ArrayList<String> arrayListTemp = new ArrayList<>();
@@ -2239,4 +2264,5 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
     }
+
 }

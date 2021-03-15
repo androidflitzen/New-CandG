@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -565,6 +566,7 @@ public class Quotation_To_Invoice extends AppCompatActivity {
         final EditText edtSearchUnit = (EditText) promptsView.findViewById(R.id.edt_spn_search);
         final ListView list_Unit = (ListView) promptsView.findViewById(R.id.list_spn);
 
+        edtSearchUnit.setVisibility(View.GONE);
         edtSearchUnit.setHint("Search Sales Person");
 
         final ArrayList<String> arrayListTemp = new ArrayList<>();
@@ -889,6 +891,18 @@ public class Quotation_To_Invoice extends AppCompatActivity {
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         alertDialog.show();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+        int dialogWindowWidth = (int) (displayWidth * 0.9f);
+        int dialogWindowHeight = (int) (displayHeight * 0.9f);
+        layoutParams.width = dialogWindowWidth;
+        layoutParams.height = dialogWindowHeight;
+        alertDialog.getWindow().setAttributes(layoutParams);
 
         final View viewAccountSale = promptsView.findViewById(R.id.view_create_inv_account_sale);
         final View viewCashSaleTogle = promptsView.findViewById(R.id.view_create_inv_cashsale);
@@ -1445,7 +1459,7 @@ public class Quotation_To_Invoice extends AppCompatActivity {
 
         WebApi webApi = CandG.getClient().create(WebApi.class);
         Log.d(TAG, "Add Invoice param " + params.toString());
-        Call<AddQuotationModel> call = webApi.addInvoiceApi(params);
+        Call<AddQuotationModel> call = webApi.convertQuotationToInvoiceApi(params);
         Log.d(TAG, "Add Invoice API  " + call.request().toString());
         call.enqueue(new Callback<AddQuotationModel>() {
             @Override
@@ -1507,7 +1521,9 @@ public class Quotation_To_Invoice extends AppCompatActivity {
             params.put("api_key", getResources().getString(R.string.api_key));
             params.put("quotation_id", quotationId);
             params.put("user_id", sharedPreferences.getString(SharePref.USERID, ""));
-            params.put("customer_id", customerId);
+            if(String.valueOf(type).equalsIgnoreCase("1")){
+                params.put("customer_id", customerId);
+            }
             params.put("customer_name", customerName);
             params.put("sales_person_id", salesPerson);
             params.put("total_amount", txtTotalPrice.getText().toString().trim().substring(1, txtTotalPrice.getText().toString().trim().length()).replace(",", ""));

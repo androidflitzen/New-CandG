@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/view_quotation_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -30,39 +29,39 @@
 
             </TextView>
 
-           <!-- <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:orientation="horizontal">
+            <!-- <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                 android:layout_weight="1"
+                 android:gravity="right"
+                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="35dp"
-                    android:gravity="left"
-                    android:text="@string/select_month"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold">
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="left"
+                     android:layout_marginLeft="35dp"
+                     android:gravity="left"
+                     android:text="@string/select_month"
+                     android:textColor="@color/colorPrimary"
+                     android:textStyle="bold">
 
-                </TextView>
+                 </TextView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="150dp"
-                    android:text="@string/select_year"
-                    android:layout_gravity="left"
-                    android:gravity="left"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold">
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="150dp"
+                     android:text="@string/select_year"
+                     android:layout_gravity="left"
+                     android:gravity="left"
+                     android:textColor="@color/colorPrimary"
+                     android:textStyle="bold">
 
-                </TextView>
+                 </TextView>
 
-            </LinearLayout>-->
+             </LinearLayout>-->
 
         </LinearLayout>
 
@@ -72,14 +71,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginRight="10dp"
-                android:layout_weight="1"
+                android:layout_weight="2.9"
                 android:gravity="left"
                 android:orientation="horizontal">
 
@@ -92,7 +91,7 @@
                     android:layout_marginBottom="10dp"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="5dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -101,7 +100,7 @@
 
                         <EditText
                             android:id="@+id/edt_search"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:gravity="center|left"
@@ -151,16 +150,14 @@
 
             </LinearLayout>
 
-            <LinearLayout
+           <!-- <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="center|right"
-                android:orientation="horizontal">
-
-
+                android:orientation="horizontal">-->
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardSpinnerMonth"
@@ -172,7 +169,7 @@
                     android:layout_marginBottom="10dp"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="5dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
                         android:id="@+id/relSelectMonth"
@@ -191,7 +188,7 @@
 
                         </TextView>
 
-                        <Spinner
+                        <com.flitzen.cng.utils.NDSpinner
                             android:id="@+id/txtSpinnerMonth"
                             style="@style/spinner_style"
                             android:layout_width="match_parent"
@@ -207,8 +204,8 @@
                         <RelativeLayout
                             android:layout_width="40dp"
                             android:layout_height="wrap_content"
-                            android:background="@color/colorPrimary"
-                            android:layout_alignParentRight="true">
+                            android:layout_alignParentRight="true"
+                            android:background="@color/colorPrimary">
 
                             <ImageView
                                 android:layout_width="@dimen/search_bar_size"
@@ -244,7 +241,7 @@
                     android:layout_marginBottom="10dp"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="5dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
                         android:id="@+id/relSelectYear"
@@ -264,7 +261,7 @@
 
                         </TextView>
 
-                        <Spinner
+                        <com.flitzen.cng.utils.NDSpinner
                             android:id="@+id/txtSpinnerYear"
                             style="@style/spinner_style"
                             android:layout_width="match_parent"
@@ -280,8 +277,8 @@
                         <RelativeLayout
                             android:layout_width="40dp"
                             android:layout_height="wrap_content"
-                            android:background="@color/colorPrimary"
-                            android:layout_alignParentRight="true">
+                            android:layout_alignParentRight="true"
+                            android:background="@color/colorPrimary">
 
                             <ImageView
                                 android:layout_width="@dimen/search_bar_size"
@@ -307,212 +304,208 @@
 
                 </androidx.cardview.widget.CardView>
 
+          <!--  </LinearLayout>-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/view_quotation_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:gravity="center|left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="right"
+                    android:text="Total Quotation : -"
+                    android:textColor="@color/txt_color2" />
+
+                <TextView
+                    android:id="@+id/txt_orders_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="right"
+                    android:text=""
+                    android:textColor="@color/colorPrimary" />
+
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="@dimen/_10dp"
-            android:gravity="center|left"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:gravity="right"
-                android:text="Total Quotation : -"
-                android:textColor="@color/txt_color2" />
+                android:layout_marginLeft="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_10dp"
+                android:background="@drawable/common_box"
+                android:orientation="horizontal"
+                android:weightSum="9">
 
-            <TextView
-                android:id="@+id/txt_orders_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:gravity="right"
-                android:text=""
-                android:textColor="@color/colorPrimary" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="2"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:text="Quotation No"
+                    android:textColor="@color/txt_color3"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-        </LinearLayout>
+                <!--     <View
+                         android:layout_width="1dp"
+                         android:layout_height="match_parent"
+                         android:background="@color/black">
 
-        <!-- <androidx.cardview.widget.CardView
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginLeft="@dimen/_10dp"
-             android:layout_marginRight="@dimen/_10dp"
-             android:foreground="?attr/selectableItemBackground"
-             app:cardBackgroundColor="@android:color/white"
-             app:cardCornerRadius="0dp"
-             app:cardElevation="20dp">-->
+                     </View>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_10dp"
-            android:layout_marginRight="@dimen/_10dp"
-            android:background="@drawable/common_box"
-            android:orientation="horizontal"
-            android:weightSum="9">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:text="Quotation To"
+                    android:textColor="@color/txt_color3"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="2"
-                android:paddingLeft="@dimen/_10dp"
-                android:paddingTop="@dimen/_20dp"
-                android:paddingRight="@dimen/_20dp"
-                android:paddingBottom="@dimen/_20dp"
-                android:text="Quotation No"
-                android:textColor="@color/txt_color3"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:text="Date"
+                    android:textColor="@color/txt_color3"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-            <!--     <View
-                     android:layout_width="1dp"
-                     android:layout_height="match_parent"
-                     android:background="@color/black">
+                <!--   <View
+                       android:layout_width="1dp"
+                       android:layout_height="match_parent"
+                       android:background="@color/black">
 
-                 </View>-->
+                   </View>-->
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2.5"
-                android:paddingLeft="@dimen/_10dp"
-                android:paddingTop="@dimen/_20dp"
-                android:paddingRight="@dimen/_20dp"
-                android:paddingBottom="@dimen/_20dp"
-                android:text="Quotation To"
-                android:textColor="@color/txt_color3"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+                <!--  <View
+                      android:layout_width="1dp"
+                      android:layout_height="match_parent"
+                      android:background="@color/black">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:paddingLeft="@dimen/_10dp"
-                android:paddingTop="@dimen/_20dp"
-                android:paddingRight="@dimen/_20dp"
-                android:paddingBottom="@dimen/_20dp"
-                android:text="Date"
-                android:textColor="@color/txt_color3"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+                  </View>-->
 
-            <!--   <View
-                   android:layout_width="1dp"
-                   android:layout_height="match_parent"
-                   android:background="@color/black">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:text="Sub Total"
+                    android:textColor="@color/txt_color3"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-               </View>-->
+                <!--<View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black">
 
-            <!--  <View
-                  android:layout_width="1dp"
-                  android:layout_height="match_parent"
-                  android:background="@color/black">
+                </View>-->
 
-              </View>-->
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:text="Vat"
+                    android:textColor="@color/txt_color3"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:paddingLeft="@dimen/_20dp"
-                android:paddingTop="@dimen/_20dp"
-                android:paddingRight="@dimen/_10dp"
-                android:paddingBottom="@dimen/_20dp"
-                android:text="Sub Total"
-                android:textColor="@color/txt_color3"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+                <!--  <View
+                      android:layout_width="1dp"
+                      android:layout_height="match_parent"
+                      android:background="@color/black">
 
-            <!--<View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/black">
+                  </View>-->
 
-            </View>-->
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:text="Amount"
+                    android:textColor="@color/txt_color3"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:paddingLeft="@dimen/_20dp"
-                android:paddingTop="@dimen/_20dp"
-                android:paddingRight="@dimen/_10dp"
-                android:paddingBottom="@dimen/_20dp"
-                android:text="Vat"
-                android:textColor="@color/txt_color3"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+            </LinearLayout>
 
-            <!--  <View
-                  android:layout_width="1dp"
-                  android:layout_height="match_parent"
-                  android:background="@color/black">
-
-              </View>-->
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:paddingLeft="@dimen/_20dp"
-                android:paddingTop="@dimen/_20dp"
-                android:paddingRight="@dimen/_10dp"
-                android:paddingBottom="@dimen/_20dp"
-                android:text="Amount"
-                android:textColor="@color/txt_color3"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <!-- </androidx.cardview.widget.CardView>-->
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_view_invoice_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_view_invoice_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview_quatation_list"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:clipToPadding="false" />
+                    android:layout_height="match_parent">
 
-                <ProgressBar
-                    android:id="@+id/progress_wheel"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"
-                    wheel:matProg_barColor="@color/colorPrimary"
-                    wheel:matProg_progressIndeterminate="true" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_quatation_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_10dp"
+                        android:clipToPadding="false" />
 
-            </RelativeLayout>
+                    <ProgressBar
+                        android:id="@+id/progress_wheel"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"
+                        wheel:matProg_barColor="@color/colorPrimary"
+                        wheel:matProg_progressIndeterminate="true" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                </RelativeLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

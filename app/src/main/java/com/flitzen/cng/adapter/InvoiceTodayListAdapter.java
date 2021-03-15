@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -93,7 +94,8 @@ public class InvoiceTodayListAdapter extends RecyclerView.Adapter<InvoiceTodayLi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtPrice, txtNo, txtCustomer, txtDate, txtTime, txtSubTotal, txtVatAmount, txtPaidAmount, txtDueAmount, txtPONo;
-        CardView mainView, txtStatus;
+        CardView mainView;
+        LinearLayout txtStatus;
 
         public ViewHolder(View itemView) {
             super(itemView);

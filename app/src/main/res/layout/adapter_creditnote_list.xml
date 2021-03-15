@@ -18,8 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -27,31 +26,12 @@
                 android:orientation="horizontal"
                 android:weightSum="10">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:orientation="vertical">
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black">
 
-                    <TextView
-                        android:id="@+id/txt_cnlist_a_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:includeFontPadding="false"
-                        android:text="22 Dec,2016"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="@android:color/black" />
-
-                    <TextView
-                        android:id="@+id/txt_cnlist_a_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:includeFontPadding="false"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="@android:color/black"
-                        android:visibility="gone" />
-
-                </LinearLayout>
+                </View>
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_no"
@@ -60,7 +40,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="S - 1"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="#ef5350"
                     tools:ignore="MissingPrefix" />
 
@@ -71,7 +53,9 @@
                     android:layout_weight="1"
                     android:maxLines="1"
                     android:text="PO"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/txt_color1" />
 
                 <TextView
@@ -82,7 +66,9 @@
                     android:layout_weight="2"
                     android:gravity="left"
                     android:text="Credit Note To"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:layout_gravity="center_vertical"
+                    android:padding="10dp"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@android:color/black"
                     tools:ignore="MissingPrefix" />
 
@@ -94,9 +80,41 @@
                     android:layout_weight="1.5"
                     android:gravity="left"
                     android:text="Sales Peron"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@android:color/black"
                     tools:ignore="MissingPrefix" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_cnlist_a_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:text="22 Dec,2016"
+                        android:textStyle="bold"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/txt_cnlist_a_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/txt_color2"
+                        android:textSize="15dp"
+                        android:visibility="visible" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_sub_total"
@@ -104,9 +122,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:text="$321"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@android:color/black"
                     tools:ignore="MissingPrefix" />
 
@@ -116,9 +136,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:text="$321"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@android:color/black"
                     tools:ignore="MissingPrefix" />
 
@@ -128,11 +150,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:text="$321"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@android:color/black"
                     tools:ignore="MissingPrefix" />
+
+                <View
+                    android:layout_width="1.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black">
+
+                </View>
+
             </LinearLayout>
 
             <LinearLayout
@@ -150,15 +182,17 @@
                     android:drawablePadding="5dp"
                     android:gravity="right|center"
                     android:text="Cash Sale"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/green" />
             </LinearLayout>
+
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/view" />
+        android:background="@color/black" />
 
 </LinearLayout>
