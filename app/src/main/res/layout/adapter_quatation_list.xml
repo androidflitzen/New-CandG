@@ -153,7 +153,6 @@
 
                 <TextView
                     android:id="@+id/txt_invoicelist_a_sub_total"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -174,7 +173,6 @@
 
                 <TextView
                     android:id="@+id/txt_invoicelist_a_vat_amount"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -195,7 +193,6 @@
 
                 <TextView
                     android:id="@+id/txt_invoicelist_a_amount"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

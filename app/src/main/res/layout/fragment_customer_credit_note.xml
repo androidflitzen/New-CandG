@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_20dp"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="8"
+            android:paddingBottom="5dp"
+            android:orientation="horizontal"
+            android:background="@drawable/common_box">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_10dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_20dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="CN No"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_10dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_20dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="Purchase No"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_10dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_20dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="Sales Person"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_10dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_20dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="Date"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_20dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_10dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="Sub Total"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_20dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_10dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="Vat"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/txt_color3"
+                android:paddingLeft="@dimen/_20dp"
+                android:paddingTop="@dimen/_20dp"
+                android:paddingRight="@dimen/_10dp"
+                android:paddingBottom="@dimen/_20dp"
+                android:text="Amount"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_view_quotation_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/view_creditNote_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_creditNote_list_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="true" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_wheel"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"
+                        wheel:matProg_barColor="@color/colorPrimary"
+                        wheel:matProg_progressIndeterminate="true" />
+
+                </RelativeLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="sempty.json"
+                    app:lottie_loop="true" />
+
+                <TextView
+                    android:id="@+id/view_creditNote_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/animation_view"
+                    android:gravity="center"
+                    android:text="No credit note has been issued"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

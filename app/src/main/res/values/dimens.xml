@@ -52,5 +52,7 @@
     <dimen name="radius_sidebar">20dp</dimen>
     <dimen name="ball_radius_sidebar">24dp</dimen>
     <dimen name="_200dp">200dp</dimen>
+    <dimen name="_30dp">30dp</dimen>
+    <dimen name="_60dp">60dp</dimen>
 
 </resources>

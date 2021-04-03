@@ -383,6 +383,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         btnQuotation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.playClickSound(getActivity());
                 if (arrayListCustomer.size() == 0) {
                     getCustomer(1, 1);
                 } else {
@@ -434,10 +435,12 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
                     public void onResponse(Call<SalesPersonModel> call, Response<SalesPersonModel> response) {
                         hidePRD();
                         if (response.isSuccessful()) {
-                            arrayListSalesPerson.clear();
-                            arrayListSalesPerson.addAll(response.body().getData());
-                            if (checkClick == 1) {
-                                selectSalesPerson(textView);
+                            if (response.body().getStatus() == 1) {
+                                arrayListSalesPerson.clear();
+                                arrayListSalesPerson.addAll(response.body().getData());
+                                if (checkClick == 1) {
+                                    selectSalesPerson(textView);
+                                }
                             }
                         } else {
                             if (checkClick == 1) {
@@ -548,14 +551,16 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
                     public void onResponse(Call<CustomerModel> call, Response<CustomerModel> response) {
                         hidePRD();
                         if (response.isSuccessful()) {
-                            arrayListCustomer.clear();
-                            arrayListCustomer.addAll(response.body().getData());
-                            if (btnType == 1) {
-                                createQuotationDialog(btnType);
-                            } else if (btnType == 2) {
-                                createInvoiceDialog();
-                            } else if (btnType == 3) {
-                                createQuotationDialog(btnType);
+                            if(response.body().getStatus()==1){
+                                arrayListCustomer.clear();
+                                arrayListCustomer.addAll(response.body().getData());
+                                if (btnType == 1) {
+                                    createQuotationDialog(btnType);
+                                } else if (btnType == 2) {
+                                    createInvoiceDialog();
+                                } else if (btnType == 3) {
+                                    createQuotationDialog(btnType);
+                                }
                             }
                         } else {
                             if (checkClick == 1) {
@@ -609,6 +614,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.playClickSound(getActivity());
                 alertDialog.dismiss();
             }
         });
@@ -826,6 +832,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.playClickSound(getActivity());
                 alertDialog.dismiss();
             }
         });
@@ -910,8 +917,8 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Utils.playClickSound(getActivity());
                 if (b)
-                    paymentType = "0";
-                //0= Cash, 1 = Card, 2 = Debit 3= Online, 4 = cheque, 5 =other
+                    paymentType = "1";
+                //1= Cash, 2 = Card, 3 = Debit 4= Online, 5 = cheque, 6 =other
             }
         });
 
@@ -920,7 +927,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Utils.playClickSound(getActivity());
                 if (b)
-                    paymentType = "1";
+                    paymentType = "2";
             }
         });
         rdbDebit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -928,7 +935,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Utils.playClickSound(getActivity());
                 if (b)
-                    paymentType = "2";
+                    paymentType = "3";
             }
         });
         rdbOnline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -936,7 +943,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Utils.playClickSound(getActivity());
                 if (b)
-                    paymentType = "3";
+                    paymentType = "4";
             }
         });
         rdbCheque.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -944,7 +951,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Utils.playClickSound(getActivity());
                 if (b)
-                    paymentType = "4";
+                    paymentType = "5";
             }
         });
         rdbOther.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -952,7 +959,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Utils.playClickSound(getActivity());
                 if (b)
-                    paymentType = "5";
+                    paymentType = "6";
             }
         });
 
@@ -964,19 +971,23 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().length() > 0) {
-                    double enteredAmount = Double.parseDouble(edtPaidAmount.getText().toString().trim());
-                    double returnAmount = enteredAmount - paidAMount;
-                    txtReturnAmount.setText(formatter.format(returnAmount));
-                    if (returnAmount == 0) {
-                        viewReturnAmount.setVisibility(View.GONE);
+                try {
+                    if (charSequence.toString().length() > 0) {
+                        double enteredAmount = Double.parseDouble(edtPaidAmount.getText().toString().trim());
+                        double returnAmount = enteredAmount - paidAMount;
+                        txtReturnAmount.setText(formatter.format(returnAmount));
+                        if (returnAmount == 0) {
+                            viewReturnAmount.setVisibility(View.GONE);
+                        } else {
+                            viewReturnAmount.setVisibility(View.VISIBLE);
+                        }
                     } else {
-                        viewReturnAmount.setVisibility(View.VISIBLE);
+                        viewReturnAmount.setVisibility(View.GONE);
                     }
-                } else {
-                    viewReturnAmount.setVisibility(View.GONE);
-                }
 
+                }catch (NumberFormatException e){
+
+                }
             }
 
             @Override
@@ -1465,7 +1476,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
             Map<String, String> params = new HashMap<>();
             params.put("api_key", getResources().getString(R.string.api_key));
             params.put("user_id", sharedPreferences.getString(SharePref.USERID, ""));
-            if(saleType.equalsIgnoreCase("1")){
+            if (saleType.equalsIgnoreCase("1")) {
                 params.put("customer_id", customerId);
             }
 
@@ -1835,7 +1846,7 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
                     return;
                 } else {
                     if (Utils.isOnline(getActivity())) {
-                        addNewProduct(edt_product_name.getText().toString(), edt_base_price.getText().toString(), txt_unit.getTag().toString(),alertDialog);
+                        addNewProduct(edt_product_name.getText().toString(), edt_base_price.getText().toString(), txt_unit.getTag().toString(), alertDialog);
                     } else {
                         new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
                                 .setBackgroundColor(R.color.msg_fail)
@@ -1857,33 +1868,34 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<AddNewProductModel> call, Response<AddNewProductModel> response) {
                     if (response.isSuccessful()) {
-                        new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
-                                .setBackgroundColor(R.color.msg_success)
-                                .show();
-                        String selectedProduct = response.body().getProduct_id();
-                        SaleProducts_Items item = new SaleProducts_Items();
-                        item.setpId(selectedProduct);
-                        item.setSelected(true);
-                        item.setpPrice(price);
-                        item.setpName(productName);
-                        arrayListAllProducts.add(item);
+                        if(response.body().getStatus()==1){
+                            new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_success)
+                                    .show();
+                            String selectedProduct = response.body().getProduct_id();
+                            SaleProducts_Items item = new SaleProducts_Items();
+                            item.setpId(selectedProduct);
+                            item.setSelected(true);
+                            item.setpPrice(price);
+                            item.setpName(productName);
+                            arrayListAllProducts.add(item);
 
-                        OnSaleProducts_Items mItem = new OnSaleProducts_Items();
-                        mItem.setpId(item.getpId());
-                        mItem.setpName(item.getpName());
-                        mItem.setpQty(1);
-                        mItem.setZero_vat("0");
-                        mItem.setpPrice(Double.parseDouble(item.getpPrice()));
-                        arrayListOnSale.add(mItem);
-                        mAdapterOnSaleProducts.notifyDataSetChanged();
-                        if (arrayListOnSale.size() > 0) {
-                            relNoItems.setVisibility(View.GONE);
-                            recyclerviewOnSaleProducts.setVisibility(View.VISIBLE);
+                            OnSaleProducts_Items mItem = new OnSaleProducts_Items();
+                            mItem.setpId(item.getpId());
+                            mItem.setpName(item.getpName());
+                            mItem.setpQty(1);
+                            mItem.setZero_vat("0");
+                            mItem.setpPrice(Double.parseDouble(item.getpPrice()));
+                            arrayListOnSale.add(mItem);
+                            mAdapterOnSaleProducts.notifyDataSetChanged();
+                            if (arrayListOnSale.size() > 0) {
+                                relNoItems.setVisibility(View.GONE);
+                                recyclerviewOnSaleProducts.setVisibility(View.VISIBLE);
+                            }
+                            setTotal();
+                            hidePRD();
+                            alertDialog.dismiss();
                         }
-                        setTotal();
-                        hidePRD();
-                        alertDialog.dismiss();
-
                     } else {
                         new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
                                 .setBackgroundColor(R.color.msg_fail)
@@ -1983,13 +1995,15 @@ public class SaleNewFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<UnitModel> call, Response<UnitModel> response) {
                     if (response.isSuccessful()) {
-                        arrayListProductUnit.clear();
-                        for (int i = 0; i < response.body().getData().size(); i++) {
-                            arrayListProductUnit.add(response.body().getData().get(i));
-                        }
-                        if (arrayListProductUnit.size() > 0) {
-                            txt_unit.setText(arrayListProductUnit.get(0).getUnitName());
-                            txt_unit.setTag(arrayListProductUnit.get(0).getUnitId());
+                        if(response.body().getStatus()==1){
+                            arrayListProductUnit.clear();
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+                                arrayListProductUnit.add(response.body().getData().get(i));
+                            }
+                            if (arrayListProductUnit.size() > 0) {
+                                txt_unit.setText(arrayListProductUnit.get(0).getUnitName());
+                                txt_unit.setTag(arrayListProductUnit.get(0).getUnitId());
+                            }
                         }
                     } else {
                         new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)

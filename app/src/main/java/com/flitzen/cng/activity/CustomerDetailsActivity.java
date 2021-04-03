@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,7 @@ import com.flitzen.cng.fragment.CustomerInvoiceFragment;
 import com.flitzen.cng.fragment.CustomerMontlyStatementFragment;
 import com.flitzen.cng.fragment.CustomerPaymentStatusFragment;
 import com.flitzen.cng.fragment.CustomerProfileFragment;
-import com.flitzen.cng.fragment.CustomerQuatationFragment;
-import com.flitzen.cng.fragment.QuatationFragment;
+import com.flitzen.cng.fragment.CustomerQuotationFragment;
 import com.flitzen.cng.utils.Utils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -31,6 +31,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class CustomerDetailsActivity extends AppCompatActivity {
 
@@ -45,11 +49,30 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     @BindView(R.id.viewpager_order)
     ViewPager2 viewPager;
 
+    String customerId,customerName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_details);
         ButterKnife.bind(this);
+
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+
+                                .setDefaultFontPath(getResources().getString(R.string.font_regular))
+                                .setFontAttrId(R.attr.fontPath)
+                                .build()))
+                .build());
+
+        if(getIntent()!=null){
+            if(getIntent().hasExtra("customer_id")){
+                customerName=getIntent().getStringExtra("customer_name");
+                customerId=getIntent().getStringExtra("customer_id");
+                tvTitle.setText(customerName);
+            }
+        }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setElevation(0f);
@@ -57,12 +80,12 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(6);
 
         List<Fragment> mFragments = new ArrayList<>();
-        mFragments .add(new CustomerProfileFragment());
-        mFragments .add(new CustomerInvoiceFragment());
-        mFragments .add(new CustomerPaymentStatusFragment());
+        mFragments .add(new CustomerProfileFragment(customerId));
+        mFragments .add(new CustomerInvoiceFragment(customerId));
+        mFragments .add(new CustomerPaymentStatusFragment(customerId));
         mFragments .add(new CustomerMontlyStatementFragment());
-        mFragments .add(new CustomerQuatationFragment());
-        mFragments .add(new CustomerCreditNoteFragment());
+        mFragments .add(new CustomerQuotationFragment(customerId));
+        mFragments .add(new CustomerCreditNoteFragment(customerId));
         InvoicePagerAdapter mAdapter = new InvoicePagerAdapter(CustomerDetailsActivity.this, mFragments);
         viewPager.setAdapter(mAdapter);
 
@@ -97,5 +120,10 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         Utils.playClickSound(getApplicationContext());
         finish();
         return true;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

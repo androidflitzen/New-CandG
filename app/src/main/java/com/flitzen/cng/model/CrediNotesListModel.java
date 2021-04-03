@@ -80,6 +80,12 @@ public class CrediNotesListModel {
         @SerializedName("purchase_no")
         @Expose
         private String purchase_no;
+        @SerializedName("credit_note_pdf_url")
+        @Expose
+        private String creditNotePdfUrl;
+        @SerializedName("customer_email")
+        @Expose
+        private String customerEmail;
 
         public String getPurchase_no() {
             return purchase_no;
@@ -153,6 +159,21 @@ public class CrediNotesListModel {
             this.finalTotal = finalTotal;
         }
 
+        public String getCreditNotePdfUrl() {
+            return creditNotePdfUrl;
+        }
+
+        public void setCreditNotePdfUrl(String creditNotePdfUrl) {
+            this.creditNotePdfUrl = creditNotePdfUrl;
+        }
+
+        public String getCustomerEmail() {
+            return customerEmail;
+        }
+
+        public void setCustomerEmail(String customerEmail) {
+            this.customerEmail = customerEmail;
+        }
     }
 
 }

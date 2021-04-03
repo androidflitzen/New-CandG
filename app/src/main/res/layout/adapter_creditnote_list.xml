@@ -60,7 +60,6 @@
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_to"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -74,7 +73,6 @@
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_sales_person"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
@@ -118,7 +116,6 @@
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_sub_total"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -132,7 +129,6 @@
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_vat_amount"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -146,7 +142,6 @@
 
                 <TextView
                     android:id="@+id/txt_cnlist_a_amount"
-                    fontPath="@string/font_bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

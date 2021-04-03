@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,8 +41,12 @@ import com.google.android.material.navigation.NavigationView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+ public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -78,6 +83,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+
+                                .setDefaultFontPath(getResources().getString(R.string.font_regular))
+                                .setFontAttrId(R.attr.fontPath)
+                                .build()))
+                .build());
 
         NetworkConnectionCheck.getConnectivityStatusString(HomeActivity.this);
         sharedPreferences = SharePref.getSharePref(HomeActivity.this);
@@ -205,6 +219,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        Utils.playClickSound(getApplicationContext());
         switch (v.getId()){
             case R.id.linSale:
                 tvTitle.setText(getResources().getString(R.string.sale));
@@ -275,8 +290,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 }).show();
     }
 
-   /* @Override
+    @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }*/
+    }
 }

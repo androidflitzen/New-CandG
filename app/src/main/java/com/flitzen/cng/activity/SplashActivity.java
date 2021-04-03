@@ -22,6 +22,11 @@ import org.jsoup.Jsoup;
 
 import java.io.IOException;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 public class SplashActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
@@ -30,6 +35,17 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        Utils.playWelcomeSound(getApplicationContext());
+
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+
+                                .setDefaultFontPath(getResources().getString(R.string.font_regular))
+                                .setFontAttrId(R.attr.fontPath)
+                                .build()))
+                .build());
 
         sharedPreferences = SharePref.getSharePref(SplashActivity.this);
         if (sharedPreferences.getBoolean(SharePref.LOGIN_STATUS, false)) {
@@ -114,5 +130,10 @@ public class SplashActivity extends AppCompatActivity {
 
             return newVersion;
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

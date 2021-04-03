@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -59,7 +60,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class Invoice_ListFragment extends Fragment  implements View.OnClickListener, AdapterView.OnItemSelectedListener{
+public class Invoice_ListFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     View viewInvoiceMain;
 
@@ -97,6 +98,8 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
     TextView txtYear;
     @BindView(R.id.view_quotation_empty)
     TextView viewEmpty;
+    @BindView(R.id.relList)
+    RelativeLayout relList;
 
     ArrayList<TodayInvoiceListingModel.Result> arrayList = new ArrayList<>();
     ArrayList<TodayInvoiceListingModel.Result> arrayListSearch = new ArrayList<>();
@@ -121,6 +124,7 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
     private String TAG = "Invoice_ListFragment";
     private TextView txtAll;
     private int clickState = 0;
+    private boolean checkInitMonth = false, checkInitYear = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -187,6 +191,14 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
             }
         });
 
+        edtSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Utils.playClickSound(getActivity());
+                return false;
+            }
+        });
+
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,18 +210,21 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
                 arrayList.clear();
                 arrayList.addAll(arrayListTemp);
 
+                int tempTotal = 0;
                 if (arrayList.size() > 0) {
-                    viewInvoice.setVisibility(View.VISIBLE);
+                    relList.setVisibility(View.VISIBLE);
                     recyclerview_invoice_list.setVisibility(View.VISIBLE);
                     layout_empty.setVisibility(View.GONE);
                     viewEmpty.setVisibility(View.GONE);
+                    tempTotal = total_sale;
                 } else {
-                    viewInvoice.setVisibility(View.GONE);
+                    relList.setVisibility(View.GONE);
                     layout_empty.setVisibility(View.VISIBLE);
                     viewEmpty.setVisibility(View.VISIBLE);
+                    tempTotal = 0;
                 }
 
-                txtTotalOrder.setText(String.valueOf(total_sale));
+                txtTotalOrder.setText(String.valueOf(tempTotal));
                 //mAdapter.notifyDataSetChanged();
                 mAdapter.updateList(arrayList);
                 whichAPICall = 0;
@@ -252,18 +267,21 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
                     img_search.setVisibility(View.VISIBLE);
                     arrayList.addAll(arrayListTemp);
 
+                    int tempTotal = 0;
                     if (arrayList.size() > 0) {
-                        viewInvoice.setVisibility(View.VISIBLE);
+                        relList.setVisibility(View.VISIBLE);
                         recyclerview_invoice_list.setVisibility(View.VISIBLE);
                         layout_empty.setVisibility(View.GONE);
                         viewEmpty.setVisibility(View.GONE);
+                        tempTotal = total_sale;
                     } else {
-                        viewInvoice.setVisibility(View.GONE);
+                        relList.setVisibility(View.GONE);
                         layout_empty.setVisibility(View.VISIBLE);
                         viewEmpty.setVisibility(View.VISIBLE);
+                        tempTotal = 0;
                     }
 
-                    txtTotalOrder.setText(String.valueOf(total_sale));
+                    txtTotalOrder.setText(String.valueOf(tempTotal));
                     whichAPICall = 0;
                     pageForSearch = 1;
                     mAdapter.updateList(arrayList);
@@ -292,15 +310,15 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
         Collections.reverse(arrayListMonthNumber);
         // monthAdapter = new MonthListAdapter(getActivity(), R.layout.month_selection_layout, arrayListMonth);
         monthAdapter = new MonthListAdapter(getActivity(), arrayListMonth);
-        txtSpinnerMonth.setOnItemSelectedListener(this);
         txtSpinnerMonth.setAdapter(monthAdapter);
+        txtSpinnerMonth.setOnItemSelectedListener(this);
         month = String.valueOf(next_month);
 
         arrayListYear = Arrays.asList(getResources().getStringArray(R.array.year));
         // monthAdapter = new MonthListAdapter(getActivity(), R.layout.month_selection_layout, arrayListMonth);
         yearAdapter = new YearListAdapter(getActivity(), arrayListYear);
-        txtSpinnerYear.setOnItemSelectedListener(this);
         txtSpinnerYear.setAdapter(yearAdapter);
+        txtSpinnerYear.setOnItemSelectedListener(this);
         year = arrayListYear.get(0);
 
         editor.putString(SharePref.QT_MONTH, String.valueOf(0));
@@ -335,6 +353,7 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txtAll:
+                Utils.playClickSound(getActivity());
                 clickState = 1;
                 if (Utils.isOnline(getActivity())) {
                     getInvoiceFirst(0);
@@ -352,33 +371,47 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
         switch (parent.getId()) {
             case R.id.txtSpinnerMonth:
                 clickState = 0;
+                page = 1;
+                pageForSearch = 1;
                 txtMonthName.setText(arrayListMonth.get(position));
                 editor.putString(SharePref.QT_MONTH, String.valueOf(position));
                 editor.commit();
                 monthAdapter.notifyDataSetChanged();
                 month = arrayListMonthNumber.get(position);
-                if (Utils.isOnline(getActivity())) {
-                    getInvoiceFirst(0);
+
+                if (checkInitMonth == false) {
+                    checkInitMonth = true;
                 } else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
+                    if (Utils.isOnline(getActivity())) {
+                        getInvoiceFirst(0);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
                 break;
 
             case R.id.txtSpinnerYear:
                 clickState = 0;
+                page = 1;
+                pageForSearch = 1;
                 txtYear.setText(arrayListYear.get(position));
                 editor.putString(SharePref.QT_YEAR, String.valueOf(position));
                 editor.commit();
                 yearAdapter.notifyDataSetChanged();
                 year = arrayListYear.get(position);
-                if (Utils.isOnline(getActivity())) {
-                    getInvoiceFirst(0);
+
+                if (checkInitYear == false) {
+                    checkInitYear = true;
                 } else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
+                    if (Utils.isOnline(getActivity())) {
+                        getInvoiceFirst(0);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
                 break;
         }
@@ -414,45 +447,53 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
                 @Override
                 public void onResponse(Call<TodayInvoiceListingModel> call, retrofit2.Response<TodayInvoiceListingModel> response) {
                     swipeRefreshLayout.setRefreshing(false);
-                    try {
-                        if (response.body().getStatus() == 1) {
 
-                            viewInvoice.setVisibility(View.VISIBLE);
-                            recyclerview_invoice_list.setVisibility(View.VISIBLE);
-                            viewEmpty.setVisibility(View.GONE);
-                            layout_empty.setVisibility(View.GONE);
+                    if (response.isSuccessful()) {
+                        try {
+                            if (response.body().getStatus() == 1) {
 
-                            if (checkPagination == 0) {
-                                txtTotalOrder.setText(response.body().getTotal());
-                                total_sale_search = Integer.parseInt(response.body().getTotal());
+                                relList.setVisibility(View.VISIBLE);
+                                recyclerview_invoice_list.setVisibility(View.VISIBLE);
+                                viewEmpty.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
 
-                                arrayListSearch.clear();
-                            }
+                                if (checkPagination == 0) {
+                                    txtTotalOrder.setText(response.body().getTotal());
+                                    total_sale_search = Integer.parseInt(response.body().getTotal());
 
-                            for (int i = 0; i < response.body().getData().size(); i++) {
-                                arrayListSearch.add(response.body().getData().get(i));
-                            }
+                                    arrayListSearch.clear();
+                                }
 
-                            if (arrayListSearch.size() < total_sale_search) {
-                                pageForSearch++;
-                                itShouldLoadMore = true;
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+                                    arrayListSearch.add(response.body().getData().get(i));
+                                }
+
+                                if (arrayListSearch.size() < total_sale_search) {
+                                    pageForSearch++;
+                                    itShouldLoadMore = true;
+                                } else {
+                                    itShouldLoadMore = false;
+                                }
+                                //mAdapter.notifyDataSetChanged();
+                                mAdapter.updateList(arrayListSearch);
+
                             } else {
-                                itShouldLoadMore = false;
+                                pageForSearch = 1;
+                                arrayListSearch.clear();
+                                relList.setVisibility(View.GONE);
+                                // recyclerview_quotation_list.setVisibility(View.GONE);
+                                viewEmpty.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
+                                txtTotalOrder.setText("0");
                             }
-                            //mAdapter.notifyDataSetChanged();
-                            mAdapter.updateList(arrayListSearch);
 
-                        } else {
-                            pageForSearch = 1;
-                            arrayListSearch.clear();
-                            viewInvoice.setVisibility(View.GONE);
-                            // recyclerview_quotation_list.setVisibility(View.GONE);
-                            viewEmpty.setVisibility(View.VISIBLE);
-                            layout_empty.setVisibility(View.VISIBLE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
                     }
 
                     swipeRefreshLayout.setRefreshing(false);
@@ -480,6 +521,7 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
     }
 
     public void getInvoiceFirst(int checkPagination) {
+        System.out.println("===========page    " + page);
         whichAPICall = 0;
         if (checkPagination == 1) {
             itShouldLoadMore = false;
@@ -502,55 +544,61 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
         call.enqueue(new Callback<TodayInvoiceListingModel>() {
             @Override
             public void onResponse(Call<TodayInvoiceListingModel> call, retrofit2.Response<TodayInvoiceListingModel> response) {
-                try {
+                if (response.isSuccessful()) {
+                    try {
 
-                    if (checkPagination == 1) {
-                        progressWheel.setVisibility(View.GONE);
-                        itShouldLoadMore = true;
-                    }
+                        if (checkPagination == 1) {
+                            progressWheel.setVisibility(View.GONE);
+                            itShouldLoadMore = true;
+                        }
 
-                    if (response.body().getStatus() == 1) {
+                        if (response.body().getStatus() == 1) {
 
-                        viewInvoice.setVisibility(View.VISIBLE);
-                        viewEmpty.setVisibility(View.GONE);
-                        layout_empty.setVisibility(View.GONE);
+                            relList.setVisibility(View.VISIBLE);
+                            viewEmpty.setVisibility(View.GONE);
+                            layout_empty.setVisibility(View.GONE);
 
-                        if (checkPagination == 0) {
-                            txtTotalOrder.setText(response.body().getTotal());
-                            total_sale = Integer.parseInt(response.body().getTotal());
+                            if (checkPagination == 0) {
+                                txtTotalOrder.setText(response.body().getTotal());
+                                total_sale = Integer.parseInt(response.body().getTotal());
 
+                                arrayList.clear();
+                                arrayListTemp.clear();
+                            }
+
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+                                arrayList.add(response.body().getData().get(i));
+                                arrayListTemp.add(response.body().getData().get(i));
+                            }
+
+                            if (arrayList.size() < total_sale) {
+                                page++;
+                                itShouldLoadMore = true;
+                            } else {
+                                itShouldLoadMore = false;
+                            }
+                            mAdapter.updateList(arrayList);
+                            // mAdapter.notifyDataSetChanged();
+
+                        } else {
+                            page = 1;
                             arrayList.clear();
                             arrayListTemp.clear();
+                            relList.setVisibility(View.GONE);
+                            viewEmpty.setVisibility(View.VISIBLE);
+                            layout_empty.setVisibility(View.VISIBLE);
+                            txtTotalOrder.setText("0");
+                            //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
 
-                        for (int i = 0; i < response.body().getData().size(); i++) {
-                            arrayList.add(response.body().getData().get(i));
-                            arrayListTemp.add(response.body().getData().get(i));
-                        }
-
-                        if (arrayList.size() < total_sale) {
-                            page++;
-                            itShouldLoadMore = true;
-                        } else {
-                            itShouldLoadMore = false;
-                        }
-                        mAdapter.updateList(arrayList);
-                        // mAdapter.notifyDataSetChanged();
-
-                    } else {
-                        page = 1;
-                        arrayList.clear();
-                        arrayListTemp.clear();
-                        viewInvoice.setVisibility(View.GONE);
-                        viewEmpty.setVisibility(View.VISIBLE);
-                        layout_empty.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
                 }
-
                 swipeRefreshLayout.setRefreshing(false);
             }
 
@@ -571,7 +619,7 @@ public class Invoice_ListFragment extends Fragment  implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
-        TextView tvTitle=((HomeActivity)getActivity()).findViewById(R.id.tvTitle);
+        TextView tvTitle = ((HomeActivity) getActivity()).findViewById(R.id.tvTitle);
         tvTitle.setText(getResources().getString(R.string.invoices));
         txtAll = ((HomeActivity) getActivity()).findViewById(R.id.txtAll);
         txtAll.setVisibility(View.VISIBLE);

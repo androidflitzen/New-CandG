@@ -274,43 +274,50 @@ public class Invoice_MonthFragmentTest extends Fragment {
                 @Override
                 public void onResponse(Call<TodayInvoiceListingModel> call, retrofit2.Response<TodayInvoiceListingModel> response) {
                     swipeRefreshLayout.setRefreshing(false);
-                    try {
-                        if (response.body().getStatus() == 1) {
 
-                            viewInvoice.setVisibility(View.VISIBLE);
-                            recyclerview_invoice_list.setVisibility(View.VISIBLE);
-                            textViewMsg.setVisibility(View.GONE);
-                            layout_empty.setVisibility(View.GONE);
+                    if (response.isSuccessful()){
+                        try {
+                            if (response.body().getStatus() == 1) {
 
-                            if (checkPagination == 0) {
-                                txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
-                                total_sale_search = Integer.parseInt(response.body().getTotal());
+                                viewInvoice.setVisibility(View.VISIBLE);
+                                recyclerview_invoice_list.setVisibility(View.VISIBLE);
+                                textViewMsg.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
 
-                                arrayListSearch.clear();
-                            }
+                                if (checkPagination == 0) {
+                                    txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
+                                    total_sale_search = Integer.parseInt(response.body().getTotal());
 
-                            for (int i = 0; i < response.body().getData().size(); i++) {
-                                arrayListSearch.add(response.body().getData().get(i));
-                            }
+                                    arrayListSearch.clear();
+                                }
 
-                            if (arrayListSearch.size() < total_sale_search) {
-                                pageForSearch++;
-                                itShouldLoadMore = true;
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+                                    arrayListSearch.add(response.body().getData().get(i));
+                                }
+
+                                if (arrayListSearch.size() < total_sale_search) {
+                                    pageForSearch++;
+                                    itShouldLoadMore = true;
+                                } else {
+                                    itShouldLoadMore = false;
+                                }
+                                //mAdapter.notifyDataSetChanged();
+                                mAdapter.updateList(arrayListSearch);
+
                             } else {
-                                itShouldLoadMore = false;
+                                viewInvoice.setVisibility(View.VISIBLE);
+                                recyclerview_invoice_list.setVisibility(View.GONE);
+                                textViewMsg.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
                             }
-                            //mAdapter.notifyDataSetChanged();
-                            mAdapter.updateList(arrayListSearch);
 
-                        } else {
-                            viewInvoice.setVisibility(View.VISIBLE);
-                            recyclerview_invoice_list.setVisibility(View.GONE);
-                            textViewMsg.setVisibility(View.VISIBLE);
-                            layout_empty.setVisibility(View.VISIBLE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    }else {
+                        new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
                     }
 
                     swipeRefreshLayout.setRefreshing(false);

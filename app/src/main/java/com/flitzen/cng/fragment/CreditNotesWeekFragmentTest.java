@@ -122,49 +122,55 @@ public class CreditNotesWeekFragmentTest extends Fragment {
                 call.enqueue(new Callback<CrediNotesListModel>() {
                     @Override
                     public void onResponse(Call<CrediNotesListModel> call, retrofit2.Response<CrediNotesListModel> response) {
-                        try {
+                        if(response.isSuccessful()){
+                            try {
 
-                            if (checkPagination == 1) {
-                                progressWheel.setVisibility(View.GONE);
-                                itShouldLoadMore = true;
-                            }
-
-                            if (response.body().getStatus() == 1) {
-
-                                viewInvoice.setVisibility(View.VISIBLE);
-                                textViewMsg.setVisibility(View.GONE);
-                                layout_empty.setVisibility(View.GONE);
-
-                                if (checkPagination == 0) {
-                                    txtTotalOrder.setText("Total Credit Notes : " + response.body().getTotal());
-                                    total_sale = Integer.parseInt(response.body().getTotal());
-
-                                    arrayList.clear();
-                                    arrayListTemp.clear();
-                                }
-
-                                for (int i = 0; i < response.body().getData().size(); i++) {
-                                    arrayList.add(response.body().getData().get(i));
-                                    arrayListTemp.add(response.body().getData().get(i));
-                                }
-
-                                if (arrayList.size() < total_sale) {
-                                    page++;
+                                if (checkPagination == 1) {
+                                    progressWheel.setVisibility(View.GONE);
                                     itShouldLoadMore = true;
-                                } else {
-                                    itShouldLoadMore = false;
                                 }
-                                creditNoteListAdapter.notifyDataSetChanged();
 
-                            } else {
-                                viewInvoice.setVisibility(View.GONE);
-                                textViewMsg.setVisibility(View.VISIBLE);
-                                layout_empty.setVisibility(View.VISIBLE);
-                                textViewMsg.setText("No credit note has been created today");
+                                if (response.body().getStatus() == 1) {
+
+                                    viewInvoice.setVisibility(View.VISIBLE);
+                                    textViewMsg.setVisibility(View.GONE);
+                                    layout_empty.setVisibility(View.GONE);
+
+                                    if (checkPagination == 0) {
+                                        txtTotalOrder.setText("Total Credit Notes : " + response.body().getTotal());
+                                        total_sale = Integer.parseInt(response.body().getTotal());
+
+                                        arrayList.clear();
+                                        arrayListTemp.clear();
+                                    }
+
+                                    for (int i = 0; i < response.body().getData().size(); i++) {
+                                        arrayList.add(response.body().getData().get(i));
+                                        arrayListTemp.add(response.body().getData().get(i));
+                                    }
+
+                                    if (arrayList.size() < total_sale) {
+                                        page++;
+                                        itShouldLoadMore = true;
+                                    } else {
+                                        itShouldLoadMore = false;
+                                    }
+                                    creditNoteListAdapter.notifyDataSetChanged();
+
+                                } else {
+                                    viewInvoice.setVisibility(View.GONE);
+                                    textViewMsg.setVisibility(View.VISIBLE);
+                                    layout_empty.setVisibility(View.VISIBLE);
+                                    textViewMsg.setText("No credit note has been created today");
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        }else {
+                            new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
                         }
 
                         swipeRefreshLayout.setRefreshing(false);
@@ -361,43 +367,49 @@ public class CreditNotesWeekFragmentTest extends Fragment {
                 @Override
                 public void onResponse(Call<CrediNotesListModel> call, retrofit2.Response<CrediNotesListModel> response) {
                     swipeRefreshLayout.setRefreshing(false);
-                    try {
-                        if (response.body().getStatus() == 1) {
+                    if (response.isSuccessful()){
+                        try {
+                            if (response.body().getStatus() == 1) {
 
-                            viewInvoice.setVisibility(View.VISIBLE);
-                            recyclerview_crnote_list.setVisibility(View.VISIBLE);
-                            textViewMsg.setVisibility(View.GONE);
-                            layout_empty.setVisibility(View.GONE);
+                                viewInvoice.setVisibility(View.VISIBLE);
+                                recyclerview_crnote_list.setVisibility(View.VISIBLE);
+                                textViewMsg.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
 
-                            if (checkPagination == 0) {
-                                txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
-                                total_sale_search = Integer.parseInt(response.body().getTotal());
+                                if (checkPagination == 0) {
+                                    txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
+                                    total_sale_search = Integer.parseInt(response.body().getTotal());
 
-                                arrayListSearch.clear();
-                            }
+                                    arrayListSearch.clear();
+                                }
 
-                            for (int i = 0; i < response.body().getData().size(); i++) {
-                                arrayListSearch.add(response.body().getData().get(i));
-                            }
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+                                    arrayListSearch.add(response.body().getData().get(i));
+                                }
 
-                            if (arrayListSearch.size() < total_sale_search) {
-                                pageForSearch++;
-                                itShouldLoadMore = true;
+                                if (arrayListSearch.size() < total_sale_search) {
+                                    pageForSearch++;
+                                    itShouldLoadMore = true;
+                                } else {
+                                    itShouldLoadMore = false;
+                                }
+                                //mAdapter.notifyDataSetChanged();
+                                creditNoteListAdapter.updateList(arrayListSearch);
+
                             } else {
-                                itShouldLoadMore = false;
+                                viewInvoice.setVisibility(View.VISIBLE);
+                                recyclerview_crnote_list.setVisibility(View.GONE);
+                                textViewMsg.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
                             }
-                            //mAdapter.notifyDataSetChanged();
-                            creditNoteListAdapter.updateList(arrayListSearch);
 
-                        } else {
-                            viewInvoice.setVisibility(View.VISIBLE);
-                            recyclerview_crnote_list.setVisibility(View.GONE);
-                            textViewMsg.setVisibility(View.VISIBLE);
-                            layout_empty.setVisibility(View.VISIBLE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    }else {
+                        new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
                     }
 
                     swipeRefreshLayout.setRefreshing(false);

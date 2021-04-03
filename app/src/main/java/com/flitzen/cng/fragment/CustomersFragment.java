@@ -147,7 +147,7 @@ public class CustomersFragment extends Fragment implements View.OnClickListener,
                                     .show();
                         }
                     }else {
-                        new CToast(getContext()).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                        new CToast(getContext()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
                                 .setBackgroundColor(R.color.msg_fail)
                                 .show();
                     }
@@ -335,8 +335,8 @@ public class CustomersFragment extends Fragment implements View.OnClickListener,
     public void onClickCustomer(View view, int position) {
         Utils.playClickSound(getActivity());
         Intent intent = new Intent(getActivity(), CustomerDetailsActivity.class);
-       /* intent.putExtra("cust_id", customerList.get(position).getCustomerId());
-        intent.putExtra("cust_name", customerList.get(position).getCompanyName());*/
+        intent.putExtra("customer_id", customerList.get(position).getCustomerId());
+        intent.putExtra("customer_name", customerList.get(position).getName());
         getActivity().startActivity(intent);
     }
 

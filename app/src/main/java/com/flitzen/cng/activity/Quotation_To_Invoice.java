@@ -45,6 +45,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,11 +60,13 @@ import com.flitzen.cng.adapter.SaleProducts_Adapter;
 import com.flitzen.cng.adapter.SaleSubCat_Items;
 import com.flitzen.cng.adapter.SaleSubCategory_Adapter;
 import com.flitzen.cng.adapter.Spn_Adapter;
+import com.flitzen.cng.model.AddNewProductModel;
 import com.flitzen.cng.model.AddQuotationModel;
 import com.flitzen.cng.model.AllProductDataModel;
 import com.flitzen.cng.model.CustomerModel;
 import com.flitzen.cng.model.QuotationDetailsModel;
 import com.flitzen.cng.model.SalesPersonModel;
+import com.flitzen.cng.model.UnitModel;
 import com.flitzen.cng.utils.CToast;
 import com.flitzen.cng.utils.Helper;
 import com.flitzen.cng.utils.SharePref;
@@ -155,12 +158,13 @@ public class Quotation_To_Invoice extends AppCompatActivity {
     private DecimalFormat formatterQty = new DecimalFormat(Helper.AMOUNT_FORMATE);
     private ArrayList<SaleSubCat_Items> arrayListSubCategory = new ArrayList<>();
     int selectedSubCatPosition = 0;
-    private ProgressDialog prd;
+    private ProgressDialog prd,prd1;
     private ArrayList<CustomerModel.Result> arrayListCustomer = new ArrayList<>();
     String sale_type = "";
     int salesType = 1;
     String TAG = "Quotation_To_Invoice";
     ArrayList<SalesPersonModel.Result> arrayListSalesPerson = new ArrayList<>();
+    ArrayList<UnitModel.Data> arrayListProductUnit = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +181,8 @@ public class Quotation_To_Invoice extends AppCompatActivity {
                 .build());
         getSupportActionBar().setTitle("Quotation to Invoice");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
 
         prd = new ProgressDialog(Quotation_To_Invoice.this);
         prd.setMessage("Please wait...");
@@ -442,6 +448,10 @@ public class Quotation_To_Invoice extends AppCompatActivity {
         Button btn_cancel = promptsView.findViewById(R.id.btn_cancel);
         alertDialog.setCanceledOnTouchOutside(false);
 
+        txt_categoty.setVisibility(View.GONE);
+        getProductUnit(txt_unit);
+        Button btn_add =  promptsView.findViewById(R.id.btn_add);
+
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -458,7 +468,91 @@ public class Quotation_To_Invoice extends AppCompatActivity {
             }
         });
 
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.playClickSound(Quotation_To_Invoice.this);
+                if (edt_product_name.getText().toString().trim().isEmpty()) {
+                    edt_product_name.setError("Enter product name");
+                    edt_product_name.requestFocus();
+                    return;
+                } else if (edt_base_price.getText().toString().equals("")) {
+                    edt_base_price.setError("Enter base price");
+                    edt_base_price.requestFocus();
+                    return;
+                } else if (txt_unit.getText().toString().equals("Select Product Unit")) {
+                    new CToast(Quotation_To_Invoice.this).simpleToast("Please select a product unit.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                    return;
+                } else {
+                    if (Utils.isOnline(Quotation_To_Invoice.this)) {
+                        addNewProduct(edt_product_name.getText().toString(), edt_base_price.getText().toString(), txt_unit.getTag().toString(), alertDialog);
+                    } else {
+                        new CToast(Quotation_To_Invoice.this).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+            }
+        });
+
         alertDialog.show();
+    }
+
+    private void addNewProduct(String productName, String price, String unitId, AlertDialog alertDialog) {
+        try {
+            showPRD();
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Call<AddNewProductModel> call = webApi.addNewProduct(getResources().getString(R.string.api_key), sharedPreferences.getString(SharePref.USERID, ""), productName, price, unitId);
+            call.enqueue(new Callback<AddNewProductModel>() {
+                @Override
+                public void onResponse(Call<AddNewProductModel> call, Response<AddNewProductModel> response) {
+                    if (response.isSuccessful()) {
+                        if(response.body().getStatus()==1){
+                            new CToast(Quotation_To_Invoice.this).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_success)
+                                    .show();
+                            String selectedProduct = response.body().getProduct_id();
+                            SaleProducts_Items item = new SaleProducts_Items();
+                            item.setpId(selectedProduct);
+                            item.setSelected(true);
+                            item.setpPrice(price);
+                            item.setpName(productName);
+                            arrayListAllProducts.add(item);
+
+                            OnSaleProducts_Items mItem = new OnSaleProducts_Items();
+                            mItem.setpId(item.getpId());
+                            mItem.setpName(item.getpName());
+                            mItem.setpQty(1);
+                            mItem.setZero_vat("0");
+                            mItem.setpPrice(Double.parseDouble(item.getpPrice()));
+                            arrayListOnSale.add(mItem);
+                            mAdapterOnSaleProducts.notifyDataSetChanged();
+
+                            setTotal();
+                            hidePRD();
+                            alertDialog.dismiss();
+                        }
+                    } else {
+                        new CToast(Quotation_To_Invoice.this).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AddNewProductModel> call, Throwable t) {
+                    new CToast(Quotation_To_Invoice.this).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
+            });
+        } catch (Exception e) {
+            new CToast(Quotation_To_Invoice.this).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
+        }
     }
 
     private void getCustomer(int checkClick, int btnType) {
@@ -479,12 +573,14 @@ public class Quotation_To_Invoice extends AppCompatActivity {
                     public void onResponse(Call<CustomerModel> call, Response<CustomerModel> response) {
                         hidePRD();
                         if (response.isSuccessful()) {
-                            arrayListCustomer.clear();
-                            arrayListCustomer.addAll(response.body().getData());
-                            if (btnType == 1) {
-                                createInvoiceDialog();
-                            } else if (btnType == 2) {
-                                createQuotationDialog();
+                            if(response.body().getStatus()==1){
+                                arrayListCustomer.clear();
+                                arrayListCustomer.addAll(response.body().getData());
+                                if (btnType == 1) {
+                                    createInvoiceDialog();
+                                } else if (btnType == 2) {
+                                    createQuotationDialog();
+                                }
                             }
                         } else {
                             if (checkClick == 1) {
@@ -527,11 +623,14 @@ public class Quotation_To_Invoice extends AppCompatActivity {
                     public void onResponse(Call<SalesPersonModel> call, Response<SalesPersonModel> response) {
                         hidePRD();
                         if (response.isSuccessful()) {
-                            arrayListSalesPerson.clear();
-                            arrayListSalesPerson.addAll(response.body().getData());
-                            if (checkClick == 1) {
-                                selectSalesPerson(textView);
+                            if(response.body().getStatus()==1){
+                                arrayListSalesPerson.clear();
+                                arrayListSalesPerson.addAll(response.body().getData());
+                                if (checkClick == 1) {
+                                    selectSalesPerson(textView);
+                                }
                             }
+
                         } else {
                             if (checkClick == 1) {
                                 new CToast(Quotation_To_Invoice.this).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
@@ -737,18 +836,18 @@ public class Quotation_To_Invoice extends AppCompatActivity {
 
                             arrayListOnSale.add(item);
                         }
-                        hidePRD();
+                        hidePRD1();
                         mAdapterOnSaleProducts.notifyDataSetChanged();
                         setTotal();
 
                     } else {
-                        hidePRD();
+                        hidePRD1();
                         new CToast(Quotation_To_Invoice.this).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
                                 .setBackgroundColor(R.color.msg_fail)
                                 .show();
                     }
                 } else {
-                    hidePRD();
+                    hidePRD1();
                     new CToast(Quotation_To_Invoice.this).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
                             .setBackgroundColor(R.color.msg_fail)
                             .show();
@@ -757,7 +856,7 @@ public class Quotation_To_Invoice extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<QuotationDetailsModel> call, Throwable t) {
-                hidePRD();
+                hidePRD1();
                 new CToast(Quotation_To_Invoice.this).simpleToast(getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT)
                         .setBackgroundColor(R.color.msg_fail)
                         .show();
@@ -804,6 +903,7 @@ public class Quotation_To_Invoice extends AppCompatActivity {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.playClickSound(getApplicationContext());
                 alertDialog.dismiss();
             }
         });
@@ -954,6 +1054,7 @@ public class Quotation_To_Invoice extends AppCompatActivity {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.playClickSound(getApplicationContext());
                 alertDialog.dismiss();
             }
         });
@@ -1093,28 +1194,31 @@ public class Quotation_To_Invoice extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().length() > 0) {
-                    double enteredAmount = Double.parseDouble(edtPaidAmount.getText().toString().trim());
-                    double returnAmount = enteredAmount - paidAMount;
-                    txtReturnAmount.setText(formatter.format(returnAmount));
-                    if (returnAmount == 0) {
+                try {
+                    if (charSequence.toString().length() > 0) {
+                        double enteredAmount = Double.parseDouble(edtPaidAmount.getText().toString().trim());
+                        double returnAmount = enteredAmount - paidAMount;
+                        txtReturnAmount.setText(formatter.format(returnAmount));
+                        if (returnAmount == 0) {
+                            viewReturnAmount.setVisibility(View.GONE);
+                        } else {
+                            viewReturnAmount.setVisibility(View.VISIBLE);
+                        }
+
+                        if (returnAmount < 0) {
+                            btnSave.setEnabled(false);
+                            btnSavePrint.setEnabled(false);
+                        } else {
+                            btnSave.setEnabled(true);
+                            btnSavePrint.setEnabled(true);
+                        }
+
+                    } else {
                         viewReturnAmount.setVisibility(View.GONE);
-                    } else {
-                        viewReturnAmount.setVisibility(View.VISIBLE);
                     }
+                }catch (NumberFormatException e){
 
-                    if (returnAmount < 0) {
-                        btnSave.setEnabled(false);
-                        btnSavePrint.setEnabled(false);
-                    } else {
-                        btnSave.setEnabled(true);
-                        btnSavePrint.setEnabled(true);
-                    }
-
-                } else {
-                    viewReturnAmount.setVisibility(View.GONE);
                 }
-
             }
 
             @Override
@@ -1685,11 +1789,56 @@ public class Quotation_To_Invoice extends AppCompatActivity {
         window.setAttributes(lp);
     }
 
+    public void getProductUnit(final TextView txt_unit) {
+        try {
+            WebApi webApi = CandG.getClient().create(WebApi.class);
+            Call<UnitModel> call = webApi.getUnitList(getResources().getString(R.string.api_key));
+            call.enqueue(new Callback<UnitModel>() {
+                @Override
+                public void onResponse(Call<UnitModel> call, Response<UnitModel> response) {
+                    if (response.isSuccessful()) {
+                        if(response.body().getStatus()==1){
+                            arrayListProductUnit.clear();
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+                                arrayListProductUnit.add(response.body().getData().get(i));
+                            }
+                            if (arrayListProductUnit.size() > 0) {
+                                txt_unit.setText(arrayListProductUnit.get(0).getUnitName());
+                                txt_unit.setTag(arrayListProductUnit.get(0).getUnitId());
+                            }
+                        }
+                    } else {
+                        new CToast(Quotation_To_Invoice.this).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UnitModel> call, Throwable t) {
+                    new CToast(Quotation_To_Invoice.this).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
+                }
+            });
+        } catch (Exception e) {
+            new CToast(Quotation_To_Invoice.this).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                    .setBackgroundColor(R.color.msg_fail)
+                    .show();
+        }
+    }
+
     public void showPRD(String message) {
-        prd = new ProgressDialog(Quotation_To_Invoice.this);
-        prd.setMessage(message);
-        prd.setCancelable(false);
-        prd.show();
+        prd1 = new ProgressDialog(Quotation_To_Invoice.this);
+        prd1.setMessage(message);
+        prd1.setCancelable(false);
+        prd1.show();
+    }
+
+    public void hidePRD1(){
+        if ((prd1 != null) && prd1.isShowing()) {
+            prd1.dismiss();
+        }
     }
 
     public void showPRD() {

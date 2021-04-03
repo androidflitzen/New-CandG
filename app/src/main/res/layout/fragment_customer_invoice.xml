@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/tools"
     android:clipToPadding="true"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="10dp">
 
     <LinearLayout
@@ -12,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginTop="@dimen/_20dp"
         android:visibility="visible">
 
         <androidx.cardview.widget.CardView
@@ -70,47 +73,69 @@
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp">
+            android:background="@drawable/common_box"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:weightSum="10">
+                android:weightSum="11">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="Invoice Date"
-                    android:textColor="@color/txt_color3" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="Invoice #"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="PO"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="Invoice To"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="Invoice Date"
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -118,7 +143,13 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Sub Total"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -126,7 +157,13 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Vat"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -134,7 +171,13 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Amount"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -142,7 +185,13 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Paid"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -150,7 +199,13 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Due"
-                    android:textColor="@color/txt_color3" />
+                    android:textColor="@color/txt_color3"
+                    android:paddingLeft="@dimen/_20dp"
+                    android:paddingTop="@dimen/_20dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:paddingBottom="@dimen/_20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -158,7 +213,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:visibility="invisible">
+                android:visibility="gone">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/txt_invoicelist_a_status"
@@ -195,24 +250,72 @@
             </RelativeLayout>
         </LinearLayout>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_invoice_list"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:clipToPadding="true" />
-    </LinearLayout>
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewMsg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="No any invoices available"
-        android:textSize="20dp"
-        android:visibility="visible" />
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipe_view_invoice_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:id="@+id/view_invoice_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_invoice_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="true" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_wheel"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"
+                        wheel:matProg_barColor="@color/colorPrimary"
+                        wheel:matProg_progressIndeterminate="true" />
+
+                    </RelativeLayout>
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="sempty.json"
+                    app:lottie_loop="true" />
+
+                <TextView
+                    android:id="@+id/view_invoice_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/animation_view"
+                    android:gravity="center"
+                    android:text="No invoices found"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -21,13 +21,15 @@ import java.io.File;
 
 public class Utils {
 
-    public static final String APP_DIRECTORY = ".C&G";
+    public static final String APP_DIRECTORY = ".CandG";
     public static boolean isConfigChange=false;
     public static MediaPlayer mMediaPlayer;
+    public static MediaPlayer mMediaPlayer1;
     public static String getItemDir() {
         File dirReports = new File(Environment.getExternalStorageDirectory(),
-               Utils.APP_DIRECTORY);
+               APP_DIRECTORY);
         if (!dirReports.exists()) {
+            //dirReports.mkdirs();
             if (!dirReports.mkdirs()) {
                 return null;
             }
@@ -50,6 +52,20 @@ public class Utils {
             mMediaPlayer.start();
         } else {
             mMediaPlayer.start();
+        }
+    }
+
+    public static void playWelcomeSound(Context context) {
+        if (mMediaPlayer1 == null) {
+            mMediaPlayer1 = MediaPlayer.create(context, R.raw.welcome_msg);
+            mMediaPlayer1.start();
+        } else if (mMediaPlayer1.isPlaying()) {
+            mMediaPlayer1.stop();
+            mMediaPlayer1.release();
+            mMediaPlayer1 = MediaPlayer.create(context, R.raw.welcome_msg);
+            mMediaPlayer1.start();
+        } else {
+            mMediaPlayer1.start();
         }
     }
 

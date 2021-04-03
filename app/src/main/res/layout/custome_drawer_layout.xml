@@ -134,6 +134,7 @@
                             android:layout_marginTop="5dp"
                             android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
+                            fontPath="@string/font_bold"
                             android:textSize="18dp">
 
                         </TextView>
@@ -175,6 +176,7 @@
                             android:layout_marginTop="5dp"
                             android:textStyle="bold"
                             android:textColor="@color/colorPrimary"
+                            fontPath="@string/font_bold"
                             android:textSize="18dp">
 
                         </TextView>
@@ -224,6 +226,7 @@
                             android:textStyle="bold"
                             android:textColor="@color/colorPrimary"
                             android:layout_marginTop="5dp"
+                            fontPath="@string/font_bold"
                             android:textSize="18dp">
 
                         </TextView>
@@ -265,6 +268,7 @@
                             android:gravity="center"
                             android:textColor="@color/colorPrimary"
                             android:layout_marginTop="5dp"
+                            fontPath="@string/font_bold"
                             android:textSize="18dp">
 
                         </TextView>
@@ -314,6 +318,7 @@
                             android:gravity="center"
                             android:layout_marginTop="5dp"
                             android:textColor="@color/colorPrimary"
+                            fontPath="@string/font_bold"
                             android:textSize="18dp">
 
                         </TextView>
@@ -350,6 +355,7 @@
                     android:layout_marginLeft="@dimen/_10dp"
                     android:foreground="?attr/selectableItemBackground"
                     android:textColor="@color/drawer_color"
+                    fontPath="@string/font_bold"
                     android:textSize="18dp">
 
                 </TextView>

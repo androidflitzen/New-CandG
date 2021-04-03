@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -105,6 +106,8 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     TextView txtMonthName;
     @BindView(R.id.txtYear)
     TextView txtYear;
+    @BindView(R.id.relList)
+    RelativeLayout relList;
 
     ArrayList<QuotationListingModel.Result> arrayList = new ArrayList<>();
     ArrayList<QuotationListingModel.Result> arrayListSearch = new ArrayList<>();
@@ -129,6 +132,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     private String TAG = "Quotation_ListFragment";
     private TextView txtAll;
     private int clickState = 0;
+    private boolean checkInitMonth = false, checkInitYear = false;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -205,18 +209,21 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                 arrayList.clear();
                 arrayList.addAll(arrayListTemp);
 
+                int tempTotal = 0;
                 if (arrayList.size() > 0) {
-                    viewContent.setVisibility(View.VISIBLE);
+                    relList.setVisibility(View.VISIBLE);
                     recyclerview_quotation_list.setVisibility(View.VISIBLE);
                     layout_empty.setVisibility(View.GONE);
                     viewEmpty.setVisibility(View.GONE);
+                    tempTotal = total_sale;
                 } else {
-                    viewContent.setVisibility(View.GONE);
+                    relList.setVisibility(View.GONE);
                     layout_empty.setVisibility(View.VISIBLE);
                     viewEmpty.setVisibility(View.VISIBLE);
+                    tempTotal = 0;
                 }
 
-                txtTotalOrder.setText(String.valueOf(total_sale));
+                txtTotalOrder.setText(String.valueOf(tempTotal));
                 //mAdapter.notifyDataSetChanged();
                 mAdapter.updateList(arrayList);
                 whichAPICall = 0;
@@ -259,18 +266,21 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                     img_search.setVisibility(View.VISIBLE);
                     arrayList.addAll(arrayListTemp);
 
+                    int tempTotal = 0;
                     if (arrayList.size() > 0) {
-                        viewContent.setVisibility(View.VISIBLE);
+                        relList.setVisibility(View.VISIBLE);
                         recyclerview_quotation_list.setVisibility(View.VISIBLE);
                         layout_empty.setVisibility(View.GONE);
                         viewEmpty.setVisibility(View.GONE);
+                        tempTotal = total_sale;
                     } else {
-                        viewContent.setVisibility(View.GONE);
+                        relList.setVisibility(View.GONE);
                         layout_empty.setVisibility(View.VISIBLE);
                         viewEmpty.setVisibility(View.VISIBLE);
+                        tempTotal = 0;
                     }
 
-                    txtTotalOrder.setText(String.valueOf(total_sale));
+                    txtTotalOrder.setText(String.valueOf(tempTotal));
                     whichAPICall = 0;
                     pageForSearch = 1;
                     mAdapter.updateList(arrayList);
@@ -285,6 +295,15 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
             public void afterTextChanged(Editable editable) {
             }
         });
+
+        edtSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Utils.playClickSound(getActivity());
+                return false;
+            }
+        });
+
     }
 
     private void manageMonthAndYear() {
@@ -342,6 +361,7 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txtAll:
+                Utils.playClickSound(getActivity());
                 clickState = 1;
                 if (Utils.isOnline(getActivity())) {
                     getQuotation(0);
@@ -359,34 +379,49 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
         switch (parent.getId()) {
             case R.id.txtSpinnerMonth:
                 clickState = 0;
+                page = 1;
+                pageForSearch = 1;
                 txtMonthName.setText(arrayListMonth.get(position));
                 editor.putString(SharePref.QT_MONTH, String.valueOf(position));
                 editor.commit();
                 monthAdapter.notifyDataSetChanged();
                 month = arrayListMonthNumber.get(position);
-                if (Utils.isOnline(getActivity())) {
-                    getQuotation(0);
+
+                if (checkInitMonth == false) {
+                    checkInitMonth = true;
                 } else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
+                    if (Utils.isOnline(getActivity())) {
+                        getQuotation(0);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
                 break;
 
             case R.id.txtSpinnerYear:
                 clickState = 0;
+                page = 1;
+                pageForSearch = 1;
                 txtYear.setText(arrayListYear.get(position));
                 editor.putString(SharePref.QT_YEAR, String.valueOf(position));
                 editor.commit();
                 yearAdapter.notifyDataSetChanged();
                 year = arrayListYear.get(position);
-                if (Utils.isOnline(getActivity())) {
-                    getQuotation(0);
-                } else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
+
+                if (checkInitYear == false) {
+                    checkInitYear = true;
+                }else {
+                    if (Utils.isOnline(getActivity())) {
+                        getQuotation(0);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
+
                 break;
         }
     }
@@ -421,45 +456,52 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
                     swipeRefreshLayout.setRefreshing(false);
-                    try {
-                        if (response.body().getStatus() == 1) {
+                    if (response.isSuccessful()) {
+                        try {
+                            if (response.body().getStatus() == 1) {
 
-                            viewContent.setVisibility(View.VISIBLE);
-                            recyclerview_quotation_list.setVisibility(View.VISIBLE);
-                            viewEmpty.setVisibility(View.GONE);
-                            layout_empty.setVisibility(View.GONE);
+                                relList.setVisibility(View.VISIBLE);
+                                recyclerview_quotation_list.setVisibility(View.VISIBLE);
+                                viewEmpty.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
 
-                            if (checkPagination == 0) {
-                                txtTotalOrder.setText(response.body().getTotal());
-                                total_sale_search = Integer.parseInt(response.body().getTotal());
+                                if (checkPagination == 0) {
+                                    txtTotalOrder.setText(response.body().getTotal());
+                                    total_sale_search = Integer.parseInt(response.body().getTotal());
 
-                                arrayListSearch.clear();
-                            }
+                                    arrayListSearch.clear();
+                                }
 
-                            for (int i = 0; i < response.body().getData().size(); i++) {
-                                arrayListSearch.add(response.body().getData().get(i));
-                            }
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+                                    arrayListSearch.add(response.body().getData().get(i));
+                                }
 
-                            if (arrayListSearch.size() < total_sale_search) {
-                                pageForSearch++;
-                                itShouldLoadMore = true;
+                                if (arrayListSearch.size() < total_sale_search) {
+                                    pageForSearch++;
+                                    itShouldLoadMore = true;
+                                } else {
+                                    itShouldLoadMore = false;
+                                }
+                                //mAdapter.notifyDataSetChanged();
+                                mAdapter.updateList(arrayListSearch);
+
                             } else {
-                                itShouldLoadMore = false;
+                                pageForSearch = 1;
+                                arrayListSearch.clear();
+                                relList.setVisibility(View.GONE);
+                                // recyclerview_quotation_list.setVisibility(View.GONE);
+                                viewEmpty.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
+                                txtTotalOrder.setText("0");
                             }
-                            //mAdapter.notifyDataSetChanged();
-                            mAdapter.updateList(arrayListSearch);
 
-                        } else {
-                            pageForSearch = 1;
-                            arrayListSearch.clear();
-                            viewContent.setVisibility(View.GONE);
-                           // recyclerview_quotation_list.setVisibility(View.GONE);
-                            viewEmpty.setVisibility(View.VISIBLE);
-                            layout_empty.setVisibility(View.VISIBLE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
                     }
 
                     swipeRefreshLayout.setRefreshing(false);
@@ -509,53 +551,61 @@ public class Quotation_ListFragment extends Fragment implements View.OnClickList
         call.enqueue(new Callback<QuotationListingModel>() {
             @Override
             public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
-                try {
+                if (response.isSuccessful()) {
+                    try {
 
-                    if (checkPagination == 1) {
-                        progressWheel.setVisibility(View.GONE);
-                        itShouldLoadMore = true;
-                    }
+                        if (checkPagination == 1) {
+                            progressWheel.setVisibility(View.GONE);
+                            itShouldLoadMore = true;
+                        }
 
-                    if (response.body().getStatus() == 1) {
+                        if (response.body().getStatus() == 1) {
 
-                        viewContent.setVisibility(View.VISIBLE);
-                        viewEmpty.setVisibility(View.GONE);
-                        layout_empty.setVisibility(View.GONE);
+                            relList.setVisibility(View.VISIBLE);
+                            viewEmpty.setVisibility(View.GONE);
+                            layout_empty.setVisibility(View.GONE);
 
-                        if (checkPagination == 0) {
-                            txtTotalOrder.setText(response.body().getTotal());
-                            total_sale = Integer.parseInt(response.body().getTotal());
+                            if (checkPagination == 0) {
+                                txtTotalOrder.setText(response.body().getTotal());
+                                total_sale = Integer.parseInt(response.body().getTotal());
 
+                                arrayList.clear();
+                                arrayListTemp.clear();
+                            }
+
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+                                arrayList.add(response.body().getData().get(i));
+                                arrayListTemp.add(response.body().getData().get(i));
+                            }
+
+                            if (arrayList.size() < total_sale) {
+                                page++;
+                                itShouldLoadMore = true;
+                            } else {
+                                itShouldLoadMore = false;
+                            }
+                            mAdapter.updateList(arrayList);
+                            // mAdapter.notifyDataSetChanged();
+
+                        } else {
+                            page = 1;
                             arrayList.clear();
                             arrayListTemp.clear();
+                            relList.setVisibility(View.GONE);
+                            viewEmpty.setVisibility(View.VISIBLE);
+                            layout_empty.setVisibility(View.VISIBLE);
+                            txtTotalOrder.setText("0");
+
+                            //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
 
-                        for (int i = 0; i < response.body().getData().size(); i++) {
-                            arrayList.add(response.body().getData().get(i));
-                            arrayListTemp.add(response.body().getData().get(i));
-                        }
-
-                        if (arrayList.size() < total_sale) {
-                            page++;
-                            itShouldLoadMore = true;
-                        } else {
-                            itShouldLoadMore = false;
-                        }
-                        mAdapter.updateList(arrayList);
-                        // mAdapter.notifyDataSetChanged();
-
-                    } else {
-                        page = 1;
-                        arrayList.clear();
-                        arrayListTemp.clear();
-                        viewContent.setVisibility(View.GONE);
-                        viewEmpty.setVisibility(View.VISIBLE);
-                        layout_empty.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
                 }
 
                 swipeRefreshLayout.setRefreshing(false);

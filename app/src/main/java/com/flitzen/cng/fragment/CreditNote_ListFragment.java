@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -64,7 +65,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class CreditNote_ListFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener{
+public class CreditNote_ListFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     View viewCreditNotes;
 
@@ -102,6 +103,8 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
     TextView txtMonthName;
     @BindView(R.id.txtYear)
     TextView txtYear;
+    @BindView(R.id.relList)
+    RelativeLayout relList;
 
     ArrayList<CrediNotesListModel.Result> arrayList = new ArrayList<>();
     ArrayList<CrediNotesListModel.Result> arrayListSearch = new ArrayList<>();
@@ -126,6 +129,7 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
     private String TAG = "CreditNote_ListFragment";
     private TextView txtAll;
     private int clickState = 0;
+    private boolean checkInitMonth = false, checkInitYear = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -203,18 +207,21 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
                 arrayList.clear();
                 arrayList.addAll(arrayListTemp);
 
+                int tempTotal = 0;
                 if (arrayList.size() > 0) {
-                    viewContent.setVisibility(View.VISIBLE);
+                    relList.setVisibility(View.VISIBLE);
                     recyclerview_crnote_list.setVisibility(View.VISIBLE);
                     layout_empty.setVisibility(View.GONE);
                     textViewMsg.setVisibility(View.GONE);
+                    tempTotal = total_sale;
                 } else {
-                    viewContent.setVisibility(View.GONE);
+                    relList.setVisibility(View.GONE);
                     layout_empty.setVisibility(View.VISIBLE);
                     textViewMsg.setVisibility(View.VISIBLE);
+                    tempTotal = 0;
                 }
 
-                txtTotalOrder.setText(String.valueOf(total_sale));
+                txtTotalOrder.setText(String.valueOf(tempTotal));
                 //mAdapter.notifyDataSetChanged();
                 mAdapter.updateList(arrayList);
                 whichAPICall = 0;
@@ -257,18 +264,21 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
                     img_search.setVisibility(View.VISIBLE);
                     arrayList.addAll(arrayListTemp);
 
+                    int tempTotal = 0;
                     if (arrayList.size() > 0) {
-                        viewContent.setVisibility(View.VISIBLE);
+                        relList.setVisibility(View.VISIBLE);
                         recyclerview_crnote_list.setVisibility(View.VISIBLE);
                         layout_empty.setVisibility(View.GONE);
                         textViewMsg.setVisibility(View.GONE);
+                        tempTotal = total_sale;
                     } else {
-                        viewContent.setVisibility(View.GONE);
+                        relList.setVisibility(View.GONE);
                         layout_empty.setVisibility(View.VISIBLE);
                         textViewMsg.setVisibility(View.VISIBLE);
+                        tempTotal = total_sale;
                     }
 
-                    txtTotalOrder.setText(String.valueOf(total_sale));
+                    txtTotalOrder.setText(String.valueOf(tempTotal));
                     whichAPICall = 0;
                     pageForSearch = 1;
                     mAdapter.updateList(arrayList);
@@ -281,6 +291,14 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        edtSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Utils.playClickSound(getActivity());
+                return false;
             }
         });
     }
@@ -340,6 +358,7 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txtAll:
+                Utils.playClickSound(getActivity());
                 clickState = 1;
                 if (Utils.isOnline(getActivity())) {
                     getCreditNotes(0);
@@ -357,34 +376,50 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
         switch (parent.getId()) {
             case R.id.txtSpinnerMonth:
                 clickState = 0;
+                page = 1;
+                pageForSearch = 1;
                 txtMonthName.setText(arrayListMonth.get(position));
                 editor.putString(SharePref.QT_MONTH, String.valueOf(position));
                 editor.commit();
                 monthAdapter.notifyDataSetChanged();
                 month = arrayListMonthNumber.get(position);
-                if (Utils.isOnline(getActivity())) {
-                    getCreditNotes(0);
+
+                if (checkInitMonth == false) {
+                    checkInitMonth = true;
                 } else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
+                    if (Utils.isOnline(getActivity())) {
+                        getCreditNotes(0);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
+
                 break;
 
             case R.id.txtSpinnerYear:
                 clickState = 0;
+                page = 1;
+                pageForSearch = 1;
                 txtYear.setText(arrayListYear.get(position));
                 editor.putString(SharePref.QT_YEAR, String.valueOf(position));
                 editor.commit();
                 yearAdapter.notifyDataSetChanged();
                 year = arrayListYear.get(position);
-                if (Utils.isOnline(getActivity())) {
-                    getCreditNotes(0);
-                } else {
-                    new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
-                            .setBackgroundColor(R.color.msg_fail)
-                            .show();
+
+                if (checkInitYear == false) {
+                    checkInitYear = true;
+                }else {
+                    if (Utils.isOnline(getActivity())) {
+                        getCreditNotes(0);
+                    } else {
+                        new CToast(getActivity()).simpleToast(getResources().getString(R.string.check_internet_connection), Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
+                    }
                 }
+
                 break;
         }
     }
@@ -419,45 +454,53 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
                 @Override
                 public void onResponse(Call<CrediNotesListModel> call, retrofit2.Response<CrediNotesListModel> response) {
                     swipeRefreshLayout.setRefreshing(false);
-                    try {
-                        if (response.body().getStatus() == 1) {
 
-                            viewContent.setVisibility(View.VISIBLE);
-                            recyclerview_crnote_list.setVisibility(View.VISIBLE);
-                            textViewMsg.setVisibility(View.GONE);
-                            layout_empty.setVisibility(View.GONE);
+                    if (response.isSuccessful()) {
+                        try {
+                            if (response.body().getStatus() == 1) {
 
-                            if (checkPagination == 0) {
-                                txtTotalOrder.setText(response.body().getTotal());
-                                total_sale_search = Integer.parseInt(response.body().getTotal());
+                                relList.setVisibility(View.VISIBLE);
+                                recyclerview_crnote_list.setVisibility(View.VISIBLE);
+                                textViewMsg.setVisibility(View.GONE);
+                                layout_empty.setVisibility(View.GONE);
 
-                                arrayListSearch.clear();
-                            }
+                                if (checkPagination == 0) {
+                                    txtTotalOrder.setText(response.body().getTotal());
+                                    total_sale_search = Integer.parseInt(response.body().getTotal());
 
-                            for (int i = 0; i < response.body().getData().size(); i++) {
-                                arrayListSearch.add(response.body().getData().get(i));
-                            }
+                                    arrayListSearch.clear();
+                                }
 
-                            if (arrayListSearch.size() < total_sale_search) {
-                                pageForSearch++;
-                                itShouldLoadMore = true;
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+                                    arrayListSearch.add(response.body().getData().get(i));
+                                }
+
+                                if (arrayListSearch.size() < total_sale_search) {
+                                    pageForSearch++;
+                                    itShouldLoadMore = true;
+                                } else {
+                                    itShouldLoadMore = false;
+                                }
+                                //mAdapter.notifyDataSetChanged();
+                                mAdapter.updateList(arrayListSearch);
+
                             } else {
-                                itShouldLoadMore = false;
+                                pageForSearch = 1;
+                                arrayListSearch.clear();
+                                relList.setVisibility(View.GONE);
+                                // recyclerview_quotation_list.setVisibility(View.GONE);
+                                textViewMsg.setVisibility(View.VISIBLE);
+                                layout_empty.setVisibility(View.VISIBLE);
+                                txtTotalOrder.setText("0");
                             }
-                            //mAdapter.notifyDataSetChanged();
-                            mAdapter.updateList(arrayListSearch);
 
-                        } else {
-                            pageForSearch = 1;
-                            arrayListSearch.clear();
-                            viewContent.setVisibility(View.GONE);
-                            // recyclerview_quotation_list.setVisibility(View.GONE);
-                            textViewMsg.setVisibility(View.VISIBLE);
-                            layout_empty.setVisibility(View.VISIBLE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                .setBackgroundColor(R.color.msg_fail)
+                                .show();
                     }
 
                     swipeRefreshLayout.setRefreshing(false);
@@ -507,53 +550,60 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
         call.enqueue(new Callback<CrediNotesListModel>() {
             @Override
             public void onResponse(Call<CrediNotesListModel> call, retrofit2.Response<CrediNotesListModel> response) {
-                try {
+                if (response.isSuccessful()) {
+                    try {
 
-                    if (checkPagination == 1) {
-                        progressWheel.setVisibility(View.GONE);
-                        itShouldLoadMore = true;
-                    }
+                        if (checkPagination == 1) {
+                            progressWheel.setVisibility(View.GONE);
+                            itShouldLoadMore = true;
+                        }
 
-                    if (response.body().getStatus() == 1) {
+                        if (response.body().getStatus() == 1) {
 
-                        viewContent.setVisibility(View.VISIBLE);
-                        textViewMsg.setVisibility(View.GONE);
-                        layout_empty.setVisibility(View.GONE);
+                            relList.setVisibility(View.VISIBLE);
+                            textViewMsg.setVisibility(View.GONE);
+                            layout_empty.setVisibility(View.GONE);
 
-                        if (checkPagination == 0) {
-                            txtTotalOrder.setText(response.body().getTotal());
-                            total_sale = Integer.parseInt(response.body().getTotal());
+                            if (checkPagination == 0) {
+                                txtTotalOrder.setText(response.body().getTotal());
+                                total_sale = Integer.parseInt(response.body().getTotal());
 
+                                arrayList.clear();
+                                arrayListTemp.clear();
+                            }
+
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+                                arrayList.add(response.body().getData().get(i));
+                                arrayListTemp.add(response.body().getData().get(i));
+                            }
+
+                            if (arrayList.size() < total_sale) {
+                                page++;
+                                itShouldLoadMore = true;
+                            } else {
+                                itShouldLoadMore = false;
+                            }
+                            mAdapter.updateList(arrayList);
+                            // mAdapter.notifyDataSetChanged();
+
+                        } else {
+                            page = 1;
                             arrayList.clear();
                             arrayListTemp.clear();
+                            relList.setVisibility(View.GONE);
+                            textViewMsg.setVisibility(View.VISIBLE);
+                            layout_empty.setVisibility(View.VISIBLE);
+                            txtTotalOrder.setText("0");
+                            //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
 
-                        for (int i = 0; i < response.body().getData().size(); i++) {
-                            arrayList.add(response.body().getData().get(i));
-                            arrayListTemp.add(response.body().getData().get(i));
-                        }
-
-                        if (arrayList.size() < total_sale) {
-                            page++;
-                            itShouldLoadMore = true;
-                        } else {
-                            itShouldLoadMore = false;
-                        }
-                        mAdapter.updateList(arrayList);
-                        // mAdapter.notifyDataSetChanged();
-
-                    } else {
-                        page = 1;
-                        arrayList.clear();
-                        arrayListTemp.clear();
-                        viewContent.setVisibility(View.GONE);
-                        textViewMsg.setVisibility(View.VISIBLE);
-                        layout_empty.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                            .setBackgroundColor(R.color.msg_fail)
+                            .show();
                 }
 
                 swipeRefreshLayout.setRefreshing(false);
@@ -576,7 +626,7 @@ public class CreditNote_ListFragment extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        TextView tvTitle=((HomeActivity)getActivity()).findViewById(R.id.tvTitle);
+        TextView tvTitle = ((HomeActivity) getActivity()).findViewById(R.id.tvTitle);
         tvTitle.setText(getResources().getString(R.string.credit_notes));
         txtAll = ((HomeActivity) getActivity()).findViewById(R.id.txtAll);
         txtAll.setVisibility(View.VISIBLE);

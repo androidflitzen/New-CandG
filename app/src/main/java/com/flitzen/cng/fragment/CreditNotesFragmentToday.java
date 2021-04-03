@@ -156,32 +156,38 @@ public class CreditNotesFragmentToday extends Fragment {
                 call.enqueue(new Callback<CrediNotesListModel>() {
                     @Override
                     public void onResponse(Call<CrediNotesListModel> call, retrofit2.Response<CrediNotesListModel> response) {
-                        try {
-                            if (response.body().getStatus() == 1) {
-                                viewInvoice.setVisibility(View.VISIBLE);
-                                textViewMsg.setVisibility(View.GONE);
-                                layout_empty.setVisibility(View.GONE);
+                        if(response.isSuccessful()){
+                            try {
+                                if (response.body().getStatus() == 1) {
+                                    viewInvoice.setVisibility(View.VISIBLE);
+                                    textViewMsg.setVisibility(View.GONE);
+                                    layout_empty.setVisibility(View.GONE);
 
-                                txtTotalOrder.setText("Total Credit Notes : " + response.body().getTotal());
+                                    txtTotalOrder.setText("Total Credit Notes : " + response.body().getTotal());
 
-                                arrayListTemp.clear();
-                                arrayList.clear();
+                                    arrayListTemp.clear();
+                                    arrayList.clear();
 
-                                for (int i = 0; i < response.body().getData().size(); i++) {
-                                    arrayList.add(response.body().getData().get(i));
-                                    arrayListTemp.add(response.body().getData().get(i));
+                                    for (int i = 0; i < response.body().getData().size(); i++) {
+                                        arrayList.add(response.body().getData().get(i));
+                                        arrayListTemp.add(response.body().getData().get(i));
+                                    }
+
+                                    creditNoteListAdapter.notifyDataSetChanged();
+                                } else {
+                                    viewInvoice.setVisibility(View.GONE);
+                                    textViewMsg.setVisibility(View.VISIBLE);
+                                    layout_empty.setVisibility(View.VISIBLE);
+                                    textViewMsg.setText("No credit note has been created today");
                                 }
 
-                                creditNoteListAdapter.notifyDataSetChanged();
-                            } else {
-                                viewInvoice.setVisibility(View.GONE);
-                                textViewMsg.setVisibility(View.VISIBLE);
-                                layout_empty.setVisibility(View.VISIBLE);
-                                textViewMsg.setText("No credit note has been created today");
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        }else {
+                            new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
                         }
                     }
 

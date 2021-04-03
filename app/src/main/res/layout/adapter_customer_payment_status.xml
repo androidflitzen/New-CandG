@@ -18,8 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -27,12 +26,20 @@
                 android:weightSum="10"
                 android:orientation="horizontal">
 
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black">
+
+                </View>
+
                 <TextView
                     android:id="@+id/txt_payment_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Date"
+                    android:padding="@dimen/_10dp"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/txt_color1" />
 
@@ -44,6 +51,7 @@
                     android:text="0"
                     android:gravity="right"
                     android:paddingRight="16dp"
+                    android:padding="@dimen/_10dp"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/txt_color1" />
 
@@ -54,6 +62,7 @@
                     android:layout_weight="2"
                     android:text="Type"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:padding="@dimen/_10dp"
                     android:textColor="@color/txt_color1" />
 
 
@@ -64,6 +73,7 @@
                     android:layout_weight="2"
                     android:text=""
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:padding="@dimen/_10dp"
                     android:textColor="@color/txt_color1" />
 
                 <TextView
@@ -73,7 +83,15 @@
                     android:layout_weight="2.5"
                     android:text=""
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:padding="@dimen/_10dp"
                     android:textColor="@color/txt_color1" />
+
+                <View
+                    android:layout_width="1.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black">
+
+                </View>
 
 
             </LinearLayout>

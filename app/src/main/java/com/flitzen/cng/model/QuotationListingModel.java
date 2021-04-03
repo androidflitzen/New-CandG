@@ -81,6 +81,12 @@ public class QuotationListingModel {
         @SerializedName("converted_status")
         @Expose
         private String convertedStatus;
+        @SerializedName("quotation_pdf_url")
+        @Expose
+        private String quotationPdfUrl;
+        @SerializedName("customer_email")
+        @Expose
+        private String customerEmail;
 
         public String getQuotationId() {
             return quotationId;
@@ -153,5 +159,21 @@ public class QuotationListingModel {
         public void setConvertedStatus(String convertedStatus) {
             this.convertedStatus = convertedStatus;
         }
+
+        public String getQuotationPdfUrl() {
+            return quotationPdfUrl;
+        }
+
+        public void setQuotationPdfUrl(String quotationPdfUrl) {
+            this.quotationPdfUrl = quotationPdfUrl;
+        }
+
+        public String getCustomerEmail() {
+            return customerEmail;
+        }
+
+        public void setCustomerEmail(String customerEmail) {
+            this.customerEmail = customerEmail;
+        }
     }
-    }
+}

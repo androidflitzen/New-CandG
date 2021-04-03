@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="10dp">
 
     <TextView
@@ -103,15 +104,15 @@
             android:layout_height="wrap_content"
             android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="@android:color/white"
-            android:layout_marginTop="5dp"
             app:cardCornerRadius="0dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            android:layout_marginTop="@dimen/_25dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:background="@drawable/common_box">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,17 +127,24 @@
                         android:layout_weight="2"
                         android:text="Date"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingTop="@dimen/_20dp"
+                        android:paddingRight="@dimen/_20dp"
+                        android:paddingBottom="@dimen/_20dp"
+                        android:textColor="@color/txt_color3" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
                         android:gravity="right"
-                        android:paddingRight="16dp"
                         android:text="Amount"
+                        android:paddingLeft="@dimen/_20dp"
+                        android:paddingTop="@dimen/_20dp"
+                        android:paddingRight="@dimen/_10dp"
+                        android:paddingBottom="@dimen/_20dp"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/txt_color3" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -144,7 +152,11 @@
                         android:layout_weight="2"
                         android:text="Payment Type"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingTop="@dimen/_20dp"
+                        android:paddingRight="@dimen/_20dp"
+                        android:paddingBottom="@dimen/_20dp"
+                        android:textColor="@color/txt_color3" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -160,16 +172,24 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:text="Payment Mode"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingTop="@dimen/_20dp"
+                        android:paddingRight="@dimen/_20dp"
+                        android:paddingBottom="@dimen/_20dp"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/txt_color3" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2.5"
                         android:text="Reference"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingTop="@dimen/_20dp"
+                        android:paddingRight="@dimen/_20dp"
+                        android:paddingBottom="@dimen/_20dp"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/txt_color3" />
 
 
                 </LinearLayout>
@@ -182,12 +202,54 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview_payment_list"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_view_ledger_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/view_ledger_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_payment_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="true" />
+
+                </RelativeLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_empty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:layout_marginTop="5dp"/>
+                android:visibility="gone">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="sempty.json"
+                    app:lottie_loop="true" />
+
+                <TextView
+                    android:id="@+id/view_ledger_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/animation_view"
+                    android:gravity="center"
+                    android:text="No record found"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

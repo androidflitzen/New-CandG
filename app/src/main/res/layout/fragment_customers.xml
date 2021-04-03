@@ -6,6 +6,24 @@
     android:background="@color/cardBg"
     android:focusableInTouchMode="true">
 
+    <LinearLayout
+        android:id="@+id/lin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+        </TextView>
+
+    </LinearLayout>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/view_search"
         android:layout_width="match_parent"
@@ -15,6 +33,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:layout_marginBottom="10dp"
         app:cardBackgroundColor="@android:color/white"
+        android:layout_below="@id/lin"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp">
 
@@ -32,8 +51,10 @@
                 android:hint="Search"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="textCapCharacters"
-                android:padding="14dp"
                 android:singleLine="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="14dp"
+                android:textColorHint="@color/black"
                 android:textColor="@android:color/black"
                 android:textSize="14sp" />
 

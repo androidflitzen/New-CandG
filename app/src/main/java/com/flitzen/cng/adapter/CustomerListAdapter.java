@@ -74,7 +74,7 @@ public class CustomerListAdapter extends RecyclerView.Adapter {
 
     public int getLetterPosition(String letter) {
         for (int i = 0; i < customerList.size(); i++) {
-            if (customerList.get(i).getType().equalsIgnoreCase("1") && customerList.get(i).getName().equals(letter)) {
+            if (customerList.get(i).getType().equalsIgnoreCase("1") && customerList.get(i).getName().substring(0, 1).equalsIgnoreCase(letter)) {
                 return i;
             }
         }

@@ -93,6 +93,15 @@ public class TodayInvoiceListingModel {
         @SerializedName("due")
         @Expose
         private String due;
+        @SerializedName("invoice_pdf_url")
+        @Expose
+        private String invoicePdfUrl;
+        @SerializedName("invoice_delivery_note_pdf_url")
+        @Expose
+        private String invoiceDeliveryNotePdfUrl;
+        @SerializedName("customer_email")
+        @Expose
+        private String customerEmail;
 
         public String getInvoiceId() {
             return invoiceId;
@@ -198,6 +207,28 @@ public class TodayInvoiceListingModel {
             this.due = due;
         }
 
+        public String getInvoicePdfUrl() {
+            return invoicePdfUrl;
+        }
 
+        public void setInvoicePdfUrl(String invoicePdfUrl) {
+            this.invoicePdfUrl = invoicePdfUrl;
+        }
+
+        public String getInvoiceDeliveryNotePdfUrl() {
+            return invoiceDeliveryNotePdfUrl;
+        }
+
+        public void setInvoiceDeliveryNotePdfUrl(String invoiceDeliveryNotePdfUrl) {
+            this.invoiceDeliveryNotePdfUrl = invoiceDeliveryNotePdfUrl;
+        }
+
+        public String getCustomerEmail() {
+            return customerEmail;
+        }
+
+        public void setCustomerEmail(String customerEmail) {
+            this.customerEmail = customerEmail;
+        }
     }
 }

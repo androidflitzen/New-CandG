@@ -1,10 +1,18 @@
 package com.flitzen.cng.adapter;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,26 +24,37 @@ import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.flitzen.cng.BuildConfig;
 import com.flitzen.cng.CandG;
 import com.flitzen.cng.R;
 import com.flitzen.cng.activity.Quotation_To_Invoice;
-import com.flitzen.cng.fragment.QuatationFragment;
-import com.flitzen.cng.fragment.QuatationMonthFragment;
-import com.flitzen.cng.fragment.QuatationWeekFragment;
-import com.flitzen.cng.fragment.QuatationYearFragment;
 import com.flitzen.cng.model.CommonModel;
 
 import com.flitzen.cng.model.QuotationListingModel;
 import com.flitzen.cng.utils.CToast;
 import com.flitzen.cng.utils.Helper;
+import com.flitzen.cng.utils.Permission;
 import com.flitzen.cng.utils.Utils;
 import com.flitzen.cng.utils.WebApi;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,14 +62,18 @@ import retrofit2.Callback;
 public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdapter.ViewHolder> {
 
     ArrayList<QuotationListingModel.Result> arrayList;
-    Context context;
+    Activity context;
     String gbp;
     DecimalFormat formatter = new DecimalFormat(Helper.AMOUNT_FORMATE);
     ProgressDialog prd;
     int type;
     Intent gcm_rec;
+    private String unique_id = "", email = "";
+    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.BLUETOOTH_ADMIN};
+    public static final int PERMISSION_CODE = 123;
+    private static final int BUFFER_SIZE = 4096;
 
-    public QuotationListAdapter(Context context, ArrayList<QuotationListingModel.Result> arrayList, int type) {
+    public QuotationListAdapter(Activity context, ArrayList<QuotationListingModel.Result> arrayList, int type) {
         this.arrayList = arrayList;
         this.context = context;
         this.type = type;
@@ -132,7 +155,8 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
         View viewSendMail = promptsView.findViewById(R.id.view_quo_dialog_send_mail);
         View ll_del_edit = promptsView.findViewById(R.id.ll_del_edit);
 
-
+        unique_id = arrayList.get(position).getQuotationId();
+        email = arrayList.get(position).getCustomerEmail();
         //TODO in future
        /* if (!arrayList.get(position).getQuotatoin_to().equals("-")) {
             name = arrayList.get(position).getQuotatoin_to();
@@ -151,6 +175,19 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
             @Override
             public void onClick(View view) {
                 //TODO in future
+
+                Utils.playClickSound(context);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Permission.hasPermissions(context, permissions)) {
+                        downloadFile(position, 0);
+                    } else {
+                        Permission.requestPermissions(context, permissions, PERMISSION_CODE);
+                    }
+                } else {
+                    downloadFile(position, 0);
+                }
+                alertDialog.dismiss();
             }
         });
 
@@ -209,28 +246,34 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
                 @Override
                 public void onResponse(Call<CommonModel> call, retrofit2.Response<CommonModel> response) {
                     hidePRD();
-                    if (response.body().getStatus() == 1) {
-                        new CToast(context).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
-                                .setBackgroundColor(R.color.msg_success)
-                                .show();
+                    if(response.isSuccessful()){
+                        if (response.body().getStatus() == 1) {
+                            new CToast(context).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_success)
+                                    .show();
 
-                        arrayList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position,arrayList.size());
+                            arrayList.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, arrayList.size());
 
-                        if (type == 0) {
-                            gcm_rec = new Intent(context.getResources().getString(R.string.remove_today_quotation));
-                        } else if (type == 1) {
-                            gcm_rec = new Intent(context.getResources().getString(R.string.remove_week_quotation));
-                        } else if (type == 2) {
-                            gcm_rec = new Intent(context.getResources().getString(R.string.remove_month_quotation));
-                        } else if (type == 3) {
-                            gcm_rec = new Intent(context.getResources().getString(R.string.remove_year_quotation));
+                            if (type == 0) {
+                                gcm_rec = new Intent(context.getResources().getString(R.string.remove_today_quotation));
+                            } else if (type == 1) {
+                                gcm_rec = new Intent(context.getResources().getString(R.string.remove_week_quotation));
+                            } else if (type == 2) {
+                                gcm_rec = new Intent(context.getResources().getString(R.string.remove_month_quotation));
+                            } else if (type == 3) {
+                                gcm_rec = new Intent(context.getResources().getString(R.string.remove_year_quotation));
+                            }
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
+
+                        } else {
+                            new CToast(context).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
                         }
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
-
-                    } else {
-                        new CToast(context).simpleToast(response.body().getMessage(), Toast.LENGTH_SHORT)
+                    }else {
+                        new CToast(context).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
                                 .setBackgroundColor(R.color.msg_fail)
                                 .show();
                     }
@@ -251,6 +294,195 @@ public class QuotationListAdapter extends RecyclerView.Adapter<QuotationListAdap
             new CToast(context).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
                     .setBackgroundColor(R.color.msg_fail)
                     .show();
+        }
+    }
+
+   /* class DownloadFile extends AsyncTask<Void, Void, String> {
+
+        String url;
+        File file;
+        int action;
+
+        public DownloadFile(String url, File file, int action) {
+            this.url = url;
+            this.file = file;
+            this.action = action;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            downloadFile(url, file);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            hidePRD();
+            if (action == 1) {
+                if (file.exists()) {
+                    Intent target = new Intent(Intent.ACTION_VIEW);
+                    target.setPackage("com.google.android.apps.docs");
+                    target.setDataAndType(FileProvider.getUriForFile(context,
+                            context.getPackageName(),
+                            file), "application/pdf");
+                    target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                    Intent intent = Intent.createChooser(target, "Open File");
+                    try {
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        // Instruct the user to install a PDF reader here, or something
+                    }
+                } else {
+                    Toast.makeText(context, "File path is incorrect.", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                try {
+                    final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    emailIntent.setType("plain/text");
+                    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, email);
+                    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Quotation- " + unique_id);
+                    emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    Uri uri;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file);
+                    } else {
+                        uri = Uri.fromFile(file);
+                    }
+
+                    if (uri != null) {
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    }
+                    String desc = "Thank you for placing an enquiry at C&G. \n" +
+                            "\n" +
+                            "Your quote has been attached to this email. Please feel free to contact us in case you have any questions or concerns.\n" +
+                            "\n" +
+                            "If you wish to pay by BACS please see details below.\n" +
+                            "\n" +
+                            "-----------------------\n" +
+                            "NatWest \n" +
+                            "Account no: 66682266\n" +
+                            "Sort code: 60-15-28\n" +
+                            "-----------------------\n" +
+                            "\n" +
+                            "This quotation is only valid for 30 days.  \n" +
+                            "\n" +
+                            "Also, we would like you to check out our website:  https://candgheating.com/  \n" +
+                            "\n" +
+                            "Reg Office: 46 Mill Road\n" +
+                            "Northumberland Heath \n" +
+                            "Erith\n" +
+                            "Kent \n" +
+                            "DA8 1HN \n" +
+                            "Tel: 01322338526\n" +
+                            "Email: candgheating@btconnect.com\n" +
+                            "Reg no: 5288707";
+                    emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, desc);
+                    context.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+                } catch (Throwable t) {
+                    Toast.makeText(context, "Request failed try again: " + t.toString(), Toast.LENGTH_LONG).show();
+                }
+
+                Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }*/
+
+    private void downloadFile(int position, int action) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            showPRD();
+            DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+            File myFile = new File(new File(Utils.getItemDir()), arrayList.get(position).getQuotationId() + df.format(new Date()) + ".pdf");
+
+            myFile.createNewFile();
+          //  new DownloadFileFromURL(myFile, action).execute("https://new.earthingcare.com/gen_quotation?quotation_id=1848");
+            new DownloadFileFromURL(myFile, action).execute(arrayList.get(position).getQuotationPdfUrl());
+          //  new DownloadFileFromURL(myFile, action).execute("https://newnew.candgbathrooms.com/quotation/pdf2?quotation_id=1");
+
+        } catch (Exception e) {
+            // Utils.showToast(context, "Something Wrong...", R.color.msg_fail);
+            e.printStackTrace();
+        }
+    }
+
+    private void openPDF(File myFile) {
+        Intent target = new Intent(Intent.ACTION_VIEW);
+        target.setPackage("com.google.android.apps.docs");
+        target.setDataAndType(FileProvider.getUriForFile(context,
+                context.getPackageName(),
+                myFile), "application/pdf");
+        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+        Intent intent = Intent.createChooser(target, "Open File");
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Instruct the user to install a PDF reader here, or something
+        }
+    }
+
+    class DownloadFileFromURL extends AsyncTask<String, String, Void> {
+        File myFile;
+        int action;
+
+        public DownloadFileFromURL(File myFile, int action) {
+            this.myFile = myFile;
+            this.action = action;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+
+                int lenghtOfFile = conection.getContentLength();
+                InputStream input = new BufferedInputStream(url.openStream(),
+                        8192);
+                OutputStream output = new FileOutputStream(myFile);
+                byte data[] = new byte[1024];
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return null;
+        }
+
+        protected void onProgressUpdate(String... progress) {
+            //pDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        @Override
+        protected void onPostExecute(Void r) {
+            hidePRD();
+            if (action == 0) {
+              //  openPDF(myFile);
+            } else if (action == 1) {
+                //sendMailInvoice(myFile);
+            }
         }
     }
 

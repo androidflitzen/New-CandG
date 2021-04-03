@@ -248,7 +248,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Payment Method"
                                 android:textAppearance="?android:textAppearanceSmall"
-                                android:textColor="@color/blue" />
+                                android:textColor="@color/txt_color2" />
 
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
@@ -408,6 +408,7 @@
                                     android:paddingBottom="5dp"
                                     android:textAppearance="?android:textAppearanceSmall"
                                     android:theme="@style/custome_outlinebox"
+                                    android:textColorHint="#485253"
                                     android:visibility="visible">
 
                                     <com.google.android.material.textfield.TextInputEditText
@@ -419,7 +420,7 @@
                                         android:imeOptions="flagNoExtractUi"
                                         android:singleLine="true"
                                         android:textAppearance="?android:textAppearanceMedium"
-                                        android:textColor="@android:color/black"
+                                        android:textColor="@color/black"
                                         android:textColorHint="@color/txt_color3"
                                         android:visibility="visible" />
 
@@ -448,6 +449,7 @@
                                     android:paddingBottom="5dp"
                                     android:textAppearance="?android:textAppearanceSmall"
                                     android:theme="@style/custome_outlinebox"
+                                    android:textColorHint="#485253"
                                     android:visibility="visible">
 
                                     <com.google.android.material.textfield.TextInputEditText
@@ -459,7 +461,7 @@
                                         android:imeOptions="flagNoExtractUi"
                                         android:singleLine="true"
                                         android:textAppearance="?android:textAppearanceMedium"
-                                        android:textColor="@android:color/black"
+                                        android:textColor="@color/black"
                                         android:textColorHint="@color/txt_color3"
                                         android:visibility="visible" />
 
@@ -482,6 +484,7 @@
                                 android:id="@+id/rdb_create_inv_collection"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/black"
                                 android:text="Collection" />
 
                             <RadioButton
@@ -489,6 +492,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
+                                android:textColor="@color/black"
                                 android:text="Delivery" />
                         </RadioGroup>
 
@@ -518,6 +522,7 @@
                                     android:paddingBottom="5dp"
                                     android:textAppearance="?android:textAppearanceSmall"
                                     android:theme="@style/custome_outlinebox"
+                                    android:textColorHint="#485253"
                                     android:visibility="visible">
 
                                     <com.google.android.material.textfield.TextInputEditText
@@ -529,7 +534,7 @@
                                         android:imeOptions="flagNoExtractUi"
                                         android:singleLine="true"
                                         android:textAppearance="?android:textAppearanceMedium"
-                                        android:textColor="@android:color/black"
+                                        android:textColor="@color/black"
                                         android:textColorHint="@color/txt_color3"
                                         android:visibility="visible" />
 
@@ -548,6 +553,7 @@
                                     android:paddingBottom="5dp"
                                     android:textAppearance="?android:textAppearanceSmall"
                                     android:theme="@style/custome_outlinebox"
+                                    android:textColorHint="#485253"
                                     android:visibility="visible">
 
                                     <com.google.android.material.textfield.TextInputEditText
@@ -559,7 +565,7 @@
                                         android:imeOptions="flagNoExtractUi"
                                         android:singleLine="true"
                                         android:textAppearance="?android:textAppearanceMedium"
-                                        android:textColor="@android:color/black"
+                                        android:textColor="@color/black"
                                         android:textColorHint="@color/txt_color3"
                                         android:visibility="visible" />
 
@@ -579,6 +585,7 @@
                                 android:layout_marginTop="@dimen/_10dp"
                                 android:textAppearance="?android:textAppearanceSmall"
                                 android:theme="@style/custome_outlinebox"
+                                android:textColorHint="#485253"
                                 android:visibility="visible">
 
                                 <com.google.android.material.textfield.TextInputEditText
@@ -590,7 +597,7 @@
                                     android:imeOptions="flagNoExtractUi"
                                     android:singleLine="true"
                                     android:textAppearance="?android:textAppearanceMedium"
-                                    android:textColor="@android:color/black"
+                                    android:textColor="@color/black"
                                     android:textColorHint="@color/txt_color3"
                                     android:visibility="visible" />
 

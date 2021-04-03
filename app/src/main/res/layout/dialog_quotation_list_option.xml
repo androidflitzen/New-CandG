@@ -124,6 +124,7 @@
                     android:clickable="true"
                     android:drawablePadding="10dp"
                     android:drawableTop="@drawable/ic_delete"
+                    android:drawableTint="@color/colorPrimary"
                     android:gravity="center"
                     android:padding="32dp"
                     android:text="Delete Quotation"

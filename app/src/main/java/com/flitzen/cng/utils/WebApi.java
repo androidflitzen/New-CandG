@@ -6,7 +6,12 @@ import com.flitzen.cng.model.AllProductDataModel;
 import com.flitzen.cng.model.CategoryModel;
 import com.flitzen.cng.model.CommonModel;
 import com.flitzen.cng.model.CrediNotesListModel;
+import com.flitzen.cng.model.CustomerCreditNoteListModel;
+import com.flitzen.cng.model.CustomerDetailsModel;
+import com.flitzen.cng.model.CustomerInvoiceListModel;
+import com.flitzen.cng.model.CustomerLedgerModel;
 import com.flitzen.cng.model.CustomerModel;
+import com.flitzen.cng.model.CustomerQuotationListModel;
 import com.flitzen.cng.model.LoginResponseModel;
 import com.flitzen.cng.model.MonthListModel;
 import com.flitzen.cng.model.ProductListRequestModel;
@@ -190,7 +195,7 @@ public interface WebApi {
     Call<TodayInvoiceListingModel> monthYearInvoiceListApi(@Query("api_key") String api_key,@Query("month") String month,@Query("year") String year,@Query("pno") String pno);
 
     //Search month Year wise Invoice List
-    @GET("quotation/month_year_wise?")
+    @GET("invoice/month_year_wise?")
     Call<TodayInvoiceListingModel> searchMonthYearInvoiceListApi(@Query("api_key") String api_key,@Query("pno") String pno,@Query("month") String month,@Query("year") String year, @Query("search_text") String search_text);
 
     //Month Year wise Credit Notes List
@@ -201,5 +206,29 @@ public interface WebApi {
     @GET("credit_note/month_year_wise?")
     Call<CrediNotesListModel> searchCreditInvoiceListApi(@Query("api_key") String api_key,@Query("pno") String pno,@Query("month") String month,@Query("year") String year, @Query("search_text") String search_text);
 
+    //Customer Invoice List
+    @GET("invoice/by_customer?")
+    Call<CustomerInvoiceListModel> getInvoiceList(@Query("api_key") String api_key, @Query("pno") String pno,@Query("customer_id") String customer_id);
+
+    //Customer Quotation List
+    @GET("quotation/by_customer?")
+    Call<CustomerQuotationListModel> getQuotationList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("customer_id") String customer_id);
+
+    //Customer Credit note List
+    @GET("credit_note/by_customer?")
+    Call<CustomerCreditNoteListModel> getCreditNoteList(@Query("api_key") String api_key, @Query("pno") String pno, @Query("customer_id") String customer_id);
+
+    //Customer profile detail
+    @GET("customer/details?")
+    Call<CustomerDetailsModel> getCustomerDetails(@Query("api_key") String api_key, @Query("customer_id") String customer_id);
+
+    //Customer Ledger list
+    @GET("customer/ledger?")
+    Call<CustomerLedgerModel> getLedgerList(@Query("api_key") String api_key, @Query("customer_id") String customer_id);
+
+    //Add Lump sum payment
+    @GET("invoice/add_payment?")
+    Call<CommonModel> addLumpSumPayment(@Query("api_key") String api_key, @Query("payment_mode") String payment_mode,@Query("amount") String amount,@Query("invoice_id") String invoice_id,
+                                        @Query("payment_reference") String payment_reference,@Query("payment_date") String payment_date,@Query("user_id") String user_id);
 
 }

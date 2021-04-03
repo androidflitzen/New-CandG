@@ -98,7 +98,7 @@ public class QuatationFragment extends Fragment {
     private void performSomeOperations() {
 
         recyclerview_quotation_list.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        mAdapter = new QuotationListAdapter(getContext(), arrayList, 0);
+        mAdapter = new QuotationListAdapter(getActivity(), arrayList, 0);
         recyclerview_quotation_list.setAdapter(mAdapter);
 
         img_close.setOnClickListener(new View.OnClickListener() {
@@ -173,34 +173,40 @@ public class QuatationFragment extends Fragment {
                 call.enqueue(new Callback<QuotationListingModel>() {
                     @Override
                     public void onResponse(Call<QuotationListingModel> call, retrofit2.Response<QuotationListingModel> response) {
-                        try {
-                            if (response.body().getStatus() == 1) {
+                        if(response.isSuccessful()){
+                            try {
+                                if (response.body().getStatus() == 1) {
 
-                                viewContent.setVisibility(View.VISIBLE);
-                                viewEmpty.setVisibility(View.GONE);
-                                layout_empty.setVisibility(View.GONE);
+                                    viewContent.setVisibility(View.VISIBLE);
+                                    viewEmpty.setVisibility(View.GONE);
+                                    layout_empty.setVisibility(View.GONE);
 
-                                txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
+                                    txtTotalOrder.setText("Total Quotations : " + response.body().getTotal());
 
-                                arrayList.clear();
-                                arrayListTemp.clear();
+                                    arrayList.clear();
+                                    arrayListTemp.clear();
 
-                                for (int i = 0; i < response.body().getData().size(); i++) {
-                                    arrayList.add(response.body().getData().get(i));
-                                    arrayListTemp.add(response.body().getData().get(i));
+                                    for (int i = 0; i < response.body().getData().size(); i++) {
+                                        arrayList.add(response.body().getData().get(i));
+                                        arrayListTemp.add(response.body().getData().get(i));
+                                    }
+
+                                    mAdapter.notifyDataSetChanged();
+
+                                } else {
+                                    viewContent.setVisibility(View.GONE);
+                                    viewEmpty.setVisibility(View.VISIBLE);
+                                    layout_empty.setVisibility(View.VISIBLE);
+                                    //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
 
-                                mAdapter.notifyDataSetChanged();
-
-                            } else {
-                                viewContent.setVisibility(View.GONE);
-                                viewEmpty.setVisibility(View.VISIBLE);
-                                layout_empty.setVisibility(View.VISIBLE);
-                                //Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        }else {
+                            new CToast(getActivity()).simpleToast("Something went wrong ! Please try again.", Toast.LENGTH_SHORT)
+                                    .setBackgroundColor(R.color.msg_fail)
+                                    .show();
                         }
 
                         swipeRefreshLayout.setRefreshing(false);

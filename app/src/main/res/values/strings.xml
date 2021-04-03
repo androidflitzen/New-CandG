@@ -2,8 +2,11 @@
     <string name="app_name">C and G</string>
 
     <!--<string name="font_regular">opensanscondensed_light.ttf</string>-->
-    <string name="font_regular" translatable="false">opensanscondensed_bold.ttf</string>
-    <string name="font_bold" translatable="false">opensanscondensed_bold.ttf</string>
+   <!-- <string name="font_regular" translatable="false">opensanscondensed_bold.ttf</string>
+    <string name="font_bold" translatable="false">opensanscondensed_bold.ttf</string>-->
+
+    <string name="font_regular" translatable="false">sourcesanspro_semibold.ttf</string>
+    <string name="font_bold" translatable="false">sourcesanspro_black.ttf</string>
     <string name="log_in">LOG IN</string>
     <string name="enter_user_id">Enter User Id</string>
     <string name="enter_password">Enter Password</string>
